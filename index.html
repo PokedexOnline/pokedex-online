@@ -72,6 +72,14 @@ body::before{
     letter-spacing:.5px;
     color:#ffcb05;
     text-shadow:0 2px 15px rgba(255,203,5,.2);
+    cursor:pointer;
+    user-select:none;
+    transition:.2s;
+}
+
+.logo:hover{
+    transform:scale(1.03);
+    text-shadow:0 2px 20px rgba(255,203,5,.45);
 }
 
 .menu-button{
@@ -554,14 +562,49 @@ body::before{
     border-radius:22px;
     overflow:hidden;
     cursor:pointer;
-    border:1px solid rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.12);
     background:#111;
+    isolation:isolate;
     transition:.3s;
 }
 
 .type-card:hover{
-    transform:translateY(-6px);
+    transform:translateY(-6px) scale(1.01);
     box-shadow:0 20px 40px rgba(0,0,0,.35);
+}
+
+.type-animation{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    z-index:0;
+}
+
+.type-animation::after{
+    content:"";
+    position:absolute;
+    inset:-60%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.16) 0,
+            rgba(255,255,255,.04) 12%,
+            transparent 35%
+        );
+    animation:typeGlow 8s linear infinite;
+    pointer-events:none;
+}
+
+@keyframes typeGlow{
+    0%{
+        transform:translate(-20%,-10%) rotate(0deg);
+    }
+    50%{
+        transform:translate(15%,15%) rotate(180deg);
+    }
+    100%{
+        transform:translate(-20%,-10%) rotate(360deg);
+    }
 }
 
 .type-card-content{
@@ -574,8 +617,9 @@ body::before{
     padding:22px;
     background:linear-gradient(
         180deg,
-        transparent 20%,
-        rgba(0,0,0,.75) 100%
+        rgba(0,0,0,.02) 5%,
+        rgba(0,0,0,.25) 35%,
+        rgba(0,0,0,.78) 100%
     );
 }
 
@@ -587,20 +631,15 @@ body::before{
 
 .type-card h3{
     font-size:22px;
+    color:#fff;
+    text-shadow:0 2px 8px rgba(0,0,0,.7);
 }
 
 .type-card p{
     margin-top:4px;
-    color:#d2d7df;
+    color:#f1f4f8;
     font-size:12px;
-}
-
-/* animações dos tipos */
-
-.type-animation{
-    position:absolute;
-    inset:0;
-    overflow:hidden;
+    text-shadow:0 2px 6px rgba(0,0,0,.8);
 }
 
 /* WATER */
@@ -679,28 +718,41 @@ body::before{
 
 .anim-electric::before,
 .anim-electric::after{
-    content:"⚡";
+    content:"";
     position:absolute;
-    color:#ffe600;
-    font-size:70px;
+    width:80px;
+    height:150px;
+    background:linear-gradient(
+        135deg,
+        transparent 35%,
+        rgba(255,230,0,.85) 36%,
+        rgba(255,230,0,.85) 44%,
+        transparent 45%
+    );
     filter:drop-shadow(0 0 15px #ffe600);
     animation:flash 2s infinite;
 }
 
 .anim-electric::before{
     left:20%;
-    top:20%;
+    top:10%;
 }
 
 .anim-electric::after{
     right:18%;
-    bottom:15%;
+    bottom:5%;
     animation-delay:-1s;
 }
 
 @keyframes flash{
-    0%,80%,100%{opacity:.15;transform:scale(.8);}
-    85%{opacity:1;transform:scale(1.15);}
+    0%,80%,100%{
+        opacity:.15;
+        transform:scale(.8);
+    }
+    85%{
+        opacity:1;
+        transform:scale(1.15);
+    }
 }
 
 /* GRASS */
@@ -709,27 +761,27 @@ body::before{
     background:linear-gradient(180deg,#166534,#052e16);
 }
 
-.anim-grass::before{
-    content:"🍃";
+.anim-grass::before,
+.anim-grass::after{
+    content:"";
     position:absolute;
-    font-size:70px;
-    left:15%;
-    top:20%;
-    animation:leafFloat 5s ease-in-out infinite;
+    width:180%;
+    height:70px;
+    left:-40%;
+    bottom:15%;
+    border-radius:50%;
+    border-top:3px solid rgba(134,239,172,.4);
+    animation:grassWave 4s ease-in-out infinite;
 }
 
 .anim-grass::after{
-    content:"🍃";
-    position:absolute;
-    font-size:55px;
-    right:18%;
-    top:45%;
-    animation:leafFloat 6s ease-in-out infinite reverse;
+    bottom:35%;
+    animation-delay:-2s;
 }
 
-@keyframes leafFloat{
-    0%,100%{transform:translate(0,0) rotate(-10deg);}
-    50%{transform:translate(30px,20px) rotate(20deg);}
+@keyframes grassWave{
+    0%,100%{transform:translateX(-5%) rotate(2deg);}
+    50%{transform:translateX(5%) rotate(-2deg);}
 }
 
 /* ICE */
@@ -739,18 +791,21 @@ body::before{
 }
 
 .anim-ice::before{
-    content:"❄ ❄ ❄ ❄ ❄";
+    content:"";
     position:absolute;
-    inset:-100px 0 0;
-    color:#dff8ff;
-    font-size:28px;
-    letter-spacing:25px;
-    animation:snow 7s linear infinite;
+    inset:-30%;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(255,255,255,.8) 0 3px,transparent 4px),
+        radial-gradient(circle at 70% 35%,rgba(255,255,255,.7) 0 2px,transparent 3px),
+        radial-gradient(circle at 45% 70%,rgba(255,255,255,.6) 0 3px,transparent 4px),
+        radial-gradient(circle at 85% 80%,rgba(255,255,255,.8) 0 2px,transparent 3px);
+    background-size:120px 120px;
+    animation:iceFall 8s linear infinite;
 }
 
-@keyframes snow{
+@keyframes iceFall{
     from{transform:translateY(-80px);}
-    to{transform:translateY(230px);}
+    to{transform:translateY(180px);}
 }
 
 /* FIGHTING */
@@ -759,19 +814,36 @@ body::before{
     background:linear-gradient(135deg,#7f1d1d,#2b0808);
 }
 
-.anim-fighting::before{
-    content:"✊";
+.anim-fighting::before,
+.anim-fighting::after{
+    content:"";
     position:absolute;
-    font-size:110px;
+    width:180px;
+    height:180px;
+    border:3px solid rgba(248,113,113,.35);
+    border-radius:50%;
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
-    animation:punch 1.8s ease-in-out infinite;
+    animation:fightingPulse 2s ease-out infinite;
 }
 
-@keyframes punch{
-    0%,100%{transform:translate(-50%,-50%) scale(.85) rotate(-8deg);}
-    50%{transform:translate(-50%,-50%) scale(1.15) rotate(8deg);}
+.anim-fighting::after{
+    animation-delay:-1s;
+}
+
+@keyframes fightingPulse{
+    0%{
+        transform:translate(-50%,-50%) scale(.2);
+        opacity:0;
+    }
+    30%{
+        opacity:.8;
+    }
+    100%{
+        transform:translate(-50%,-50%) scale(1.5);
+        opacity:0;
+    }
 }
 
 /* POISON */
@@ -828,8 +900,28 @@ body::before{
     animation:groundMove 4s ease-in-out infinite alternate;
 }
 
+.anim-ground::after{
+    content:"";
+    position:absolute;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    border:2px solid rgba(245,158,11,.25);
+    left:50%;
+    top:45%;
+    transform:translate(-50%,-50%);
+    animation:groundPulse 5s infinite;
+}
+
 @keyframes groundMove{
     to{transform:translateY(-12px);}
+}
+
+@keyframes groundPulse{
+    50%{
+        transform:translate(-50%,-50%) scale(1.3);
+        opacity:.3;
+    }
 }
 
 /* FLYING */
@@ -838,29 +930,34 @@ body::before{
     background:linear-gradient(180deg,#2563eb,#172554);
 }
 
-.anim-flying::before{
-    content:"☁";
+.anim-flying::before,
+.anim-flying::after{
+    content:"";
     position:absolute;
-    font-size:85px;
-    left:10%;
-    top:20%;
-    opacity:.5;
+    width:180px;
+    height:55px;
+    border-radius:50%;
+    background:rgba(255,255,255,.18);
+    filter:blur(4px);
     animation:cloud 10s linear infinite;
 }
 
+.anim-flying::before{
+    left:-200px;
+    top:20%;
+}
+
 .anim-flying::after{
-    content:"☁";
-    position:absolute;
-    font-size:65px;
-    right:5%;
-    top:50%;
-    opacity:.4;
-    animation:cloud 13s linear infinite reverse;
+    left:-300px;
+    top:55%;
+    width:140px;
+    animation-duration:13s;
+    animation-delay:-5s;
 }
 
 @keyframes cloud{
-    from{transform:translateX(-80px);}
-    to{transform:translateX(350px);}
+    from{transform:translateX(-100px);}
+    to{transform:translateX(600px);}
 }
 
 /* PSYCHIC */
@@ -869,7 +966,8 @@ body::before{
     background:linear-gradient(135deg,#86198f,#3b0764);
 }
 
-.anim-psychic::before{
+.anim-psychic::before,
+.anim-psychic::after{
     content:"";
     position:absolute;
     width:230px;
@@ -882,9 +980,21 @@ body::before{
     animation:psychic 4s ease-in-out infinite;
 }
 
+.anim-psychic::after{
+    width:120px;
+    height:120px;
+    animation-delay:-2s;
+}
+
 @keyframes psychic{
-    0%,100%{transform:translate(-50%,-50%) scale(.6);opacity:.2;}
-    50%{transform:translate(-50%,-50%) scale(1.2);opacity:.9;}
+    0%,100%{
+        transform:translate(-50%,-50%) scale(.6);
+        opacity:.2;
+    }
+    50%{
+        transform:translate(-50%,-50%) scale(1.2);
+        opacity:.9;
+    }
 }
 
 /* BUG */
@@ -893,19 +1003,38 @@ body::before{
     background:linear-gradient(180deg,#3f6212,#172600);
 }
 
-.anim-bug::before{
-    content:"🦋";
+.anim-bug::before,
+.anim-bug::after{
+    content:"";
     position:absolute;
-    font-size:80px;
-    left:50%;
-    top:35%;
-    transform:translateX(-50%);
-    animation:butterfly 3s ease-in-out infinite;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:#bef264;
+    box-shadow:0 0 15px #bef264;
+    animation:bugFloat 5s ease-in-out infinite;
 }
 
-@keyframes butterfly{
-    0%,100%{transform:translateX(-50%) translateY(15px) rotate(-8deg);}
-    50%{transform:translateX(-50%) translateY(-20px) rotate(8deg);}
+.anim-bug::before{
+    left:25%;
+    top:35%;
+}
+
+.anim-bug::after{
+    right:25%;
+    top:60%;
+    animation-delay:-2s;
+}
+
+@keyframes bugFloat{
+    0%,100%{
+        transform:translate(0,20px);
+        opacity:.2;
+    }
+    50%{
+        transform:translate(40px,-30px);
+        opacity:1;
+    }
 }
 
 /* ROCK */
@@ -914,19 +1043,35 @@ body::before{
     background:linear-gradient(180deg,#57534e,#1c1917);
 }
 
-.anim-rock::before{
-    content:"◆ ◆ ◆";
+.anim-rock::before,
+.anim-rock::after{
+    content:"";
     position:absolute;
-    font-size:55px;
-    color:#a8a29e;
-    left:20%;
-    top:25%;
-    transform:rotate(20deg);
+    width:100px;
+    height:100px;
+    background:rgba(168,162,158,.18);
+    border:2px solid rgba(168,162,158,.35);
+    transform:rotate(45deg);
     animation:rockFloat 4s ease-in-out infinite;
 }
 
+.anim-rock::before{
+    left:20%;
+    top:25%;
+}
+
+.anim-rock::after{
+    right:18%;
+    bottom:10%;
+    width:70px;
+    height:70px;
+    animation-delay:-2s;
+}
+
 @keyframes rockFloat{
-    50%{transform:translateY(20px) rotate(35deg);}
+    50%{
+        transform:translateY(20px) rotate(65deg);
+    }
 }
 
 /* GHOST */
@@ -935,20 +1080,38 @@ body::before{
     background:linear-gradient(180deg,#312e81,#09051c);
 }
 
-.anim-ghost::before{
-    content:"👻";
+.anim-ghost::before,
+.anim-ghost::after{
+    content:"";
     position:absolute;
-    font-size:90px;
-    left:50%;
-    top:45%;
-    transform:translate(-50%,-50%);
-    animation:ghost 3s ease-in-out infinite;
-    filter:drop-shadow(0 0 20px #8b5cf6);
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    background:rgba(139,92,246,.25);
+    filter:blur(18px);
+    animation:ghostGlow 4s ease-in-out infinite;
 }
 
-@keyframes ghost{
-    0%,100%{transform:translate(-50%,-50%);}
-    50%{transform:translate(-50%,-65%);}
+.anim-ghost::before{
+    left:20%;
+    top:25%;
+}
+
+.anim-ghost::after{
+    right:20%;
+    bottom:20%;
+    animation-delay:-2s;
+}
+
+@keyframes ghostGlow{
+    0%,100%{
+        transform:translateY(20px) scale(.8);
+        opacity:.3;
+    }
+    50%{
+        transform:translateY(-20px) scale(1.2);
+        opacity:.8;
+    }
 }
 
 /* DRAGON */
@@ -957,20 +1120,39 @@ body::before{
     background:linear-gradient(135deg,#312e81,#111827);
 }
 
-.anim-dragon::before{
-    content:"🐉";
+.anim-dragon::before,
+.anim-dragon::after{
+    content:"";
     position:absolute;
-    font-size:95px;
-    left:50%;
-    top:45%;
-    transform:translate(-50%,-50%);
-    animation:dragon 4s ease-in-out infinite;
-    filter:drop-shadow(0 0 18px rgba(96,165,250,.7));
+    width:260px;
+    height:2px;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(129,140,248,.9),
+        transparent
+    );
+    left:-30%;
+    transform:rotate(-25deg);
+    animation:dragonEnergy 4s linear infinite;
 }
 
-@keyframes dragon{
-    0%,100%{transform:translate(-50%,-50%) scale(.9);}
-    50%{transform:translate(-50%,-55%) scale(1.08);}
+.anim-dragon::before{
+    top:30%;
+}
+
+.anim-dragon::after{
+    top:65%;
+    animation-delay:-2s;
+}
+
+@keyframes dragonEnergy{
+    from{
+        transform:translateX(0) rotate(-25deg);
+    }
+    to{
+        transform:translateX(500px) rotate(-25deg);
+    }
 }
 
 /* DARK */
@@ -980,18 +1162,44 @@ body::before{
 }
 
 .anim-dark::before{
-    content:"☾";
+    content:"";
     position:absolute;
-    font-size:120px;
-    color:#a78bfa;
+    width:160px;
+    height:160px;
+    border-radius:50%;
+    border:2px solid rgba(167,139,250,.35);
     right:15%;
     top:10%;
-    opacity:.35;
     animation:moon 6s ease-in-out infinite;
 }
 
+.anim-dark::after{
+    content:"";
+    position:absolute;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    background:radial-gradient(
+        circle,
+        rgba(124,58,237,.2),
+        transparent 65%
+    );
+    left:5%;
+    bottom:-100px;
+    animation:darkGlow 5s ease-in-out infinite;
+}
+
 @keyframes moon{
-    50%{transform:translateY(15px);opacity:.6;}
+    50%{
+        transform:translateY(15px);
+        opacity:.7;
+    }
+}
+
+@keyframes darkGlow{
+    50%{
+        transform:translateY(-30px) scale(1.2);
+    }
 }
 
 /* STEEL */
@@ -1000,20 +1208,31 @@ body::before{
     background:linear-gradient(135deg,#475569,#111827);
 }
 
-.anim-steel::before{
-    content:"⚙";
+.anim-steel::before,
+.anim-steel::after{
+    content:"";
     position:absolute;
-    font-size:130px;
-    color:#cbd5e1;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    border:2px solid rgba(203,213,225,.25);
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
-    opacity:.3;
-    animation:gear 8s linear infinite;
+    animation:steelRing 8s linear infinite;
 }
 
-@keyframes gear{
-    to{transform:translate(-50%,-50%) rotate(360deg);}
+.anim-steel::after{
+    width:120px;
+    height:120px;
+    animation-duration:5s;
+    animation-direction:reverse;
+}
+
+@keyframes steelRing{
+    to{
+        transform:translate(-50%,-50%) rotate(360deg);
+    }
 }
 
 /* FAIRY */
@@ -1022,20 +1241,43 @@ body::before{
     background:linear-gradient(135deg,#be185d,#4c0519);
 }
 
-.anim-fairy::before{
-    content:"✦ ✧ ✦";
+.anim-fairy::before,
+.anim-fairy::after{
+    content:"";
     position:absolute;
-    width:100%;
-    top:25%;
-    text-align:center;
-    color:#fbcfe8;
-    font-size:45px;
-    letter-spacing:20px;
-    animation:fairy 3s ease-in-out infinite;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#fbcfe8;
+    box-shadow:
+        40px 30px 0 #fbcfe8,
+        90px 80px 0 #fbcfe8,
+        160px 20px 0 #fbcfe8,
+        220px 110px 0 #fbcfe8;
+    left:10%;
+    top:20%;
+    filter:drop-shadow(0 0 8px #fbcfe8);
+    animation:fairyParticles 5s linear infinite;
 }
 
-@keyframes fairy{
-    50%{transform:translateY(20px) scale(1.15);opacity:.5;}
+.anim-fairy::after{
+    left:50%;
+    top:50%;
+    animation-delay:-2.5s;
+}
+
+@keyframes fairyParticles{
+    0%{
+        transform:translateY(40px);
+        opacity:.1;
+    }
+    50%{
+        opacity:1;
+    }
+    100%{
+        transform:translateY(-100px);
+        opacity:0;
+    }
 }
 
 /* NORMAL */
@@ -1044,19 +1286,35 @@ body::before{
     background:linear-gradient(135deg,#64748b,#1e293b);
 }
 
-.anim-normal::before{
-    content:"✦";
+.anim-normal::before,
+.anim-normal::after{
+    content:"";
     position:absolute;
-    font-size:100px;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,.25);
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
-    opacity:.25;
-    animation:normalPulse 3s infinite;
+    animation:normalPulse 4s infinite;
+}
+
+.anim-normal::after{
+    width:100px;
+    height:100px;
+    animation-delay:-2s;
 }
 
 @keyframes normalPulse{
-    50%{transform:translate(-50%,-50%) scale(1.3);opacity:.6;}
+    0%,100%{
+        transform:translate(-50%,-50%) scale(.65);
+        opacity:.2;
+    }
+    50%{
+        transform:translate(-50%,-50%) scale(1.25);
+        opacity:.7;
+    }
 }
 
 /* =========================
@@ -1078,11 +1336,12 @@ body::before{
     overflow:hidden;
     border:1px solid rgba(255,255,255,.1);
     cursor:pointer;
+    isolation:isolate;
     transition:.3s;
 }
 
 .generation-card:hover{
-    transform:translateY(-6px);
+    transform:translateY(-6px) scale(1.01);
     box-shadow:0 20px 45px rgba(0,0,0,.35);
 }
 
@@ -1096,8 +1355,9 @@ body::before{
     padding:25px;
     background:linear-gradient(
         180deg,
-        transparent 25%,
-        rgba(0,0,0,.8)
+        rgba(0,0,0,.03) 20%,
+        rgba(0,0,0,.35) 45%,
+        rgba(0,0,0,.88) 100%
     );
 }
 
@@ -1114,190 +1374,390 @@ body::before{
 }
 
 .generation-content p{
-    color:#c4cbd6;
+    color:#e0e5ed;
     margin-top:5px;
 }
 
-/* cenários */
+/* cenário base */
 
 .region-animation{
     position:absolute;
     inset:0;
     overflow:hidden;
+    z-index:0;
+}
+
+.region-animation::after{
+    content:"";
+    position:absolute;
+    inset:-70%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.16) 0,
+            rgba(255,255,255,.04) 10%,
+            transparent 35%
+        );
+    animation:regionEnergy 10s linear infinite;
+    pointer-events:none;
+}
+
+@keyframes regionEnergy{
+    0%{
+        transform:translate(-15%,-10%) rotate(0deg);
+    }
+    50%{
+        transform:translate(15%,15%) rotate(180deg);
+    }
+    100%{
+        transform:translate(-15%,-10%) rotate(360deg);
+    }
 }
 
 /* KANTO */
+
 .region-kanto{
     background:
-        linear-gradient(180deg,#2563eb 0%,#60a5fa 55%,#166534 56%,#14532d 100%);
+        linear-gradient(
+            180deg,
+            #2563eb 0%,
+            #60a5fa 55%,
+            #166534 56%,
+            #14532d 100%
+        );
 }
 
 .region-kanto::before{
-    content:"🌊  🌊  🌊";
+    content:"";
     position:absolute;
-    left:-20%;
+    left:-10%;
+    right:-10%;
     bottom:25%;
-    width:140%;
-    font-size:38px;
-    animation:sea 5s linear infinite;
+    height:55px;
+    border-radius:50%;
+    border-top:4px solid rgba(191,219,254,.5);
+    border-bottom:2px solid rgba(96,165,250,.4);
+    animation:kantoWater 4s ease-in-out infinite;
 }
 
-@keyframes sea{
-    50%{transform:translateX(35px);}
+@keyframes kantoWater{
+    0%,100%{
+        transform:translateX(-3%) rotate(1deg);
+    }
+    50%{
+        transform:translateX(3%) rotate(-1deg);
+    }
 }
 
 /* JOHTO */
+
 .region-johto{
     background:
-        linear-gradient(180deg,#312e81 0%,#7c3aed 48%,#365314 49%,#14532d 100%);
+        linear-gradient(
+            180deg,
+            #312e81 0%,
+            #7c3aed 48%,
+            #365314 49%,
+            #14532d 100%
+        );
 }
 
 .region-johto::before{
-    content:"🌸  🌸  🌸  🌸";
+    content:"";
     position:absolute;
-    top:20%;
-    left:5%;
-    font-size:35px;
-    animation:johto 5s ease-in-out infinite;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    border:2px solid rgba(244,114,182,.35);
+    left:15%;
+    top:10%;
+    animation:johtoAura 5s ease-in-out infinite;
 }
 
-@keyframes johto{
-    50%{transform:translateY(25px);}
+@keyframes johtoAura{
+    0%,100%{
+        transform:scale(.7);
+        opacity:.25;
+    }
+    50%{
+        transform:scale(1.2);
+        opacity:.7;
+    }
 }
 
 /* HOENN */
+
 .region-hoenn{
-    background:linear-gradient(180deg,#0369a1 0%,#38bdf8 48%,#0f766e 49%,#064e3b 100%);
+    background:
+        linear-gradient(
+            180deg,
+            #0369a1 0%,
+            #38bdf8 48%,
+            #0f766e 49%,
+            #064e3b 100%
+        );
 }
 
 .region-hoenn::before{
-    content:"🌊";
+    content:"";
     position:absolute;
-    font-size:120px;
-    left:15%;
-    bottom:5%;
-    opacity:.35;
+    left:-15%;
+    width:130%;
+    height:80px;
+    bottom:22%;
+    border-radius:50%;
+    border-top:4px solid rgba(186,230,253,.55);
     animation:hoennWave 4s ease-in-out infinite;
 }
 
 @keyframes hoennWave{
-    50%{transform:translateY(-20px) rotate(5deg);}
+    0%,100%{
+        transform:translateX(-5%) rotate(2deg);
+    }
+    50%{
+        transform:translateX(5%) rotate(-2deg);
+    }
 }
 
 /* SINNOH */
+
 .region-sinnoh{
-    background:linear-gradient(180deg,#cbd5e1 0%,#64748b 45%,#334155 46%,#0f172a 100%);
+    background:
+        linear-gradient(
+            180deg,
+            #cbd5e1 0%,
+            #64748b 45%,
+            #334155 46%,
+            #0f172a 100%
+        );
 }
 
 .region-sinnoh::before{
-    content:"❄  ❄  ❄";
+    content:"";
     position:absolute;
-    top:10%;
-    left:10%;
-    color:white;
-    font-size:38px;
-    animation:snowRegion 5s linear infinite;
+    inset:-20%;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(255,255,255,.9) 0 3px,transparent 4px),
+        radial-gradient(circle at 60% 40%,rgba(255,255,255,.8) 0 2px,transparent 3px),
+        radial-gradient(circle at 80% 70%,rgba(255,255,255,.8) 0 3px,transparent 4px);
+    background-size:90px 90px;
+    animation:sinnohSnow 7s linear infinite;
 }
 
-@keyframes snowRegion{
-    to{transform:translateY(160px);}
+@keyframes sinnohSnow{
+    from{
+        transform:translateY(-80px);
+    }
+    to{
+        transform:translateY(170px);
+    }
 }
 
 /* UNOVA */
+
 .region-unova{
-    background:linear-gradient(180deg,#1e3a8a,#3b82f6 45%,#172554 46%,#020617);
+    background:
+        linear-gradient(
+            180deg,
+            #1e3a8a,
+            #3b82f6 45%,
+            #172554 46%,
+            #020617
+        );
 }
 
 .region-unova::before{
-    content:"🏙️";
+    content:"";
     position:absolute;
-    font-size:120px;
-    left:50%;
-    top:35%;
-    transform:translateX(-50%);
-    opacity:.35;
-    animation:city 4s ease-in-out infinite;
+    left:20%;
+    bottom:20%;
+    width:60%;
+    height:45%;
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0 8%,
+            rgba(147,197,253,.3) 8% 14%,
+            transparent 14% 22%,
+            rgba(147,197,253,.25) 22% 30%,
+            transparent 30% 40%,
+            rgba(147,197,253,.35) 40% 50%,
+            transparent 50% 60%,
+            rgba(147,197,253,.2) 60% 72%,
+            transparent 72%
+        );
+    filter:blur(1px);
+    animation:unovaCity 4s ease-in-out infinite alternate;
 }
 
-@keyframes city{
-    50%{transform:translateX(-50%) translateY(-8px);}
+@keyframes unovaCity{
+    from{
+        transform:translateY(8px);
+    }
+    to{
+        transform:translateY(-8px);
+    }
 }
 
 /* KALOS */
+
 .region-kalos{
-    background:linear-gradient(180deg,#581c87,#c026d3 45%,#365314 46%,#14532d);
+    background:
+        linear-gradient(
+            180deg,
+            #581c87,
+            #c026d3 45%,
+            #365314 46%,
+            #14532d
+        );
 }
 
 .region-kalos::before{
-    content:"🌹  ✨  🌹";
+    content:"";
     position:absolute;
-    top:25%;
-    width:100%;
-    text-align:center;
-    font-size:38px;
-    animation:kalos 3s ease-in-out infinite;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    border:2px solid rgba(251,207,232,.45);
+    left:50%;
+    top:30%;
+    transform:translate(-50%,-50%);
+    animation:kalosGlow 3s ease-in-out infinite;
 }
 
-@keyframes kalos{
-    50%{transform:scale(1.1);}
+@keyframes kalosGlow{
+    0%,100%{
+        transform:translate(-50%,-50%) scale(.7);
+        opacity:.25;
+    }
+    50%{
+        transform:translate(-50%,-50%) scale(1.15);
+        opacity:.8;
+    }
 }
 
 /* ALOLA */
+
 .region-alola{
-    background:linear-gradient(180deg,#0c4a6e,#38bdf8 50%,#15803d 51%,#14532d);
+    background:
+        linear-gradient(
+            180deg,
+            #0c4a6e,
+            #38bdf8 50%,
+            #15803d 51%,
+            #14532d
+        );
+}
+
+.region-alola::before,
+.region-alola::after{
+    content:"";
+    position:absolute;
+    bottom:15%;
+    width:120px;
+    height:120px;
+    border-left:3px solid rgba(134,239,172,.45);
+    border-radius:50%;
+    animation:alolaPalm 4s ease-in-out infinite alternate;
 }
 
 .region-alola::before{
-    content:"🌴   🌴   🌴";
-    position:absolute;
-    bottom:10%;
-    width:100%;
-    text-align:center;
-    font-size:48px;
-    animation:palm 4s ease-in-out infinite alternate;
+    left:20%;
 }
 
-@keyframes palm{
-    to{transform:rotate(2deg) translateX(10px);}
+.region-alola::after{
+    right:20%;
+    animation-delay:-2s;
+}
+
+@keyframes alolaPalm{
+    from{
+        transform:rotate(-8deg);
+    }
+    to{
+        transform:rotate(8deg);
+    }
 }
 
 /* GALAR */
+
 .region-galar{
-    background:linear-gradient(180deg,#334155,#64748b 45%,#475569 46%,#111827);
+    background:
+        linear-gradient(
+            180deg,
+            #334155,
+            #64748b 45%,
+            #475569 46%,
+            #111827
+        );
 }
 
 .region-galar::before{
-    content:"⚡";
+    content:"";
     position:absolute;
-    font-size:130px;
-    right:15%;
-    top:15%;
-    color:#facc15;
-    opacity:.4;
-    animation:galar 2s infinite;
+    width:240px;
+    height:2px;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #facc15,
+        transparent
+    );
+    right:-250px;
+    top:35%;
+    filter:drop-shadow(0 0 10px #facc15);
+    animation:galarLightning 2.5s linear infinite;
 }
 
-@keyframes galar{
-    0%,80%,100%{opacity:.2;}
-    85%{opacity:.9;}
+@keyframes galarLightning{
+    0%{
+        right:-250px;
+        opacity:0;
+    }
+    20%{
+        opacity:1;
+    }
+    100%{
+        right:500px;
+        opacity:0;
+    }
 }
 
 /* PALDEA */
+
 .region-paldea{
-    background:linear-gradient(180deg,#7c2d12,#f97316 45%,#166534 46%,#14532d);
+    background:
+        linear-gradient(
+            180deg,
+            #7c2d12,
+            #f97316 45%,
+            #166534 46%,
+            #14532d
+        );
 }
 
 .region-paldea::before{
-    content:"☀️";
+    content:"";
     position:absolute;
-    font-size:100px;
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background:rgba(253,224,71,.25);
+    box-shadow:0 0 60px rgba(253,224,71,.25);
     right:15%;
     top:10%;
-    animation:sun 5s ease-in-out infinite;
+    animation:paldeaSun 5s ease-in-out infinite;
 }
 
-@keyframes sun{
-    50%{transform:scale(1.15);opacity:.8;}
+@keyframes paldeaSun{
+    0%,100%{
+        transform:scale(.85);
+        opacity:.45;
+    }
+    50%{
+        transform:scale(1.15);
+        opacity:.9;
+    }
 }
 
 /* =========================
@@ -1683,6 +2143,7 @@ body::before{
 ========================= */
 
 @media(max-width:1000px){
+
     .pokedex{
         grid-template-columns:repeat(4,1fr);
     }
@@ -1694,6 +2155,7 @@ body::before{
 }
 
 @media(max-width:700px){
+
     .header{
         height:64px;
     }
@@ -1767,6 +2229,7 @@ body::before{
 }
 
 @media(max-width:400px){
+
     .pokemon-name{
         font-size:14px;
     }
@@ -1786,43 +2249,80 @@ body::before{
 ========================= -->
 
 <header class="header">
-    <button class="menu-button" onclick="openMenu()" aria-label="Abrir menu">
+
+    <button
+        class="menu-button"
+        onclick="openMenu()"
+        aria-label="Abrir menu"
+    >
         <span></span>
         <span></span>
         <span></span>
     </button>
 
-    <div class="logo">Pokédex Online</div>
+    <div
+        class="logo"
+        onclick="showPage('homePage')"
+        title="Voltar para Home"
+    >
+        Pokédex Online
+    </div>
+
 </header>
 
 <!-- =========================
      MENU
 ========================= -->
 
-<div id="menuOverlay" class="menu-overlay" onclick="closeMenu(event)">
+<div
+    id="menuOverlay"
+    class="menu-overlay"
+    onclick="closeMenu(event)"
+>
+
     <aside class="side-menu">
 
-        <button class="close-menu" onclick="closeMenu()">×</button>
+        <button
+            class="close-menu"
+            onclick="closeMenu()"
+        >
+            ×
+        </button>
 
-        <div class="menu-title">Navegação</div>
+        <div class="menu-title">
+            Navegação
+        </div>
 
-        <button class="menu-link" onclick="showPage('searchPage')">
+        <button
+            class="menu-link"
+            onclick="showPage('searchPage')"
+        >
             🔎 &nbsp; Buscar
         </button>
 
-        <button class="menu-link" onclick="showPage('homePage')">
+        <button
+            class="menu-link"
+            onclick="showPage('homePage')"
+        >
             🏠 &nbsp; Home
         </button>
 
-        <button class="menu-link" onclick="showPage('generationsPage')">
+        <button
+            class="menu-link"
+            onclick="showPage('generationsPage')"
+        >
             🌎 &nbsp; Gerações
         </button>
 
-        <button class="menu-link" onclick="showPage('typesPage')">
+        <button
+            class="menu-link"
+            onclick="showPage('typesPage')"
+        >
             🔥 &nbsp; Tipos
         </button>
 
     </aside>
+
 </div>
 
 <!-- =========================
@@ -1834,24 +2334,35 @@ body::before{
     <section class="hero">
 
         <div class="hero-animation">
+
             <div class="energy"></div>
             <div class="energy"></div>
             <div class="energy"></div>
             <div class="energy"></div>
             <div class="energy"></div>
+
         </div>
 
         <div class="hero-content">
-            <h1>Explore o mundo Pokémon</h1>
+
+            <h1>
+                Explore o mundo Pokémon
+            </h1>
+
             <p>
                 Descubra Pokémon, regiões, tipos, evoluções,
                 habilidades e muito mais.
             </p>
+
         </div>
 
     </section>
 
-    <section class="welcome" id="welcomeBox">
+    <section
+        class="welcome"
+        id="welcomeBox"
+    >
+
         <button
             class="welcome-close"
             onclick="document.getElementById('welcomeBox').style.display='none'"
@@ -1859,16 +2370,21 @@ body::before{
             ×
         </button>
 
-        <h2>Bem-vindo à Pokédex Online!</h2>
+        <h2>
+            Bem-vindo à Pokédex Online!
+        </h2>
 
         <p>
             Explore os Pokémon disponíveis, pesquise por nome ou número
             e descubra todas as informações de cada Pokémon.
         </p>
+
     </section>
 
     <div class="home-search">
+
         <span>🔎</span>
+
         <input
             type="text"
             id="homeSearchInput"
@@ -1876,53 +2392,87 @@ body::before{
             autocomplete="off"
             oninput="searchPokemon()"
         >
+
     </div>
 
     <div class="generation-filters">
 
-        <button class="generation-pill active" onclick="filterGeneration(0,this)">
+        <button
+            class="generation-pill active"
+            onclick="filterGeneration(0,this)"
+        >
             Todos
         </button>
 
-        <button class="generation-pill" onclick="filterGeneration(1,this)">
+        <button
+            class="generation-pill"
+            onclick="filterGeneration(1,this)"
+        >
             I
         </button>
 
-        <button class="generation-pill" onclick="filterGeneration(2,this)">
+        <button
+            class="generation-pill"
+            onclick="filterGeneration(2,this)"
+        >
             II
         </button>
 
-        <button class="generation-pill" onclick="filterGeneration(3,this)">
+        <button
+            class="generation-pill"
+            onclick="filterGeneration(3,this)"
+        >
             III
         </button>
 
-        <button class="generation-pill" onclick="filterGeneration(4,this)">
+        <button
+            class="generation-pill"
+            onclick="filterGeneration(4,this)"
+        >
             IV
         </button>
 
-        <button class="generation-pill" onclick="filterGeneration(5,this)">
+        <button
+            class="generation-pill"
+            onclick="filterGeneration(5,this)"
+        >
             V
         </button>
 
-        <button class="generation-pill" onclick="filterGeneration(6,this)">
+        <button
+            class="generation-pill"
+            onclick="filterGeneration(6,this)"
+        >
             VI
         </button>
 
-        <button class="generation-pill" onclick="filterGeneration(7,this)">
+        <button
+            class="generation-pill"
+            onclick="filterGeneration(7,this)"
+        >
             VII
         </button>
 
-        <button class="generation-pill" onclick="filterGeneration(8,this)">
+        <button
+            class="generation-pill"
+            onclick="filterGeneration(8,this)"
+        >
             VIII
         </button>
 
-        <button class="generation-pill" onclick="filterGeneration(9,this)">
+        <button
+            class="generation-pill"
+            onclick="filterGeneration(9,this)"
+        >
             IX
         </button>
 
     </div>
 
-    <div id="pokedex" class="pokedex">
+    <div
+        id="pokedex"
+        class="pokedex"
+    >
         <div class="loading">
             Carregando Pokémon...
         </div>
@@ -1942,18 +2492,27 @@ body::before{
      BUSCAR
 ========================= -->
 
-<section id="searchPage" class="page">
+<section
+    id="searchPage"
+    class="page"
+>
 
     <div class="section-header">
-        <h2>Buscar Pokémon</h2>
+
+        <h2>
+            Buscar Pokémon
+        </h2>
+
         <p>
             Pesquise pelo nome ou número do Pokémon.
         </p>
+
     </div>
 
     <div class="search-page-box">
 
         <div class="big-search">
+
             <span>🔎</span>
 
             <input
@@ -1968,7 +2527,10 @@ body::before{
 
     </div>
 
-    <div id="searchResults" class="pokedex search-results">
+    <div
+        id="searchResults"
+        class="pokedex search-results"
+    >
 
         <div class="loading">
             Digite o nome ou número de um Pokémon para começar.
@@ -1982,16 +2544,27 @@ body::before{
      TIPOS
 ========================= -->
 
-<section id="typesPage" class="page">
+<section
+    id="typesPage"
+    class="page"
+>
 
     <div class="section-header">
-        <h2>Tipos Pokémon</h2>
+
+        <h2>
+            Tipos Pokémon
+        </h2>
+
         <p>
             Explore os 18 tipos existentes no mundo Pokémon.
         </p>
+
     </div>
 
-    <div id="typesGrid" class="types-grid"></div>
+    <div
+        id="typesGrid"
+        class="types-grid"
+    ></div>
 
 </section>
 
@@ -1999,16 +2572,27 @@ body::before{
      GERAÇÕES
 ========================= -->
 
-<section id="generationsPage" class="page">
+<section
+    id="generationsPage"
+    class="page"
+>
 
     <div class="section-header">
-        <h2>Gerações</h2>
+
+        <h2>
+            Gerações
+        </h2>
+
         <p>
             Explore as regiões e gerações do mundo Pokémon.
         </p>
+
     </div>
 
-    <div id="generationsGrid" class="generations-grid"></div>
+    <div
+        id="generationsGrid"
+        class="generations-grid"
+    ></div>
 
 </section>
 
@@ -2018,7 +2602,10 @@ body::before{
 
 <section id="pokemonDetails">
 
-    <button class="back-button" onclick="closePokemon()">
+    <button
+        class="back-button"
+        onclick="closePokemon()"
+    >
         ← Voltar
     </button>
 
@@ -2195,6 +2782,7 @@ const generations = [
 ========================= */
 
 function openMenu(){
+
     document
         .getElementById("menuOverlay")
         .classList.add("active");
@@ -2218,17 +2806,22 @@ function closeMenu(event){
 
 function showPage(pageId){
 
-    document.querySelectorAll(".page").forEach(page=>{
-        page.classList.remove("active");
-    });
+    document
+        .querySelectorAll(".page")
+        .forEach(page=>{
+            page.classList.remove("active");
+        });
 
-    const page = document.getElementById(pageId);
+    const page =
+        document.getElementById(pageId);
 
     if(page){
         page.classList.add("active");
     }
 
-    document.getElementById("pokemonDetails").style.display = "none";
+    document
+        .getElementById("pokemonDetails")
+        .style.display = "none";
 
     document
         .getElementById("menuOverlay")
@@ -2282,33 +2875,43 @@ async function loadPokemon(){
 
     try{
 
-        const response = await fetch(
-            `${API}/pokemon?limit=1025`
-        );
+        const response =
+            await fetch(
+                `${API}/pokemon?limit=1025`
+            );
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
-        allPokemon = data.results.map((pokemon,index)=>({
+        allPokemon =
+            data.results.map((pokemon,index)=>({
 
-            id:index+1,
+                id:index+1,
+                name:pokemon.name
 
-            name:pokemon.name
+            }));
 
-        }));
-
-        filteredPokemon = [...allPokemon];
+        filteredPokemon =
+            [...allPokemon];
 
         renderPokemon();
 
     }catch(error){
 
-        document.getElementById("pokedex").innerHTML = `
-            <div class="loading">
-                Não foi possível carregar os Pokémon.
-                <br><br>
-                Verifique sua conexão e tente novamente.
-            </div>
-        `;
+        document
+            .getElementById("pokedex")
+            .innerHTML = `
+
+                <div class="loading">
+
+                    Não foi possível carregar os Pokémon.
+
+                    <br><br>
+
+                    Verifique sua conexão e tente novamente.
+
+                </div>
+            `;
     }
 }
 
@@ -2325,17 +2928,23 @@ function renderPokemon(){
     container.innerHTML = "";
 
     const visible =
-        filteredPokemon.slice(0,visibleCount);
+        filteredPokemon.slice(
+            0,
+            visibleCount
+        );
 
     if(!visible.length){
 
         container.innerHTML = `
+
             <div class="loading">
                 Nenhum Pokémon encontrado.
             </div>
+
         `;
 
-        document.getElementById("loadMoreButton")
+        document
+            .getElementById("loadMoreButton")
             .style.display = "none";
 
         return;
@@ -2346,7 +2955,8 @@ function renderPokemon(){
         const card =
             document.createElement("div");
 
-        card.className = "pokemon-card";
+        card.className =
+            "pokemon-card";
 
         card.onclick = ()=>{
             openPokemon(pokemon.name);
@@ -2370,10 +2980,13 @@ function renderPokemon(){
             </div>
 
             <div class="types">
+
                 <span class="type">
                     ...
                 </span>
+
             </div>
+
         `;
 
         container.appendChild(card);
@@ -2384,7 +2997,8 @@ function renderPokemon(){
         );
     });
 
-    document.getElementById("loadMoreButton")
+    document
+        .getElementById("loadMoreButton")
         .style.display =
             visibleCount < filteredPokemon.length
             ? "block"
@@ -2401,24 +3015,29 @@ async function loadCardTypes(id,card){
     try{
 
         const response =
-            await fetch(`${API}/pokemon/${id}`);
+            await fetch(
+                `${API}/pokemon/${id}`
+            );
 
         const data =
             await response.json();
 
         const types =
-            data.types.map(item=>item.type.name);
+            data.types.map(
+                item=>item.type.name
+            );
 
         const container =
             card.querySelector(".types");
 
-        container.innerHTML = types.map(type=>`
+        container.innerHTML =
+            types.map(type=>`
 
-            <span class="type ${typeClasses[type]}">
-                ${typeNames[type] || type}
-            </span>
+                <span class="type ${typeClasses[type]}">
+                    ${typeNames[type] || type}
+                </span>
 
-        `).join("");
+            `).join("");
 
     }catch(error){}
 }
@@ -2443,10 +3062,14 @@ function loadMore(){
 function searchPokemon(){
 
     const input =
-        document.getElementById("homeSearchInput");
+        document.getElementById(
+            "homeSearchInput"
+        );
 
     const query =
-        input.value.toLowerCase().trim();
+        input.value
+            .toLowerCase()
+            .trim();
 
     visibleCount = 50;
 
@@ -2481,21 +3104,31 @@ function searchPokemon(){
 function searchFromPage(){
 
     const input =
-        document.getElementById("searchPageInput");
+        document.getElementById(
+            "searchPageInput"
+        );
 
     const results =
-        document.getElementById("searchResults");
+        document.getElementById(
+            "searchResults"
+        );
 
     const query =
-        input.value.toLowerCase().trim();
+        input.value
+            .toLowerCase()
+            .trim();
 
     if(!query){
 
         results.innerHTML = `
+
             <div class="loading">
+
                 Digite o nome ou número de um Pokémon
                 para começar.
+
             </div>
+
         `;
 
         return;
@@ -2516,10 +3149,14 @@ function searchFromPage(){
     if(!matches.length){
 
         results.innerHTML = `
+
             <div class="loading">
+
                 Nenhum Pokémon encontrado para
                 "<strong>${escapeHtml(query)}</strong>".
+
             </div>
+
         `;
 
         return;
@@ -2559,7 +3196,11 @@ function searchFromPage(){
                 </div>
 
                 <div class="types">
-                    <span class="type">...</span>
+
+                    <span class="type">
+                        ...
+                    </span>
+
                 </div>
 
             `;
@@ -2578,7 +3219,10 @@ function searchFromPage(){
    FILTRO GERAÇÃO HOME
 ========================= */
 
-function filterGeneration(generation,button){
+function filterGeneration(
+    generation,
+    button
+){
 
     document
         .querySelectorAll(".generation-pill")
@@ -2621,45 +3265,52 @@ function filterGeneration(generation,button){
 function buildTypesPage(){
 
     const grid =
-        document.getElementById("typesGrid");
+        document.getElementById(
+            "typesGrid"
+        );
 
     grid.innerHTML = "";
 
-    Object.keys(typeNames).forEach(type=>{
+    Object.keys(typeNames)
+        .forEach(type=>{
 
-        const card =
-            document.createElement("div");
+            const card =
+                document.createElement("div");
 
-        card.className = "type-card";
+            card.className =
+                "type-card";
 
-        card.onclick = ()=>{
-            filterByType(type);
-        };
+            card.onclick = ()=>{
+                filterByType(type);
+            };
 
-        card.innerHTML = `
+            card.innerHTML = `
 
-            <div class="type-animation anim-${typeClasses[type]}">
-            </div>
-
-            <div class="type-card-content">
-
-                <div class="type-icon">
-                    ${typeIcons[type]}
+                <div
+                    class="type-animation anim-${typeClasses[type]}"
+                >
                 </div>
 
-                <h3>
-                    ${typeNames[type]}
-                </h3>
+                <div class="type-card-content">
 
-                <p>
-                    ${typeDescriptions[type]}
-                </p>
+                    <div class="type-icon">
+                        ${typeIcons[type]}
+                    </div>
 
-            </div>
-        `;
+                    <h3>
+                        ${typeNames[type]}
+                    </h3>
 
-        grid.appendChild(card);
-    });
+                    <p>
+                        ${typeDescriptions[type]}
+                    </p>
+
+                </div>
+
+            `;
+
+            grid.appendChild(card);
+        });
 }
 
 
@@ -2674,7 +3325,9 @@ async function filterByType(type){
         showPage("homePage");
 
         const response =
-            await fetch(`${API}/type/${type}`);
+            await fetch(
+                `${API}/type/${type}`
+            );
 
         const data =
             await response.json();
@@ -2720,7 +3373,9 @@ async function filterByType(type){
 function buildGenerations(){
 
     const grid =
-        document.getElementById("generationsGrid");
+        document.getElementById(
+            "generationsGrid"
+        );
 
     grid.innerHTML = "";
 
@@ -2738,7 +3393,9 @@ function buildGenerations(){
 
         card.innerHTML = `
 
-            <div class="region-animation ${gen.css}">
+            <div
+                class="region-animation ${gen.css}"
+            >
             </div>
 
             <div class="generation-content">
@@ -2756,6 +3413,7 @@ function buildGenerations(){
                 </p>
 
             </div>
+
         `;
 
         grid.appendChild(card);
@@ -2767,7 +3425,9 @@ function buildGenerations(){
    FILTRO GERAÇÃO PÁGINA
 ========================= */
 
-function filterGenerationFromPage(generation){
+function filterGenerationFromPage(
+    generation
+){
 
     showPage("homePage");
 
@@ -2778,7 +3438,9 @@ function filterGenerationFromPage(generation){
         });
 
     const pills =
-        document.querySelectorAll(".generation-pill");
+        document.querySelectorAll(
+            ".generation-pill"
+        );
 
     if(pills[generation]){
         pills[generation].classList.add("active");
@@ -2819,7 +3481,9 @@ async function openPokemon(name){
             });
 
         const details =
-            document.getElementById("pokemonDetails");
+            document.getElementById(
+                "pokemonDetails"
+            );
 
         details.style.display = "block";
 
@@ -2828,14 +3492,20 @@ async function openPokemon(name){
             behavior:"smooth"
         });
 
-        document.getElementById("detailContent").innerHTML = `
-            <div class="loading">
-                Carregando informações do Pokémon...
-            </div>
-        `;
+        document
+            .getElementById("detailContent")
+            .innerHTML = `
+
+                <div class="loading">
+                    Carregando informações do Pokémon...
+                </div>
+
+            `;
 
         const pokemonResponse =
-            await fetch(`${API}/pokemon/${name}`);
+            await fetch(
+                `${API}/pokemon/${name}`
+            );
 
         const pokemon =
             await pokemonResponse.json();
@@ -2843,7 +3513,9 @@ async function openPokemon(name){
         currentPokemon = pokemon;
 
         const speciesResponse =
-            await fetch(pokemon.species.url);
+            await fetch(
+                pokemon.species.url
+            );
 
         const species =
             await speciesResponse.json();
@@ -2866,39 +3538,154 @@ async function openPokemon(name){
             await getWeaknesses(types);
 
         const artwork =
-            pokemon.sprites.other["official-artwork"].front_default;
+            pokemon.sprites.other[
+                "official-artwork"
+            ].front_default;
 
         const shiny =
-            pokemon.sprites.other["official-artwork"].front_shiny;
+            pokemon.sprites.other[
+                "official-artwork"
+            ].front_shiny;
 
-        document.getElementById("detailContent").innerHTML = `
+        document
+            .getElementById("detailContent")
+            .innerHTML = `
 
-            <div class="detail-card">
+                <div class="detail-card">
 
-                <div class="detail-top">
+                    <div class="detail-top">
 
-                    <div class="detail-art">
+                        <div class="detail-art">
 
-                        <img
-                            src="${artwork}"
-                            alt="${pokemon.name}"
-                        >
+                            <img
+                                src="${artwork}"
+                                alt="${pokemon.name}"
+                            >
+
+                        </div>
+
+                        <div class="detail-info">
+
+                            <div class="detail-number">
+                                #${String(pokemon.id).padStart(4,"0")}
+                            </div>
+
+                            <div class="detail-name">
+                                ${getPortugueseName(
+                                    species,
+                                    pokemon.name
+                                )}
+                            </div>
+
+                            <div class="detail-types">
+
+                                ${types.map(type=>`
+
+                                    <span class="type ${typeClasses[type]}">
+                                        ${typeNames[type]}
+                                    </span>
+
+                                `).join("")}
+
+                            </div>
+
+                            <div class="info-grid">
+
+                                <div class="info-box">
+
+                                    <small>
+                                        Altura
+                                    </small>
+
+                                    <strong>
+                                        ${(pokemon.height / 10).toFixed(1)} m
+                                    </strong>
+
+                                </div>
+
+                                <div class="info-box">
+
+                                    <small>
+                                        Peso
+                                    </small>
+
+                                    <strong>
+                                        ${(pokemon.weight / 10).toFixed(1)} kg
+                                    </strong>
+
+                                </div>
+
+                                <div class="info-box">
+
+                                    <small>
+                                        Experiência base
+                                    </small>
+
+                                    <strong>
+                                        ${pokemon.base_experience || "—"}
+                                    </strong>
+
+                                </div>
+
+                                <div class="info-box">
+
+                                    <small>
+                                        Geração
+                                    </small>
+
+                                    <strong>
+                                        ${generation}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                    <div class="detail-info">
+                    <div class="detail-section">
 
-                        <div class="detail-number">
-                            #${String(pokemon.id).padStart(4,"0")}
+                        <h2>
+                            Descrição
+                        </h2>
+
+                        <p class="description">
+                            ${description}
+                        </p>
+
+                    </div>
+
+                    <div class="detail-section">
+
+                        <h2>
+                            Habilidades
+                        </h2>
+
+                        <div class="abilities">
+
+                            ${abilities.map(ability=>`
+
+                                <span class="ability">
+                                    ${ability.replaceAll("-", " ")}
+                                </span>
+
+                            `).join("")}
+
                         </div>
 
-                        <div class="detail-name">
-                            ${getPortugueseName(species,pokemon.name)}
-                        </div>
+                    </div>
 
-                        <div class="detail-types">
+                    <div class="detail-section">
 
-                            ${types.map(type=>`
+                        <h2>
+                            Fraquezas
+                        </h2>
+
+                        <div class="abilities">
+
+                            ${weaknesses.map(type=>`
 
                                 <span class="type ${typeClasses[type]}">
                                     ${typeNames[type]}
@@ -2908,201 +3695,140 @@ async function openPokemon(name){
 
                         </div>
 
-                        <div class="info-grid">
-
-                            <div class="info-box">
-                                <small>Altura</small>
-                                <strong>
-                                    ${(pokemon.height / 10).toFixed(1)} m
-                                </strong>
-                            </div>
-
-                            <div class="info-box">
-                                <small>Peso</small>
-                                <strong>
-                                    ${(pokemon.weight / 10).toFixed(1)} kg
-                                </strong>
-                            </div>
-
-                            <div class="info-box">
-                                <small>Experiência base</small>
-                                <strong>
-                                    ${pokemon.base_experience || "—"}
-                                </strong>
-                            </div>
-
-                            <div class="info-box">
-                                <small>Geração</small>
-                                <strong>
-                                    ${generation}
-                                </strong>
-                            </div>
-
-                        </div>
-
                     </div>
 
-                </div>
+                    <div class="detail-section">
 
+                        <h2>
+                            Status base
+                        </h2>
 
-                <div class="detail-section">
+                        <div class="stats">
 
-                    <h2>Descrição</h2>
+                            ${pokemon.stats.map(stat=>`
 
-                    <p class="description">
-                        ${description}
-                    </p>
+                                <div class="stat-row">
 
-                </div>
+                                    <div class="stat-name">
+                                        ${translateStat(stat.stat.name)}
+                                    </div>
 
+                                    <div class="stat-value">
+                                        ${stat.base_stat}
+                                    </div>
 
-                <div class="detail-section">
+                                    <div class="stat-bar">
 
-                    <h2>Habilidades</h2>
+                                        <div
+                                            class="stat-fill"
+                                            style="width:${Math.min(
+                                                stat.base_stat / 255 * 100,
+                                                100
+                                            )}%"
+                                        ></div>
 
-                    <div class="abilities">
+                                    </div>
 
-                        ${abilities.map(ability=>`
-
-                            <span class="ability">
-                                ${ability.replaceAll("-", " ")}
-                            </span>
-
-                        `).join("")}
-
-                    </div>
-
-                </div>
-
-
-                <div class="detail-section">
-
-                    <h2>Fraquezas</h2>
-
-                    <div class="abilities">
-
-                        ${weaknesses.map(type=>`
-
-                            <span class="type ${typeClasses[type]}">
-                                ${typeNames[type]}
-                            </span>
-
-                        `).join("")}
-
-                    </div>
-
-                </div>
-
-
-                <div class="detail-section">
-
-                    <h2>Status base</h2>
-
-                    <div class="stats">
-
-                        ${pokemon.stats.map(stat=>`
-
-                            <div class="stat-row">
-
-                                <div class="stat-name">
-                                    ${translateStat(stat.stat.name)}
                                 </div>
 
-                                <div class="stat-value">
-                                    ${stat.base_stat}
-                                </div>
+                            `).join("")}
 
-                                <div class="stat-bar">
-                                    <div
-                                        class="stat-fill"
-                                        style="width:${Math.min(stat.base_stat / 255 * 100,100)}%"
-                                    ></div>
-                                </div>
+                        </div>
+
+                    </div>
+
+                    <div class="detail-section">
+
+                        <h2>
+                            Evoluções
+                        </h2>
+
+                        <div id="evolutionContainer">
+
+                            <div class="loading">
+                                Carregando evoluções...
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="detail-section">
+
+                        <h2>
+                            ✨ Mega Evoluções
+                        </h2>
+
+                        <div id="megaContainer">
+
+                            <div class="loading">
+                                Verificando Mega Evoluções...
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="detail-section">
+
+                        <h2>
+                            ✨ Pokémon Shiny
+                        </h2>
+
+                        <div
+                            style="
+                                display:flex;
+                                justify-content:center;
+                            "
+                        >
+
+                            <div class="mega-form">
+
+                                <h3>
+                                    ${pokemon.name} Shiny
+                                </h3>
+
+                                <img
+                                    src="${shiny}"
+                                    style="
+                                        width:260px;
+                                        max-width:100%;
+                                        object-fit:contain;
+                                    "
+                                    alt="${pokemon.name} Shiny"
+                                >
 
                             </div>
 
-                        `).join("")}
-
-                    </div>
-
-                </div>
-
-
-                <div class="detail-section">
-
-                    <h2>Evoluções</h2>
-
-                    <div id="evolutionContainer">
-
-                        <div class="loading">
-                            Carregando evoluções...
                         </div>
 
                     </div>
 
                 </div>
+            `;
 
+        loadEvolutionChain(
+            species.evolution_chain.url
+        );
 
-                <div class="detail-section">
-
-                    <h2>✨ Mega Evoluções</h2>
-
-                    <div id="megaContainer">
-
-                        <div class="loading">
-                            Verificando Mega Evoluções...
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="detail-section">
-
-                    <h2>✨ Pokémon Shiny</h2>
-
-                    <div style="
-                        display:flex;
-                        justify-content:center;
-                    ">
-
-                        <div class="mega-form">
-
-                            <h3>
-                                ${pokemon.name} Shiny
-                            </h3>
-
-                            <img
-                                src="${shiny}"
-                                style="
-                                    width:260px;
-                                    max-width:100%;
-                                    object-fit:contain;
-                                "
-                                alt="${pokemon.name} Shiny"
-                            >
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-        `;
-
-        loadEvolutionChain(species.evolution_chain.url);
-
-        loadMegaTab(pokemon.name);
+        loadMegaTab(
+            pokemon.name
+        );
 
     }catch(error){
 
-        document.getElementById("detailContent").innerHTML = `
-            <div class="loading">
-                Não foi possível carregar as informações.
-            </div>
-        `;
+        document
+            .getElementById("detailContent")
+            .innerHTML = `
+
+                <div class="loading">
+
+                    Não foi possível carregar
+                    as informações.
+
+                </div>
+
+            `;
     }
 }
 
@@ -3111,7 +3837,10 @@ async function openPokemon(name){
    NOME PORTUGUÊS
 ========================= */
 
-function getPortugueseName(species, fallback){
+function getPortugueseName(
+    species,
+    fallback
+){
 
     const name =
         species.names.find(item=>
@@ -3168,12 +3897,15 @@ async function getWeaknesses(types){
         try{
 
             const response =
-                await fetch(`${API}/type/${type}`);
+                await fetch(
+                    `${API}/type/${type}`
+                );
 
             const data =
                 await response.json();
 
-            data.damage_relations.double_damage_from
+            data.damage_relations
+                .double_damage_from
                 .forEach(item=>{
 
                     multiplier[item.name] =
@@ -3181,7 +3913,8 @@ async function getWeaknesses(types){
 
                 });
 
-            data.damage_relations.half_damage_from
+            data.damage_relations
+                .half_damage_from
                 .forEach(item=>{
 
                     multiplier[item.name] =
@@ -3189,7 +3922,8 @@ async function getWeaknesses(types){
 
                 });
 
-            data.damage_relations.no_damage_from
+            data.damage_relations
+                .no_damage_from
                 .forEach(item=>{
 
                     multiplier[item.name] = 0;
@@ -3232,7 +3966,9 @@ function translateStat(stat){
 async function loadEvolutionChain(url){
 
     const container =
-        document.getElementById("evolutionContainer");
+        document.getElementById(
+            "evolutionContainer"
+        );
 
     try{
 
@@ -3247,8 +3983,12 @@ async function loadEvolutionChain(url){
         function walk(node){
 
             chain.push({
+
                 species:node.species.name,
-                details:node.evolution_details?.[0] || null
+
+                details:
+                    node.evolution_details?.[0] || null
+
             });
 
             node.evolves_to.forEach(child=>{
@@ -3266,20 +4006,26 @@ async function loadEvolutionChain(url){
                 chain[i];
 
             const pokemonResponse =
-                await fetch(`${API}/pokemon/${item.species}`);
+                await fetch(
+                    `${API}/pokemon/${item.species}`
+                );
 
             const pokemon =
                 await pokemonResponse.json();
 
             const image =
-                pokemon.sprites.other["official-artwork"].front_default;
+                pokemon.sprites.other[
+                    "official-artwork"
+                ].front_default;
 
             if(i > 0){
 
                 html.push(`
+
                     <div class="evolution-arrow">
                         →
                     </div>
+
                 `);
             }
 
@@ -3297,25 +4043,32 @@ async function loadEvolutionChain(url){
                     </strong>
 
                     <div class="evolution-method">
-                        ${formatEvolutionDetails(item.details)}
+                        ${formatEvolutionDetails(
+                            item.details
+                        )}
                     </div>
 
                 </div>
+
             `);
         }
 
         container.innerHTML = `
+
             <div class="evolution-chain">
                 ${html.join("")}
             </div>
+
         `;
 
     }catch(error){
 
         container.innerHTML = `
+
             <div class="loading">
                 Não foi possível carregar as evoluções.
             </div>
+
         `;
     }
 }
@@ -3393,7 +4146,11 @@ function formatEvolutionDetails(details){
 
     if(details.known_move_type){
         conditions.push(
-            `Movimento tipo ${typeNames[details.known_move_type.name] || details.known_move_type.name}`
+            `Movimento tipo ${
+                typeNames[details.known_move_type.name]
+                ||
+                details.known_move_type.name
+            }`
         );
     }
 
@@ -3404,11 +4161,15 @@ function formatEvolutionDetails(details){
     }
 
     if(details.needs_overworld_rain){
-        conditions.push("Durante chuva");
+        conditions.push(
+            "Durante chuva"
+        );
     }
 
     if(details.turn_upside_down){
-        conditions.push("Console invertido");
+        conditions.push(
+            "Console invertido"
+        );
     }
 
     if(details.party_species){
@@ -3419,23 +4180,35 @@ function formatEvolutionDetails(details){
 
     if(details.party_type){
         conditions.push(
-            `Com Pokémon tipo ${typeNames[details.party_type.name] || details.party_type.name}`
+            `Com Pokémon tipo ${
+                typeNames[details.party_type.name]
+                ||
+                details.party_type.name
+            }`
         );
     }
 
-    if(details.relative_physical_stats !== null &&
-       details.relative_physical_stats !== undefined){
+    if(
+        details.relative_physical_stats !== null &&
+        details.relative_physical_stats !== undefined
+    ){
 
         if(details.relative_physical_stats === 1){
-            conditions.push("Ataque > Defesa");
+            conditions.push(
+                "Ataque > Defesa"
+            );
         }
 
         if(details.relative_physical_stats === -1){
-            conditions.push("Defesa > Ataque");
+            conditions.push(
+                "Defesa > Ataque"
+            );
         }
 
         if(details.relative_physical_stats === 0){
-            conditions.push("Ataque = Defesa");
+            conditions.push(
+                "Ataque = Defesa"
+            );
         }
     }
 
@@ -3470,14 +4243,18 @@ function formatEvolutionDetails(details){
 async function loadMegaTab(pokemonName){
 
     const container =
-        document.getElementById("megaContainer");
+        document.getElementById(
+            "megaContainer"
+        );
 
     if(!container) return;
 
     const possibleForms = [
+
         `${pokemonName}-mega`,
         `${pokemonName}-mega-x`,
         `${pokemonName}-mega-y`
+
     ];
 
     const megaForms = [];
@@ -3507,9 +4284,11 @@ async function loadMegaTab(pokemonName){
             if(!artwork) continue;
 
             megaForms.push({
+
                 name:form.name,
                 artwork,
                 shiny
+
             });
 
         }catch(error){}
@@ -3518,9 +4297,11 @@ async function loadMegaTab(pokemonName){
     if(!megaForms.length){
 
         container.innerHTML = `
+
             <div class="loading">
                 Este Pokémon não possui Mega Evolução.
             </div>
+
         `;
 
         return;
@@ -3573,6 +4354,7 @@ async function loadMegaTab(pokemonName){
             `).join("")}
 
         </div>
+
     `;
 }
 
@@ -3583,7 +4365,8 @@ async function loadMegaTab(pokemonName){
 
 function closePokemon(){
 
-    document.getElementById("pokemonDetails")
+    document
+        .getElementById("pokemonDetails")
         .style.display = "none";
 
     showPage("homePage");
