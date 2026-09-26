@@ -1,15 +1,12 @@
 /* =========================================================
-   MEGA EVOLUÇÕES
-   Responsável exclusivamente pelas Mega Evoluções
+   MEGA EVOLUÇÕES — VERSÃO CORRIGIDA
 ========================================================= */
 
 async function loadMegaTab(pokemonName){
 
     const container = document.getElementById("megaContainer");
 
-    if(!container){
-        return;
-    }
+    if(!container) return;
 
     container.innerHTML = `
         <div class="loading">
@@ -17,325 +14,396 @@ async function loadMegaTab(pokemonName){
         </div>
     `;
 
-    const possibleForms = [
-        `${pokemonName}-mega`,
-        `${pokemonName}-mega-x`,
-        `${pokemonName}-mega-y`
-    ];
+    try{
 
-    const megaForms = [];
+        const pokemonResponse = await fetch(
+            `${API}/pokemon/${pokemonName}`
+        );
 
-    /*
-     * Primeiro tenta diretamente os nomes conhecidos.
-     */
-    for(const formName of possibleForms){
-
-        try{
-
-            const response = await fetch(
-                `${API}/pokemon-form/${formName}`
-            );
-
-            if(!response.ok){
-                continue;
-            }
-
-            const form = await response.json();
-
-            if(!form.is_mega){
-                continue;
-            }
-
-            const artwork =
-                form.sprites?.other?.["official-artwork"]?.front_default ||
-                form.sprites?.front_default;
-
-            const shiny =
-                form.sprites?.other?.["official-artwork"]?.front_shiny ||
-                form.sprites?.front_shiny;
-
-            if(!artwork){
-                continue;
-            }
-
-            if(
-                !megaForms.some(
-                    item => item.name === form.name
-                )
-            ){
-
-                megaForms.push({
-                    name:form.name,
-                    artwork,
-                    shiny:shiny || artwork
-                });
-
-            }
-
-        }catch(error){
-
-            console.warn(
-                `Erro ao carregar Mega ${formName}:`,
-                error
-            );
-
+        if(!pokemonResponse.ok){
+            throw new Error("Pokémon não encontrado");
         }
-    }
 
-    /*
-     * Caso os nomes diretos não funcionem,
-     * procura pelas Mega Forms disponíveis na API.
-     */
-    if(!megaForms.length){
+        const pokemon = await pokemonResponse.json();
 
-        try{
+        /*
+         * A PokéAPI possui os dados das formas alternativas
+         * no próprio Pokémon.
+         */
+        const speciesId =
+            pokemon.species?.url
+                ?.split("/")
+                .filter(Boolean)
+                .pop();
 
-            const response = await fetch(
-                `${API}/pokemon-form?limit=2000`
-            );
+        if(!speciesId){
+            showNoMega(container);
+            return;
+        }
 
-            if(response.ok){
+        const speciesResponse = await fetch(
+            `${API}/pokemon-species/${speciesId}`
+        );
 
-                const data = await response.json();
+        if(!speciesResponse.ok){
+            showNoMega(container);
+            return;
+        }
 
-                const matchingForms =
-                    data.results.filter(form => {
+        const species = await speciesResponse.json();
 
-                        const name =
-                            form.name.toLowerCase();
+        /*
+         * Procuramos todas as variedades da espécie.
+         */
+        const varieties = species.varieties || [];
 
-                        return (
-                            name.startsWith(
-                                `${pokemonName.toLowerCase()}-mega`
-                            )
-                        );
+        const megaVarieties = varieties.filter(item => {
 
+            const name =
+                item.pokemon?.name?.toLowerCase() || "";
+
+            return name.includes("-mega");
+
+        });
+
+        /*
+         * Algumas Mega Forms não aparecem nas varieties
+         * dependendo da versão dos dados.
+         *
+         * Então também verificamos os nomes conhecidos.
+         */
+        const namesToTry = new Set(
+            megaVarieties
+                .map(item => item.pokemon?.name)
+                .filter(Boolean)
+        );
+
+        namesToTry.add(`${pokemonName}-mega`);
+        namesToTry.add(`${pokemonName}-mega-x`);
+        namesToTry.add(`${pokemonName}-mega-y`);
+
+        const megaForms = [];
+
+        for(const formName of namesToTry){
+
+            try{
+
+                const response = await fetch(
+                    `${API}/pokemon/${formName}`
+                );
+
+                if(!response.ok) continue;
+
+                const form = await response.json();
+
+                const name =
+                    form.name?.toLowerCase() || "";
+
+                if(!name.includes("-mega")) continue;
+
+                const artwork =
+                    form.sprites?.other?.["official-artwork"]?.front_default ||
+                    form.sprites?.other?.home?.front_default ||
+                    form.sprites?.front_default;
+
+                const shiny =
+                    form.sprites?.other?.["official-artwork"]?.front_shiny ||
+                    form.sprites?.other?.home?.front_shiny ||
+                    form.sprites?.front_shiny ||
+                    artwork;
+
+                if(!artwork) continue;
+
+                if(
+                    !megaForms.some(
+                        item => item.name === form.name
+                    )
+                ){
+
+                    megaForms.push({
+                        name: form.name,
+                        artwork: artwork,
+                        shiny: shiny
                     });
 
-                for(const formInfo of matchingForms){
+                }
 
-                    try{
+            }catch(error){
 
-                        const formResponse =
-                            await fetch(formInfo.url);
+                console.warn(
+                    "Erro ao carregar Mega:",
+                    formName,
+                    error
+                );
 
-                        if(!formResponse.ok){
-                            continue;
+            }
+
+        }
+
+        /*
+         * Se ainda não encontrou, usa busca pelos pokemon-forms.
+         */
+        if(!megaForms.length){
+
+            try{
+
+                const response = await fetch(
+                    `${API}/pokemon-form?limit=10000`
+                );
+
+                if(response.ok){
+
+                    const data =
+                        await response.json();
+
+                    const matching =
+                        data.results.filter(item => {
+
+                            const name =
+                                item.name?.toLowerCase() || "";
+
+                            return name.startsWith(
+                                `${pokemonName.toLowerCase()}-mega`
+                            );
+
+                        });
+
+                    for(const item of matching){
+
+                        try{
+
+                            const formResponse =
+                                await fetch(item.url);
+
+                            if(!formResponse.ok) continue;
+
+                            const form =
+                                await formResponse.json();
+
+                            if(!form.is_mega) continue;
+
+                            const artwork =
+                                form.sprites?.other?.["official-artwork"]?.front_default ||
+                                form.sprites?.front_default;
+
+                            const shiny =
+                                form.sprites?.other?.["official-artwork"]?.front_shiny ||
+                                form.sprites?.front_shiny ||
+                                artwork;
+
+                            if(!artwork) continue;
+
+                            if(
+                                !megaForms.some(
+                                    mega => mega.name === form.name
+                                )
+                            ){
+
+                                megaForms.push({
+                                    name: form.name,
+                                    artwork: artwork,
+                                    shiny: shiny
+                                });
+
+                            }
+
+                        }catch(error){
+
+                            console.warn(
+                                "Erro na Mega Form:",
+                                error
+                            );
+
                         }
-
-                        const form =
-                            await formResponse.json();
-
-                        if(!form.is_mega){
-                            continue;
-                        }
-
-                        const artwork =
-                            form.sprites?.other?.["official-artwork"]?.front_default ||
-                            form.sprites?.front_default;
-
-                        const shiny =
-                            form.sprites?.other?.["official-artwork"]?.front_shiny ||
-                            form.sprites?.front_shiny;
-
-                        if(!artwork){
-                            continue;
-                        }
-
-                        if(
-                            !megaForms.some(
-                                item => item.name === form.name
-                            )
-                        ){
-
-                            megaForms.push({
-                                name:form.name,
-                                artwork,
-                                shiny:shiny || artwork
-                            });
-
-                        }
-
-                    }catch(error){
-
-                        console.warn(
-                            "Erro ao carregar formulário Mega:",
-                            error
-                        );
 
                     }
 
                 }
 
+            }catch(error){
+
+                console.warn(
+                    "Busca alternativa de Mega falhou:",
+                    error
+                );
+
             }
-
-        }catch(error){
-
-            console.warn(
-                "Erro na busca de Mega Evoluções:",
-                error
-            );
 
         }
 
-    }
+        if(!megaForms.length){
 
-    /*
-     * Não possui Mega Evolução.
-     */
-    if(!megaForms.length){
+            showNoMega(container);
+            return;
+
+        }
+
+        /*
+         * Mega normal
+         * Mega X
+         * Mega Y
+         */
+        megaForms.sort((a,b) => {
+
+            const order = name => {
+
+                const n =
+                    name.toLowerCase();
+
+                if(n.endsWith("-mega")){
+                    return 1;
+                }
+
+                if(n.endsWith("-mega-x")){
+                    return 2;
+                }
+
+                if(n.endsWith("-mega-y")){
+                    return 3;
+                }
+
+                return 10;
+
+            };
+
+            return order(a.name) - order(b.name);
+
+        });
 
         container.innerHTML = `
-            <div class="no-mega">
-                <div style="font-size:42px;margin-bottom:12px;">
-                    ✨
-                </div>
 
-                <h3 style="margin-bottom:8px;">
-                    Nenhuma Mega Evolução encontrada
-                </h3>
+            <div class="mega-grid">
 
-                <p>
-                    Este Pokémon não possui uma Mega Evolução
-                    registrada na PokéAPI.
-                </p>
+                ${megaForms.map(form => {
+
+                    let displayName =
+                        form.name
+                            .replace(/-/g," ")
+                            .replace(/\b\w/g, letter =>
+                                letter.toUpperCase()
+                            );
+
+                    return `
+
+                        <article class="mega-form-card">
+
+                            <div class="mega-form-label">
+                                ${displayName}
+                            </div>
+
+                            <div class="mega-images">
+
+                                <div class="mega-image-box">
+
+                                    <small>NORMAL</small>
+
+                                    <img
+                                        class="mega-image"
+                                        src="${form.artwork}"
+                                        alt="${displayName}"
+                                        loading="lazy"
+                                    >
+
+                                </div>
+
+                                <div class="mega-image-box">
+
+                                    <small>SHINY</small>
+
+                                    <img
+                                        class="mega-shiny"
+                                        src="${form.shiny}"
+                                        alt="${displayName} Shiny"
+                                        loading="lazy"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    `;
+
+                }).join("")}
+
             </div>
+
         `;
 
-        return;
+    }catch(error){
+
+        console.error(
+            "Erro ao carregar Mega Evoluções:",
+            error
+        );
+
+        showNoMega(container);
+
     }
 
-    /*
-     * Ordenação:
-     * Mega normal → Mega X → Mega Y
-     */
-    megaForms.sort((a,b)=>{
-
-        const order = {
-            "mega":1,
-            "mega-x":2,
-            "mega-y":3
-        };
-
-        const getOrder = name => {
-
-            const lower =
-                name.toLowerCase();
-
-            if(lower.endsWith("-mega")){
-                return 1;
-            }
-
-            if(lower.endsWith("-mega-x")){
-                return 2;
-            }
-
-            if(lower.endsWith("-mega-y")){
-                return 3;
-            }
-
-            return 10;
-        };
-
-        return getOrder(a.name) - getOrder(b.name);
-
-    });
-
-    container.innerHTML = `
-        <div class="mega-grid">
-
-            ${megaForms.map(form => {
-
-                const displayName =
-                    form.name
-                        .replaceAll("-", " ");
-
-                return `
-
-                    <article class="mega-form-card">
-
-                        <div class="mega-form-label">
-                            ${displayName}
-                        </div>
-
-                        <div class="mega-images">
-
-                            <div>
-
-                                <small>
-                                    NORMAL
-                                </small>
-
-                                <img
-                                    class="mega-image"
-                                    src="${form.artwork}"
-                                    alt="${displayName}"
-                                    loading="lazy"
-                                >
-
-                            </div>
-
-                            <div>
-
-                                <small>
-                                    SHINY
-                                </small>
-
-                                <img
-                                    class="mega-shiny"
-                                    src="${form.shiny}"
-                                    alt="${displayName} Shiny"
-                                    loading="lazy"
-                                >
-
-                            </div>
-
-                        </div>
-
-                    </article>
-
-                `;
-
-            }).join("")}
-
-        </div>
-    `;
 }
 
 
 /* =========================================================
-   VERIFICAÇÃO DE MEGA
+   MENSAGEM SEM MEGA
+========================================================= */
+
+function showNoMega(container){
+
+    container.innerHTML = `
+
+        <div class="no-mega">
+
+            <div class="no-mega-icon">
+                ✨
+            </div>
+
+            <h3>
+                Nenhuma Mega Evolução encontrada
+            </h3>
+
+            <p>
+                Este Pokémon não possui uma Mega Evolução registrada.
+            </p>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   VERIFICAÇÃO
 ========================================================= */
 
 async function hasMegaEvolution(pokemonName){
 
-    const possibleForms = [
-        `${pokemonName}-mega`,
-        `${pokemonName}-mega-x`,
-        `${pokemonName}-mega-y`
-    ];
+    try{
 
-    for(const formName of possibleForms){
+        const response = await fetch(
+            `${API}/pokemon-species/${pokemonName}`
+        );
 
-        try{
+        if(!response.ok){
+            return false;
+        }
 
-            const response = await fetch(
-                `${API}/pokemon-form/${formName}`
+        const species =
+            await response.json();
+
+        return (species.varieties || [])
+            .some(item =>
+                item.pokemon?.name
+                    ?.toLowerCase()
+                    .includes("-mega")
             );
 
-            if(!response.ok){
-                continue;
-            }
+    }catch(error){
 
-            const form = await response.json();
-
-            if(form.is_mega){
-                return true;
-            }
-
-        }catch(error){}
+        return false;
 
     }
 
-    return false;
 }
