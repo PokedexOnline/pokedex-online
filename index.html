@@ -13,110 +13,264 @@
     font-family:Arial,Helvetica,sans-serif;
 }
 
-body{
-    background:#080b10;
-    color:#fff;
-    min-height:100vh;
+html{
+    scroll-behavior:smooth;
 }
 
+body{
+    background:#05070d;
+    color:#fff;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+/* ==================================================
+   FUNDO ANIMADO
+================================================== */
+
+body::before,
+body::after{
+    content:"";
+    position:fixed;
+    width:550px;
+    height:550px;
+    border-radius:50%;
+    filter:blur(100px);
+    opacity:.18;
+    pointer-events:none;
+    z-index:-2;
+    animation:floatGlow 10s ease-in-out infinite alternate;
+}
+
+body::before{
+    background:#e63946;
+    top:-180px;
+    left:-180px;
+}
+
+body::after{
+    background:#2563eb;
+    right:-180px;
+    bottom:-180px;
+    animation-delay:-5s;
+}
+
+@keyframes floatGlow{
+    0%{
+        transform:translate(0,0) scale(1);
+    }
+
+    100%{
+        transform:translate(70px,50px) scale(1.2);
+    }
+}
+
+.background-grid{
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    opacity:.08;
+    background-image:
+        linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);
+    background-size:50px 50px;
+    mask-image:linear-gradient(to bottom,black,transparent);
+}
+
+/* ==================================================
+   HEADER
+================================================== */
+
 header{
-    background:#10151d;
-    border-bottom:1px solid #252d38;
-    padding:18px 20px;
+    background:rgba(8,11,16,.78);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+    padding:16px 20px;
     position:sticky;
     top:0;
     z-index:100;
 }
 
 .header{
-    max-width:1250px;
+    max-width:1300px;
     margin:auto;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:20px;
+    gap:25px;
 }
 
 .logo{
     font-size:25px;
-    font-weight:bold;
+    font-weight:900;
+    letter-spacing:-1px;
+    white-space:nowrap;
 }
 
 .logo span{
-    color:#e63946;
+    color:#ff304f;
 }
 
 nav{
     display:flex;
-    gap:20px;
+    gap:8px;
+    flex-wrap:wrap;
 }
 
 nav a{
     color:#aeb7c3;
     text-decoration:none;
     font-size:14px;
+    font-weight:bold;
+    padding:10px 14px;
+    border-radius:10px;
+    transition:.2s;
 }
 
 nav a:hover{
     color:#fff;
+    background:rgba(255,255,255,.07);
 }
 
+/* ==================================================
+   MAIN
+================================================== */
+
 main{
-    max-width:1250px;
+    max-width:1300px;
     margin:auto;
-    padding:50px 20px;
+    padding:45px 20px 20px;
 }
+
+.page-section{
+    margin-bottom:100px;
+    scroll-margin-top:100px;
+}
+
+/* ==================================================
+   HERO
+================================================== */
 
 .hero{
     text-align:center;
-    margin-bottom:40px;
+    padding:45px 0 65px;
+    position:relative;
+}
+
+.hero-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 14px;
+    border-radius:30px;
+    background:rgba(255,48,79,.1);
+    border:1px solid rgba(255,48,79,.3);
+    color:#ff6b7f;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:22px;
 }
 
 .hero h1{
-    font-size:48px;
-    margin-bottom:12px;
+    font-size:clamp(45px,7vw,78px);
+    line-height:1;
+    margin-bottom:20px;
+    letter-spacing:-4px;
 }
 
 .hero h1 span{
-    color:#e63946;
+    color:#ff304f;
+    text-shadow:
+        0 0 30px rgba(255,48,79,.35);
 }
 
 .hero p{
-    color:#8994a2;
+    color:#8e99a8;
     font-size:17px;
+    max-width:650px;
+    margin:auto;
+    line-height:1.7;
 }
 
 .search{
-    max-width:720px;
-    margin:28px auto 0;
+    max-width:760px;
+    margin:32px auto 0;
     display:flex;
     gap:10px;
 }
 
 .search input{
     flex:1;
-    background:#111720;
+    background:rgba(15,21,30,.9);
     border:1px solid #303a48;
     color:#fff;
-    padding:16px;
-    border-radius:10px;
+    padding:17px 18px;
+    border-radius:14px;
     outline:none;
     font-size:16px;
+    box-shadow:0 10px 40px rgba(0,0,0,.2);
 }
 
 .search input:focus{
-    border-color:#e63946;
+    border-color:#ff304f;
+    box-shadow:0 0 0 3px rgba(255,48,79,.1);
 }
 
 .search button{
     border:0;
-    background:#e63946;
+    background:linear-gradient(135deg,#ff304f,#d7193f);
     color:white;
-    padding:0 25px;
-    border-radius:10px;
+    padding:0 28px;
+    border-radius:14px;
     font-weight:bold;
     cursor:pointer;
+    box-shadow:0 10px 30px rgba(255,48,79,.22);
+    transition:.2s;
 }
+
+.search button:hover{
+    transform:translateY(-2px);
+}
+
+/* ==================================================
+   SECTION HEADER
+================================================== */
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom:22px;
+    gap:20px;
+}
+
+.section-title small{
+    display:block;
+    color:#ff304f;
+    font-size:12px;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    margin-bottom:6px;
+}
+
+.section-header h2{
+    font-size:30px;
+}
+
+.section-header p{
+    color:#7f8a98;
+    margin-top:7px;
+}
+
+.counter{
+    color:#7f8a98;
+    font-size:14px;
+}
+
+/* ==================================================
+   FILTROS DE GERAÇÃO
+================================================== */
 
 .filters{
     display:flex;
@@ -127,36 +281,26 @@ main{
 }
 
 .filter{
-    background:#111720;
+    background:rgba(17,23,32,.9);
     border:1px solid #303a48;
     color:#b8c1cc;
     padding:9px 14px;
     border-radius:20px;
     cursor:pointer;
+    transition:.2s;
 }
 
 .filter:hover,
 .filter.active{
-    background:#e63946;
+    background:#ff304f;
     color:white;
-    border-color:#e63946;
+    border-color:#ff304f;
+    box-shadow:0 5px 20px rgba(255,48,79,.2);
 }
 
-.section-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-}
-
-.section-header h2{
-    font-size:24px;
-}
-
-.counter{
-    color:#7f8a98;
-    font-size:14px;
-}
+/* ==================================================
+   GRID POKEMON
+================================================== */
 
 .grid{
     display:grid;
@@ -165,24 +309,46 @@ main{
 }
 
 .card{
-    background:#111720;
+    background:linear-gradient(
+        145deg,
+        rgba(20,28,39,.96),
+        rgba(11,16,23,.96)
+    );
     border:1px solid #252e3a;
-    border-radius:16px;
+    border-radius:20px;
     padding:18px;
     text-align:center;
     cursor:pointer;
-    transition:.2s;
+    transition:.25s;
+    position:relative;
+    overflow:hidden;
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+    width:100px;
+    height:100px;
+    background:#ff304f;
+    opacity:.06;
+    border-radius:50%;
+    top:-50px;
+    right:-50px;
 }
 
 .card:hover{
-    transform:translateY(-5px);
-    border-color:#e63946;
+    transform:translateY(-7px);
+    border-color:#ff304f;
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.35),
+        0 0 25px rgba(255,48,79,.08);
 }
 
 .number{
     text-align:left;
     color:#667383;
     font-size:13px;
+    font-weight:bold;
 }
 
 .card img{
@@ -191,6 +357,11 @@ main{
     object-fit:contain;
     display:block;
     margin:5px auto;
+    transition:.25s;
+}
+
+.card:hover img{
+    transform:scale(1.08);
 }
 
 .card h3{
@@ -210,7 +381,178 @@ main{
     border-radius:20px;
     font-size:12px;
     font-weight:bold;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
 }
+
+/* ==================================================
+   TIPOS
+================================================== */
+
+.types-section{
+    position:relative;
+}
+
+.type-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+    gap:14px;
+}
+
+.type-card{
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:18px;
+    padding:22px 15px;
+    text-align:center;
+    cursor:pointer;
+    transition:.25s;
+    background:rgba(17,23,32,.8);
+    position:relative;
+    overflow:hidden;
+}
+
+.type-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:currentColor;
+    opacity:.07;
+}
+
+.type-card:hover{
+    transform:translateY(-6px);
+    border-color:currentColor;
+    box-shadow:0 15px 35px rgba(0,0,0,.3);
+}
+
+.type-icon{
+    font-size:34px;
+    margin-bottom:10px;
+    position:relative;
+}
+
+.type-card h3{
+    font-size:17px;
+    position:relative;
+}
+
+.type-card p{
+    font-size:11px;
+    color:#788493;
+    margin-top:5px;
+    position:relative;
+}
+
+/* cores dos cards de tipo */
+
+.type-normal-card{color:#c4cbd5}
+.type-fire-card{color:#ff5b35}
+.type-water-card{color:#3c9cff}
+.type-electric-card{color:#ffd83d}
+.type-grass-card{color:#67c94a}
+.type-ice-card{color:#67e4ee}
+.type-fighting-card{color:#ef6540}
+.type-poison-card{color:#bd65dc}
+.type-ground-card{color:#c69b68}
+.type-flying-card{color:#93a9c0}
+.type-psychic-card{color:#f05b91}
+.type-bug-card{color:#91c94d}
+.type-rock-card{color:#aaa35b}
+.type-ghost-card{color:#8764df}
+.type-dragon-card{color:#6572ef}
+.type-dark-card{color:#77808a}
+.type-steel-card{color:#9eacb8}
+.type-fairy-card{color:#efa9d6}
+
+/* ==================================================
+   GERAÇÕES / REGIÕES
+================================================== */
+
+.generations-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.generation-card{
+    position:relative;
+    min-height:190px;
+    padding:28px;
+    border-radius:22px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(22,30,43,.96),
+            rgba(10,14,21,.96)
+        );
+    border:1px solid #293342;
+    cursor:pointer;
+    overflow:hidden;
+    transition:.3s;
+}
+
+.generation-card:hover{
+    transform:translateY(-6px);
+    border-color:#ff304f;
+    box-shadow:
+        0 20px 40px rgba(0,0,0,.35),
+        0 0 30px rgba(255,48,79,.08);
+}
+
+.generation-card::before,
+.generation-card::after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.08);
+    pointer-events:none;
+}
+
+.generation-card::before{
+    width:130px;
+    height:130px;
+    right:-45px;
+    top:-45px;
+}
+
+.generation-card::after{
+    width:90px;
+    height:90px;
+    right:-25px;
+    top:-25px;
+}
+
+.generation-number{
+    color:#ff304f;
+    font-size:13px;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:2px;
+}
+
+.generation-card h3{
+    font-size:27px;
+    margin-top:10px;
+}
+
+.generation-card p{
+    color:#8994a2;
+    font-size:16px;
+    margin-top:6px;
+}
+
+.generation-card .explore{
+    position:absolute;
+    bottom:22px;
+    left:28px;
+    color:#667383;
+    font-size:12px;
+}
+
+/* ==================================================
+   TIPOS EXISTENTES
+================================================== */
 
 .normal{background:#8d99ae}
 .fogo{background:#f4511e}
@@ -231,6 +573,10 @@ main{
 .aco{background:#607d8b}
 .fada{background:#ec9bd3;color:#111}
 
+/* ==================================================
+   LOAD
+================================================== */
+
 .loading{
     text-align:center;
     padding:50px;
@@ -240,30 +586,36 @@ main{
 .load-more{
     display:block;
     margin:35px auto 0;
-    background:#e63946;
+    background:linear-gradient(135deg,#ff304f,#d7193f);
     color:#fff;
     border:0;
     padding:14px 30px;
-    border-radius:10px;
+    border-radius:12px;
     cursor:pointer;
     font-weight:bold;
+    transition:.2s;
 }
 
 .load-more:hover{
-    background:#c92f3c;
+    transform:translateY(-2px);
 }
+
+/* ==================================================
+   FOOTER
+================================================== */
 
 footer{
     border-top:1px solid #252d38;
     margin-top:60px;
-    padding:30px;
+    padding:35px 20px;
     text-align:center;
     color:#667383;
+    background:rgba(5,7,13,.7);
 }
 
-/* =========================
+/* ==================================================
    FICHA
-========================= */
+================================================== */
 
 #pokemonDetails{
     display:none;
@@ -282,11 +634,15 @@ footer{
 }
 
 .detail-back:hover{
-    border-color:#e63946;
+    border-color:#ff304f;
 }
 
 .detail-header{
-    background:#111720;
+    background:linear-gradient(
+        145deg,
+        rgba(20,28,39,.98),
+        rgba(11,16,23,.98)
+    );
     border:1px solid #252e3a;
     border-radius:20px;
     padding:30px;
@@ -431,7 +787,7 @@ footer{
 
 .stat-fill{
     height:100%;
-    background:#e63946;
+    background:#ff304f;
     border-radius:10px;
 }
 
@@ -453,9 +809,9 @@ footer{
     font-size:13px;
 }
 
-/* =========================
+/* ==================================================
    EVOLUÇÕES
-========================= */
+================================================== */
 
 .evolution-section{
     margin-top:20px;
@@ -502,7 +858,7 @@ footer{
     flex-direction:column;
     align-items:center;
     gap:5px;
-    color:#e63946;
+    color:#ff304f;
     font-weight:bold;
     text-align:center;
 }
@@ -520,9 +876,9 @@ footer{
     max-width:150px;
 }
 
-/* =========================
+/* ==================================================
    MEGA
-========================= */
+================================================== */
 
 .tabs{
     display:flex;
@@ -542,8 +898,8 @@ footer{
 }
 
 .tab.active{
-    background:#e63946;
-    border-color:#e63946;
+    background:#ff304f;
+    border-color:#ff304f;
     color:#fff;
 }
 
@@ -622,9 +978,17 @@ footer{
     color:#8994a2;
 }
 
-/* =========================
+/* ==================================================
    MOBILE
-========================= */
+================================================== */
+
+@media(max-width:850px){
+
+    .generations-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
 
 @media(max-width:700px){
 
@@ -633,11 +997,30 @@ footer{
     }
 
     nav{
-        gap:14px;
+        justify-content:center;
+        gap:3px;
+    }
+
+    nav a{
+        padding:8px 9px;
+        font-size:12px;
+    }
+
+    main{
+        padding:30px 15px 15px;
+    }
+
+    .hero{
+        padding:30px 0 45px;
     }
 
     .hero h1{
-        font-size:36px;
+        font-size:43px;
+        letter-spacing:-2px;
+    }
+
+    .hero p{
+        font-size:15px;
     }
 
     .search{
@@ -650,11 +1033,38 @@ footer{
 
     .grid{
         grid-template-columns:repeat(2,1fr);
+        gap:12px;
+    }
+
+    .card{
+        padding:13px 8px;
     }
 
     .card img{
-        width:110px;
-        height:110px;
+        width:105px;
+        height:105px;
+    }
+
+    .card h3{
+        font-size:16px;
+    }
+
+    .type{
+        padding:4px 7px;
+        font-size:10px;
+    }
+
+    .section-header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .type-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .generations-grid{
+        grid-template-columns:1fr;
     }
 
     .detail-images,
@@ -697,13 +1107,17 @@ footer{
     .mega-card img{
         height:145px;
     }
+
 }
 </style>
 </head>
 
 <body>
 
+<div class="background-grid"></div>
+
 <header>
+
 <div class="header">
 
 <div class="logo">
@@ -711,28 +1125,50 @@ footer{
 </div>
 
 <nav>
-    <a href="#" onclick="showPokedex();return false;">Início</a>
-    <a href="#pokedex" onclick="showPokedex();">Pokédex</a>
-    <a href="#tipos">Tipos</a>
-    <a href="#geracoes">Gerações</a>
+
+<a href="#inicio" onclick="showPokedex();">
+    Início
+</a>
+
+<a href="#pokedex" onclick="showPokedex();">
+    Pokédex
+</a>
+
+<a href="#tipos" onclick="showPokedex();">
+    Tipos
+</a>
+
+<a href="#geracoes" onclick="showPokedex();">
+    Gerações
+</a>
+
 </nav>
 
 </div>
+
 </header>
 
 <main>
 
+<!-- ==================================================
+     PÁGINA PRINCIPAL
+================================================== -->
+
 <div id="pokedexPage">
 
-<section class="hero">
+<section class="hero page-section" id="inicio">
+
+<div class="hero-badge">
+    ⚡ A Pokédex da sua comunidade
+</div>
 
 <h1>
     <span>Pokédex</span> Online
 </h1>
 
 <p>
-    Explore o mundo Pokémon.
-    Encontre informações sobre Pokémon, tipos e evoluções.
+    Explore o mundo Pokémon, descubra espécies,
+    tipos, evoluções, formas Shiny e muito mais.
 </p>
 
 <div class="search">
@@ -751,61 +1187,88 @@ footer{
 
 </section>
 
-<div class="filters" id="geracoes">
 
-<button class="filter active" onclick="filterGeneration('all',this)">
-    Todos
-</button>
+<!-- ==================================================
+     POKÉDEX
+================================================== -->
 
-<button class="filter" onclick="filterGeneration(1,this)">
-    Geração I
-</button>
-
-<button class="filter" onclick="filterGeneration(2,this)">
-    Geração II
-</button>
-
-<button class="filter" onclick="filterGeneration(3,this)">
-    Geração III
-</button>
-
-<button class="filter" onclick="filterGeneration(4,this)">
-    Geração IV
-</button>
-
-<button class="filter" onclick="filterGeneration(5,this)">
-    Geração V
-</button>
-
-<button class="filter" onclick="filterGeneration(6,this)">
-    Geração VI
-</button>
-
-<button class="filter" onclick="filterGeneration(7,this)">
-    Geração VII
-</button>
-
-<button class="filter" onclick="filterGeneration(8,this)">
-    Geração VIII
-</button>
-
-<button class="filter" onclick="filterGeneration(9,this)">
-    Geração IX
-</button>
-
-</div>
-
-<section id="pokedex">
+<section id="pokedex" class="page-section">
 
 <div class="section-header">
 
-<h2>Pokémon</h2>
+<div class="section-title">
+
+<small>Pokémon</small>
+
+<h2>Pokédex Nacional</h2>
+
+<p>
+    Explore todos os Pokémon disponíveis.
+</p>
+
+</div>
 
 <div class="counter" id="counter">
     Carregando...
 </div>
 
 </div>
+
+
+<div class="filters">
+
+<button class="filter active"
+onclick="filterGeneration('all',this)">
+    Todos
+</button>
+
+<button class="filter"
+onclick="filterGeneration(1,this)">
+    Geração I
+</button>
+
+<button class="filter"
+onclick="filterGeneration(2,this)">
+    Geração II
+</button>
+
+<button class="filter"
+onclick="filterGeneration(3,this)">
+    Geração III
+</button>
+
+<button class="filter"
+onclick="filterGeneration(4,this)">
+    Geração IV
+</button>
+
+<button class="filter"
+onclick="filterGeneration(5,this)">
+    Geração V
+</button>
+
+<button class="filter"
+onclick="filterGeneration(6,this)">
+    Geração VI
+</button>
+
+<button class="filter"
+onclick="filterGeneration(7,this)">
+    Geração VII
+</button>
+
+<button class="filter"
+onclick="filterGeneration(8,this)">
+    Geração VIII
+</button>
+
+<button class="filter"
+onclick="filterGeneration(9,this)">
+    Geração IX
+</button>
+
+</div>
+
 
 <div id="pokemonGrid" class="grid">
 
@@ -814,6 +1277,7 @@ footer{
 </div>
 
 </div>
+
 
 <button
     id="loadMore"
@@ -826,7 +1290,395 @@ footer{
 
 </section>
 
+
+<!-- ==================================================
+     TIPOS
+================================================== -->
+
+<section id="tipos" class="page-section types-section">
+
+<div class="section-header">
+
+<div class="section-title">
+
+<small>Explore</small>
+
+<h2>Tipos Pokémon</h2>
+
+<p>
+    Escolha um tipo para encontrar seus Pokémon.
+</p>
+
 </div>
+
+</div>
+
+
+<div class="type-grid">
+
+<div class="type-card type-normal-card"
+onclick="filterType('normal')">
+    <div class="type-icon">⚪</div>
+    <h3>Normal</h3>
+    <p>Pokémon do tipo Normal</p>
+</div>
+
+<div class="type-card type-fire-card"
+onclick="filterType('fire')">
+    <div class="type-icon">🔥</div>
+    <h3>Fogo</h3>
+    <p>Pokémon do tipo Fogo</p>
+</div>
+
+<div class="type-card type-water-card"
+onclick="filterType('water')">
+    <div class="type-icon">💧</div>
+    <h3>Água</h3>
+    <p>Pokémon do tipo Água</p>
+</div>
+
+<div class="type-card type-electric-card"
+onclick="filterType('electric')">
+    <div class="type-icon">⚡</div>
+    <h3>Elétrico</h3>
+    <p>Pokémon do tipo Elétrico</p>
+</div>
+
+<div class="type-card type-grass-card"
+onclick="filterType('grass')">
+    <div class="type-icon">🌿</div>
+    <h3>Planta</h3>
+    <p>Pokémon do tipo Planta</p>
+</div>
+
+<div class="type-card type-ice-card"
+onclick="filterType('ice')">
+    <div class="type-icon">❄️</div>
+    <h3>Gelo</h3>
+    <p>Pokémon do tipo Gelo</p>
+</div>
+
+<div class="type-card type-fighting-card"
+onclick="filterType('fighting')">
+    <div class="type-icon">🥊</div>
+    <h3>Lutador</h3>
+    <p>Pokémon do tipo Lutador</p>
+</div>
+
+<div class="type-card type-poison-card"
+onclick="filterType('poison')">
+    <div class="type-icon">☠️</div>
+    <h3>Veneno</h3>
+    <p>Pokémon do tipo Veneno</p>
+</div>
+
+<div class="type-card type-ground-card"
+onclick="filterType('ground')">
+    <div class="type-icon">🌎</div>
+    <h3>Terra</h3>
+    <p>Pokémon do tipo Terra</p>
+</div>
+
+<div class="type-card type-flying-card"
+onclick="filterType('flying')">
+    <div class="type-icon">🪽</div>
+    <h3>Voador</h3>
+    <p>Pokémon do tipo Voador</p>
+</div>
+
+<div class="type-card type-psychic-card"
+onclick="filterType('psychic')">
+    <div class="type-icon">🔮</div>
+    <h3>Psíquico</h3>
+    <p>Pokémon do tipo Psíquico</p>
+</div>
+
+<div class="type-card type-bug-card"
+onclick="filterType('bug')">
+    <div class="type-icon">🐛</div>
+    <h3>Inseto</h3>
+    <p>Pokémon do tipo Inseto</p>
+</div>
+
+<div class="type-card type-rock-card"
+onclick="filterType('rock')">
+    <div class="type-icon">🪨</div>
+    <h3>Pedra</h3>
+    <p>Pokémon do tipo Pedra</p>
+</div>
+
+<div class="type-card type-ghost-card"
+onclick="filterType('ghost')">
+    <div class="type-icon">👻</div>
+    <h3>Fantasma</h3>
+    <p>Pokémon do tipo Fantasma</p>
+</div>
+
+<div class="type-card type-dragon-card"
+onclick="filterType('dragon')">
+    <div class="type-icon">🐉</div>
+    <h3>Dragão</h3>
+    <p>Pokémon do tipo Dragão</p>
+</div>
+
+<div class="type-card type-dark-card"
+onclick="filterType('dark')">
+    <div class="type-icon">🌑</div>
+    <h3>Sombrio</h3>
+    <p>Pokémon do tipo Sombrio</p>
+</div>
+
+<div class="type-card type-steel-card"
+onclick="filterType('steel')">
+    <div class="type-icon">⚙️</div>
+    <h3>Aço</h3>
+    <p>Pokémon do tipo Aço</p>
+</div>
+
+<div class="type-card type-fairy-card"
+onclick="filterType('fairy')">
+    <div class="type-icon">✨</div>
+    <h3>Fada</h3>
+    <p>Pokémon do tipo Fada</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ==================================================
+     GERAÇÕES
+================================================== -->
+
+<section id="geracoes" class="page-section">
+
+<div class="section-header">
+
+<div class="section-title">
+
+<small>Regiões</small>
+
+<h2>Gerações Pokémon</h2>
+
+<p>
+    Explore cada geração e sua respectiva região.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="generations-grid">
+
+<div class="generation-card"
+onclick="filterGenerationFromRegion(1)">
+
+<div class="generation-number">
+    Geração I
+</div>
+
+<h3>
+    Geração I
+</h3>
+
+<p>
+    Kanto
+</p>
+
+<div class="explore">
+    Explorar Pokémon →
+</div>
+
+</div>
+
+
+<div class="generation-card"
+onclick="filterGenerationFromRegion(2)">
+
+<div class="generation-number">
+    Geração II
+</div>
+
+<h3>
+    Geração II
+</h3>
+
+<p>
+    Johto
+</p>
+
+<div class="explore">
+    Explorar Pokémon →
+</div>
+
+</div>
+
+
+<div class="generation-card"
+onclick="filterGenerationFromRegion(3)">
+
+<div class="generation-number">
+    Geração III
+</div>
+
+<h3>
+    Geração III
+</h3>
+
+<p>
+    Hoenn
+</p>
+
+<div class="explore">
+    Explorar Pokémon →
+</div>
+
+</div>
+
+
+<div class="generation-card"
+onclick="filterGenerationFromRegion(4)">
+
+<div class="generation-number">
+    Geração IV
+</div>
+
+<h3>
+    Geração IV
+</h3>
+
+<p>
+    Sinnoh
+</p>
+
+<div class="explore">
+    Explorar Pokémon →
+</div>
+
+</div>
+
+
+<div class="generation-card"
+onclick="filterGenerationFromRegion(5)">
+
+<div class="generation-number">
+    Geração V
+</div>
+
+<h3>
+    Geração V
+</h3>
+
+<p>
+    Unova
+</p>
+
+<div class="explore">
+    Explorar Pokémon →
+</div>
+
+</div>
+
+
+<div class="generation-card"
+onclick="filterGenerationFromRegion(6)">
+
+<div class="generation-number">
+    Geração VI
+</div>
+
+<h3>
+    Geração VI
+</h3>
+
+<p>
+    Kalos
+</p>
+
+<div class="explore">
+    Explorar Pokémon →
+</div>
+
+</div>
+
+
+<div class="generation-card"
+onclick="filterGenerationFromRegion(7)">
+
+<div class="generation-number">
+    Geração VII
+</div>
+
+<h3>
+    Geração VII
+</h3>
+
+<p>
+    Alola
+</p>
+
+<div class="explore">
+    Explorar Pokémon →
+</div>
+
+</div>
+
+
+<div class="generation-card"
+onclick="filterGenerationFromRegion(8)">
+
+<div class="generation-number">
+    Geração VIII
+</div>
+
+<h3>
+    Geração VIII
+</h3>
+
+<p>
+    Galar
+</p>
+
+<div class="explore">
+    Explorar Pokémon →
+</div>
+
+</div>
+
+
+<div class="generation-card"
+onclick="filterGenerationFromRegion(9)">
+
+<div class="generation-number">
+    Geração IX
+</div>
+
+<h3>
+    Geração IX
+</h3>
+
+<p>
+    Paldea
+</p>
+
+<div class="explore">
+    Explorar Pokémon →
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- ==================================================
+     FICHA DO POKÉMON
+================================================== -->
 
 <section id="pokemonDetails">
 
@@ -846,9 +1698,11 @@ footer{
 
 </main>
 
+
 <footer>
     Pokédex Online © 2026
 </footer>
+
 
 <script>
 
@@ -861,6 +1715,7 @@ let currentGeneration = "all";
 let visibleAmount = 40;
 
 const typeNames = {
+
     normal:"Normal",
     fire:"Fogo",
     water:"Água",
@@ -879,9 +1734,11 @@ const typeNames = {
     dark:"Sombrio",
     steel:"Aço",
     fairy:"Fada"
+
 };
 
 const typeClasses = {
+
     normal:"normal",
     fire:"fogo",
     water:"agua",
@@ -900,9 +1757,11 @@ const typeClasses = {
     dark:"sombrio",
     steel:"aco",
     fairy:"fada"
+
 };
 
 const typeIcons = {
+
     normal:"⚪",
     fire:"🔥",
     water:"💧",
@@ -921,6 +1780,7 @@ const typeIcons = {
     dark:"🌑",
     steel:"⚙️",
     fairy:"✨"
+
 };
 
 function capitalize(text){
@@ -941,12 +1801,17 @@ function formatName(name){
 
 async function getPokemon(id){
 
-    const response = await fetch(
-        `${API}/pokemon/${id}`
-    );
+    const response =
+        await fetch(
+            `${API}/pokemon/${id}`
+        );
 
     if(!response.ok){
-        throw new Error("Erro ao buscar Pokémon");
+
+        throw new Error(
+            "Erro ao buscar Pokémon"
+        );
+
     }
 
     return await response.json();
@@ -955,65 +1820,96 @@ async function getPokemon(id){
 
 async function getSpecies(id){
 
-    const response = await fetch(
-        `${API}/pokemon-species/${id}`
-    );
+    const response =
+        await fetch(
+            `${API}/pokemon-species/${id}`
+        );
 
     if(!response.ok){
-        throw new Error("Erro ao buscar espécie");
+
+        throw new Error(
+            "Erro ao buscar espécie"
+        );
+
     }
 
     return await response.json();
 
 }
 
-/* =========================
+/* ==================================================
    LISTA DE POKÉMON
-========================= */
+================================================== */
 
 async function loadPokemon(){
 
     const grid =
-        document.getElementById("pokemonGrid");
+        document.getElementById(
+            "pokemonGrid"
+        );
 
     grid.innerHTML = `
+
         <div class="loading">
             Carregando Pokémon...
         </div>
+
     `;
 
     try{
 
-        const response = await fetch(
-            `${API}/pokemon?limit=${TOTAL}&offset=0`
-        );
+        const response =
+            await fetch(
+                `${API}/pokemon?limit=${TOTAL}&offset=0`
+            );
 
         if(!response.ok){
-            throw new Error("Erro na API");
+
+            throw new Error(
+                "Erro na API"
+            );
+
         }
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
-        allPokemon = data.results.map((pokemon,index)=>({
+        allPokemon =
+            data.results.map(
+                (pokemon,index) => ({
 
-            id:index + 1,
-            name:pokemon.name,
-            generation:getGeneration(index + 1)
+                    id:index + 1,
 
-        }));
+                    name:pokemon.name,
 
-        displayedPokemon = allPokemon;
+                    generation:
+                        getGeneration(
+                            index + 1
+                        )
+
+                })
+            );
+
+        displayedPokemon =
+            allPokemon;
 
         renderPokemon();
 
     }catch(error){
 
         grid.innerHTML = `
+
             <div class="loading">
-                Não foi possível carregar os Pokémon.
+
+                Não foi possível carregar
+                os Pokémon.
+
                 <br><br>
+
                 Atualize a página e tente novamente.
+
             </div>
+
         `;
 
         console.error(error);
@@ -1040,7 +1936,9 @@ function getGeneration(id){
 async function renderPokemon(){
 
     const grid =
-        document.getElementById("pokemonGrid");
+        document.getElementById(
+            "pokemonGrid"
+        );
 
     const items =
         displayedPokemon.slice(
@@ -1053,9 +1951,13 @@ async function renderPokemon(){
     if(items.length === 0){
 
         grid.innerHTML = `
+
             <div class="loading">
+
                 Nenhum Pokémon encontrado.
+
             </div>
+
         `;
 
         return;
@@ -1072,7 +1974,9 @@ async function renderPokemon(){
         card.innerHTML = `
 
             <div class="number">
+
                 #${String(pokemon.id).padStart(4,"0")}
+
             </div>
 
             <img
@@ -1104,11 +2008,16 @@ async function renderPokemon(){
 
     }
 
-    document.getElementById("counter").textContent =
+    document.getElementById(
+        "counter"
+    ).textContent =
         `${displayedPokemon.length} Pokémon encontrados`;
 
-    document.getElementById("loadMore").style.display =
-        visibleAmount < displayedPokemon.length
+    document.getElementById(
+        "loadMore"
+    ).style.display =
+        visibleAmount <
+        displayedPokemon.length
         ? "block"
         : "none";
 
@@ -1132,30 +2041,38 @@ async function loadCardData(card,id){
 
         if(portugueseName){
 
-            card.querySelector("h3").textContent =
+            card.querySelector(
+                "h3"
+            ).textContent =
                 portugueseName.name;
 
         }
 
-        card.querySelector(".types").innerHTML =
+        card.querySelector(
+            ".types"
+        ).innerHTML =
 
-            pokemon.types.map(item => {
+            pokemon.types.map(
+                item => {
 
-                const type =
-                    item.type.name;
+                    const type =
+                        item.type.name;
 
-                return `
+                    return `
 
-                    <span class="type ${typeClasses[type]}">
+                        <span
+                            class="type ${typeClasses[type]}"
+                        >
 
-                        ${typeIcons[type]}
-                        ${typeNames[type]}
+                            ${typeIcons[type]}
+                            ${typeNames[type]}
 
-                    </span>
+                        </span>
 
-                `;
+                    `;
 
-            }).join("");
+                }
+            ).join("");
 
         card.onclick = () =>
             openPokemon(id);
@@ -1168,9 +2085,98 @@ async function loadCardData(card,id){
 
 }
 
-/* =========================
+/* ==================================================
+   FILTRO POR TIPO
+================================================== */
+
+async function filterType(type){
+
+    if(!allPokemon.length){
+
+        return;
+
+    }
+
+    const grid =
+        document.getElementById(
+            "pokemonGrid"
+        );
+
+    grid.innerHTML = `
+
+        <div class="loading">
+
+            Procurando Pokémon do tipo
+            ${typeNames[type]}...
+
+        </div>
+
+    `;
+
+    document.getElementById(
+        "pokedex"
+    ).scrollIntoView({
+        behavior:"smooth"
+    });
+
+    try{
+
+        const response =
+            await fetch(
+                `${API}/type/${type}`
+            );
+
+        const data =
+            await response.json();
+
+        const ids =
+            data.pokemon
+                .map(item =>
+                    Number(
+                        item.pokemon.url
+                            .split("/")
+                            .filter(Boolean)
+                            .pop()
+                    )
+                )
+                .filter(id =>
+                    id <= TOTAL
+                );
+
+        displayedPokemon =
+            allPokemon.filter(
+                pokemon =>
+                    ids.includes(
+                        pokemon.id
+                    )
+            );
+
+        visibleAmount = 40;
+
+        renderPokemon();
+
+    }catch(error){
+
+        console.error(error);
+
+        grid.innerHTML = `
+
+            <div class="loading">
+
+                Não foi possível carregar
+                esse tipo.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+/* ==================================================
    DESCRIÇÃO
-========================= */
+================================================== */
 
 function getEnglishDescription(species){
 
@@ -1193,9 +2199,9 @@ function getEnglishDescription(species){
 
 }
 
-/* =========================
+/* ==================================================
    EVOLUÇÃO
-========================= */
+================================================== */
 
 function getEvolutionCondition(details){
 
@@ -1215,15 +2221,22 @@ function getEvolutionCondition(details){
 
     if(d.item){
 
-        return formatName(d.item.name);
+        return formatName(
+            d.item.name
+        );
 
     }
 
-    if(d.trigger && d.trigger.name === "trade"){
+    if(
+        d.trigger &&
+        d.trigger.name === "trade"
+    ){
 
         if(d.trade_species){
 
-            return `Trade for ${formatName(d.trade_species.name)}`;
+            return `Trade for ${formatName(
+                d.trade_species.name
+            )}`;
 
         }
 
@@ -1251,31 +2264,41 @@ function getEvolutionCondition(details){
 
     if(d.time_of_day){
 
-        return `Time: ${capitalize(d.time_of_day)}`;
+        return `Time: ${capitalize(
+            d.time_of_day
+        )}`;
 
     }
 
     if(d.held_item){
 
-        return `Hold ${formatName(d.held_item.name)}`;
+        return `Hold ${formatName(
+            d.held_item.name
+        )}`;
 
     }
 
     if(d.known_move){
 
-        return `Know ${formatName(d.known_move.name)}`;
+        return `Know ${formatName(
+            d.known_move.name
+        )}`;
 
     }
 
     if(d.known_move_type){
 
-        return `Know a ${formatName(d.known_move_type.name)} move`;
+        return `Know a ${formatName(
+            d.known_move_type.name
+        )} move`;
 
     }
 
     if(d.location){
 
-        return `Location: ${formatName(d.location.name)}`;
+        return `Location: ${formatName(
+            d.location.name
+        )}`;
 
     }
 
@@ -1293,25 +2316,35 @@ function getEvolutionCondition(details){
 
     if(d.party_species){
 
-        return `With ${formatName(d.party_species.name)} in party`;
+        return `With ${formatName(
+            d.party_species.name
+        )} in party`;
 
     }
 
     if(d.party_type){
 
-        return `With ${formatName(d.party_type.name)} type in party`;
+        return `With ${formatName(
+            d.party_type.name
+        )} type in party`;
 
     }
 
-    if(d.relative_physical_stats !== null){
+    if(
+        d.relative_physical_stats !== null
+    ){
 
-        if(d.relative_physical_stats === 1){
+        if(
+            d.relative_physical_stats === 1
+        ){
 
             return "Attack > Defense";
 
         }
 
-        if(d.relative_physical_stats === -1){
+        if(
+            d.relative_physical_stats === -1
+        ){
 
             return "Attack < Defense";
 
@@ -1323,7 +2356,9 @@ function getEvolutionCondition(details){
 
     if(d.used_move){
 
-        return `Use ${formatName(d.used_move.name)}`;
+        return `Use ${formatName(
+            d.used_move.name
+        )}`;
 
     }
 
@@ -1381,7 +2416,9 @@ async function buildEvolutionHTML(chain){
         const name =
             ptName
             ? ptName.name
-            : formatName(node.species.name);
+            : formatName(
+                node.species.name
+            );
 
         const image =
             pokemon.sprites.other[
@@ -1397,7 +2434,9 @@ async function buildEvolutionHTML(chain){
                     alt="${name}"
                 >
 
-                <h3>${name}</h3>
+                <h3>
+                    ${name}
+                </h3>
 
                 <small>
                     #${String(speciesId).padStart(4,"0")}
@@ -1409,7 +2448,10 @@ async function buildEvolutionHTML(chain){
 
         if(node.evolves_to.length){
 
-            for(const next of node.evolves_to){
+            for(
+                const next
+                of node.evolves_to
+            ){
 
                 const condition =
                     getEvolutionCondition(
@@ -1447,10 +2489,12 @@ async function buildEvolutionHTML(chain){
 }
 
 /* ==================================================
-   MEGA EVOLUÇÕES — NOVA VERSÃO
+   MEGA EVOLUÇÕES
 ================================================== */
 
-async function getMegaEvolutions(pokemonName){
+async function getMegaEvolutions(
+    pokemonName
+){
 
     const mega = [];
 
@@ -1474,7 +2518,9 @@ async function getMegaEvolutions(pokemonName){
 
                         if(!response.ok){
 
-                            throw new Error("Form not found");
+                            throw new Error(
+                                "Form not found"
+                            );
 
                         }
 
@@ -1485,18 +2531,29 @@ async function getMegaEvolutions(pokemonName){
 
         );
 
-    for(const result of results){
+    for(
+        const result
+        of results
+    ){
 
-        if(result.status !== "fulfilled"){
+        if(
+            result.status !==
+            "fulfilled"
+        ){
+
             continue;
+
         }
 
         try{
 
-            const form = result.value;
+            const form =
+                result.value;
 
             if(!form.is_mega){
+
                 continue;
+
             }
 
             const pokemonId =
@@ -1506,25 +2563,35 @@ async function getMegaEvolutions(pokemonName){
                     .pop();
 
             const pokemon =
-                await getPokemon(pokemonId);
+                await getPokemon(
+                    pokemonId
+                );
 
             const artwork =
                 pokemon.sprites.other[
                     "official-artwork"
                 ];
 
-            if(!artwork || !artwork.front_default){
+            if(
+                !artwork ||
+                !artwork.front_default
+            ){
+
                 continue;
+
             }
 
             const alreadyExists =
                 mega.some(
                     item =>
-                        item.id === pokemon.id
+                        item.id ===
+                        pokemon.id
                 );
 
             if(alreadyExists){
+
                 continue;
+
             }
 
             mega.push({
@@ -1561,10 +2628,6 @@ async function getMegaEvolutions(pokemonName){
 
 }
 
-/* ==================================================
-   CARREGAR ABA DE MEGA SEM BLOQUEAR A FICHA
-================================================== */
-
 async function loadMegaTab(
     pokemonName,
     megaTab
@@ -1575,7 +2638,9 @@ async function loadMegaTab(
         megaTab.innerHTML = `
 
             <div class="mega-loading">
+
                 Procurando Mega Evoluções...
+
             </div>
 
         `;
@@ -1603,76 +2668,84 @@ async function loadMegaTab(
         }
 
         const megaHTML =
-            megas.map(mega => {
+            megas.map(
+                mega => {
 
-                const megaTypes =
-                    mega.types.map(item => {
+                    const megaTypes =
+                        mega.types.map(
+                            item => {
 
-                        const type =
-                            item.type.name;
+                                const type =
+                                    item.type.name;
 
-                        return `
+                                return `
 
-                            <span
-                                class="type ${typeClasses[type]}"
-                            >
+                                    <span
+                                        class="type ${typeClasses[type]}"
+                                    >
 
-                                ${typeIcons[type]}
-                                ${typeNames[type]}
+                                        ${typeIcons[type]}
+                                        ${typeNames[type]}
 
-                            </span>
+                                    </span>
 
-                        `;
+                                `;
 
-                    }).join("");
+                            }
+                        ).join("");
 
-                return `
+                    return `
 
-                    <div class="mega-card">
+                        <div class="mega-card">
 
-                        <h3>
-                            ${mega.name}
-                        </h3>
+                            <h3>
+                                ${mega.name}
+                            </h3>
 
-                        <div class="mega-images">
+                            <div class="mega-images">
 
-                            <div class="mega-image-box">
+                                <div class="mega-image-box">
 
-                                <h4>
-                                    Forma Normal
-                                </h4>
+                                    <h4>
+                                        Forma Normal
+                                    </h4>
 
-                                <img
-                                    src="${mega.image}"
-                                    alt="${mega.name}"
+                                    <img
+                                        src="${mega.image}"
+                                        alt="${mega.name}"
+                                    >
+
+                                </div>
+
+                                <div
+                                    class="mega-image-box shiny"
                                 >
+
+                                    <h4>
+                                        ✨ Shiny
+                                    </h4>
+
+                                    <img
+                                        src="${mega.shiny || mega.image}"
+                                        alt="${mega.name} Shiny"
+                                    >
+
+                                </div>
 
                             </div>
 
-                            <div class="mega-image-box shiny">
+                            <div class="mega-types">
 
-                                <h4>
-                                    ✨ Shiny
-                                </h4>
-
-                                <img
-                                    src="${mega.shiny || mega.image}"
-                                    alt="${mega.name} Shiny"
-                                >
+                                ${megaTypes}
 
                             </div>
 
                         </div>
 
-                        <div class="mega-types">
-                            ${megaTypes}
-                        </div>
+                    `;
 
-                    </div>
-
-                `;
-
-            }).join("");
+                }
+            ).join("");
 
         megaTab.innerHTML = `
 
@@ -1706,9 +2779,9 @@ async function loadMegaTab(
 
 }
 
-/* =========================
+/* ==================================================
    ABRIR FICHA
-========================= */
+================================================== */
 
 async function openPokemon(id){
 
@@ -1750,10 +2823,6 @@ async function openPokemon(id){
 
     try{
 
-        /* =========================
-           DADOS PRINCIPAIS
-        ========================= */
-
         const pokemon =
             await getPokemon(id);
 
@@ -1778,10 +2847,6 @@ async function openPokemon(id){
                 species
             );
 
-        /* =========================
-           HABILIDADES
-        ========================= */
-
         const abilities =
             pokemon.abilities.map(
                 item => {
@@ -1800,10 +2865,6 @@ async function openPokemon(id){
 
                 }
             ).join("");
-
-        /* =========================
-           TIPOS
-        ========================= */
 
         const types =
             pokemon.types.map(
@@ -1827,10 +2888,6 @@ async function openPokemon(id){
 
                 }
             ).join("");
-
-        /* =========================
-           STATS
-        ========================= */
 
         const stats =
             pokemon.stats.map(
@@ -1886,36 +2943,30 @@ async function openPokemon(id){
                 }
             ).join("");
 
-        /* =========================
-           FRAQUEZAS
-        ========================= */
-
         const weaknesses =
             await getWeaknesses(
                 pokemon.types
             );
 
         const weaknessHTML =
-            weaknesses.map(type => {
+            weaknesses.map(
+                type => {
 
-                return `
+                    return `
 
-                    <span
-                        class="weakness ${typeClasses[type]}"
-                    >
+                        <span
+                            class="weakness ${typeClasses[type]}"
+                        >
 
-                        ${typeIcons[type]}
-                        ${typeNames[type]}
+                            ${typeIcons[type]}
+                            ${typeNames[type]}
 
-                    </span>
+                        </span>
 
-                `;
+                    `;
 
-            }).join("");
-
-        /* =========================
-           EVOLUÇÃO
-        ========================= */
+                }
+            ).join("");
 
         const chain =
             await getEvolutionChain(
@@ -1927,18 +2978,15 @@ async function openPokemon(id){
                 chain.chain
             );
 
-        /* ==================================================
-           MONTA A FICHA NORMAL PRIMEIRO
-           AS MEGAS NÃO BLOQUEIAM MAIS ESSA PARTE
-        ================================================== */
-
         content.innerHTML = `
 
             <div class="detail-header">
 
                 <div class="detail-number">
 
-                    #${String(pokemon.id).padStart(4,"0")}
+                    #${String(
+                        pokemon.id
+                    ).padStart(4,"0")}
 
                 </div>
 
@@ -1948,7 +2996,9 @@ async function openPokemon(id){
 
                 <div class="subtitle">
 
-                    ${formatName(pokemon.name)}
+                    ${formatName(
+                        pokemon.name
+                    )}
 
                 </div>
 
@@ -2043,7 +3093,9 @@ async function openPokemon(id){
                             </span>
 
                             <span>
-                                ${getGeneration(pokemon.id)}
+                                ${getGeneration(
+                                    pokemon.id
+                                )}
                             </span>
 
                         </div>
@@ -2187,10 +3239,6 @@ async function openPokemon(id){
 
         `;
 
-        /* ==================================================
-           AGORA BUSCA AS MEGAS SEM TRAVAR A FICHA
-        ================================================== */
-
         const megaTab =
             document.getElementById(
                 "megaTab"
@@ -2230,35 +3278,48 @@ async function openPokemon(id){
 
 }
 
-/* =========================
+/* ==================================================
    ABAS
-========================= */
+================================================== */
 
-function changeTab(tabId,button){
+function changeTab(
+    tabId,
+    button
+){
 
     document
         .querySelectorAll(".tab")
-        .forEach(tab =>
-            tab.classList.remove("active")
+        .forEach(
+            tab =>
+                tab.classList.remove(
+                    "active"
+                )
         );
 
     document
         .querySelectorAll(".tab-content")
-        .forEach(content =>
-            content.classList.remove("active")
+        .forEach(
+            content =>
+                content.classList.remove(
+                    "active"
+                )
         );
 
-    button.classList.add("active");
+    button.classList.add(
+        "active"
+    );
 
     document
         .getElementById(tabId)
-        .classList.add("active");
+        .classList.add(
+            "active"
+        );
 
 }
 
-/* =========================
+/* ==================================================
    FRAQUEZAS
-========================= */
+================================================== */
 
 async function getWeaknesses(types){
 
@@ -2266,11 +3327,16 @@ async function getWeaknesses(types){
 
     Object.keys(typeNames).forEach(
         type => {
+
             multipliers[type] = 1;
+
         }
     );
 
-    for(const typeSlot of types){
+    for(
+        const typeSlot
+        of types
+    ){
 
         const response =
             await fetch(
@@ -2282,51 +3348,66 @@ async function getWeaknesses(types){
 
         data.damage_relations
             .double_damage_from
-            .forEach(item => {
+            .forEach(
+                item => {
 
-                multipliers[item.name] *= 2;
+                    multipliers[
+                        item.name
+                    ] *= 2;
 
-            });
+                }
+            );
 
         data.damage_relations
             .half_damage_from
-            .forEach(item => {
+            .forEach(
+                item => {
 
-                multipliers[item.name] *= 0.5;
+                    multipliers[
+                        item.name
+                    ] *= .5;
 
-            });
+                }
+            );
 
         data.damage_relations
             .no_damage_from
-            .forEach(item => {
+            .forEach(
+                item => {
 
-                multipliers[item.name] *= 0;
+                    multipliers[
+                        item.name
+                    ] *= 0;
 
-            });
+                }
+            );
 
     }
 
-    return Object.keys(multipliers)
-        .filter(
-            type =>
-                multipliers[type] > 1
-        );
+    return Object.keys(
+        multipliers
+    ).filter(
+        type =>
+            multipliers[type] > 1
+    );
 
 }
 
-/* =========================
+/* ==================================================
    VOLTAR
-========================= */
+================================================== */
 
 function showPokedex(){
 
     document.getElementById(
         "pokemonDetails"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
     document.getElementById(
         "pokedexPage"
-    ).style.display = "block";
+    ).style.display =
+        "block";
 
     window.scrollTo({
         top:0,
@@ -2335,9 +3416,9 @@ function showPokedex(){
 
 }
 
-/* =========================
+/* ==================================================
    MAIS
-========================= */
+================================================== */
 
 function loadMore(){
 
@@ -2347,9 +3428,9 @@ function loadMore(){
 
 }
 
-/* =========================
+/* ==================================================
    GERAÇÕES
-========================= */
+================================================== */
 
 function filterGeneration(
     generation,
@@ -2358,16 +3439,27 @@ function filterGeneration(
 
     document
         .querySelectorAll(".filter")
-        .forEach(btn =>
-            btn.classList.remove("active")
+        .forEach(
+            btn =>
+                btn.classList.remove(
+                    "active"
+                )
         );
 
-    button.classList.add("active");
+    if(button){
+
+        button.classList.add(
+            "active"
+        );
+
+    }
 
     currentGeneration =
         generation;
 
-    if(generation === "all"){
+    if(
+        generation === "all"
+    ){
 
         displayedPokemon =
             allPokemon;
@@ -2377,7 +3469,8 @@ function filterGeneration(
         displayedPokemon =
             allPokemon.filter(
                 pokemon =>
-                    pokemon.generation === generation
+                    pokemon.generation ===
+                    generation
             );
 
     }
@@ -2388,15 +3481,58 @@ function filterGeneration(
 
 }
 
-/* =========================
+function filterGenerationFromRegion(
+    generation
+){
+
+    const buttons =
+        document.querySelectorAll(
+            ".filter"
+        );
+
+    buttons.forEach(
+        button => {
+
+            button.classList.remove(
+                "active"
+            );
+
+        }
+    );
+
+    currentGeneration =
+        generation;
+
+    displayedPokemon =
+        allPokemon.filter(
+            pokemon =>
+                pokemon.generation ===
+                generation
+        );
+
+    visibleAmount = 40;
+
+    renderPokemon();
+
+    document.getElementById(
+        "pokedex"
+    ).scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+/* ==================================================
    PESQUISA
-========================= */
+================================================== */
 
 async function searchPokemon(){
 
     const input =
         document
-            .getElementById("searchInput")
+            .getElementById(
+                "searchInput"
+            )
             .value
             .trim()
             .toLowerCase();
@@ -2411,8 +3547,12 @@ async function searchPokemon(){
         displayedPokemon =
             allPokemon.filter(
                 pokemon =>
-                    pokemon.name.includes(input) ||
-                    String(pokemon.id) === input
+                    pokemon.name.includes(
+                        input
+                    ) ||
+                    String(
+                        pokemon.id
+                    ) === input
             );
 
     }
@@ -2421,15 +3561,25 @@ async function searchPokemon(){
 
     renderPokemon();
 
+    document.getElementById(
+        "pokedex"
+    ).scrollIntoView({
+        behavior:"smooth"
+    });
+
 }
 
 document
-    .getElementById("searchInput")
+    .getElementById(
+        "searchInput"
+    )
     .addEventListener(
         "keydown",
         event => {
 
-            if(event.key === "Enter"){
+            if(
+                event.key === "Enter"
+            ){
 
                 searchPokemon();
 
