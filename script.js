@@ -18,6 +18,20 @@ let currentPage = "homePage";
 const MAX_POKEMON = 1025;
 
 /* =========================================================
+   NOVO SISTEMA DE EXIBIÇÃO
+   Pokémon:
+   - Normal
+   - Shiny
+
+   Gerações:
+   - Todas
+   - I até IX
+========================================================= */
+
+let pokemonDisplayMode = "normal";
+let selectedGeneration = 0;
+
+/* =========================================================
    TIPOS
 ========================================================= */
 
@@ -175,6 +189,20 @@ function getPokemonShiny(pokemon) {
         pokemon?.sprites?.front_shiny ||
         getPokemonImage(pokemon)
     );
+}
+
+/* =========================================================
+   NOVO:
+   ESCOLHE A IMAGEM DE ACORDO COM NORMAL / SHINY
+========================================================= */
+
+function getPokemonDisplayImage(pokemon) {
+
+    if (pokemonDisplayMode === "shiny") {
+        return getPokemonShiny(pokemon);
+    }
+
+    return getPokemonImage(pokemon);
 }
 
 /* =========================================================
@@ -572,7 +600,7 @@ async function loadCardData(
             );
 
         const image =
-            getPokemonImage(
+            getPokemonDisplayImage(
                 data
             );
 
@@ -589,7 +617,7 @@ async function loadCardData(
                     src="${image}"
                     alt="${formatPokemonName(
                         pokemon.name
-                    )}"
+                    )}${pokemonDisplayMode === "shiny" ? " Shiny" : ""}"
                     loading="lazy"
                 >
             `;
@@ -696,6 +724,496 @@ function loadMore() {
 }
 
 /* =========================================================
+   NOVO SISTEMA:
+   MENU "POKÉMON"
+========================================================= */
+
+function setPokemonDisplayMode(mode) {
+
+    if (
+        mode !== "normal" &&
+        mode !== "shiny"
+    ) {
+        mode = "normal";
+    }
+
+    pokemonDisplayMode = mode;
+
+    visibleCount = 50;
+
+    renderPokemon();
+
+    updatePokemonMenuState();
+}
+
+/* =========================================================
+   NOVO SISTEMA:
+   MENU "GERAÇÕES"
+========================================================= */
+
+function setGenerationFilter(generation) {
+
+    const generationNumber =
+        Number(generation);
+
+    if (
+        !Number.isFinite(
+            generationNumber
+        )
+    ) {
+        return;
+    }
+
+    selectedGeneration =
+        generationNumber;
+
+    if (
+        generationNumber === 0
+    ) {
+
+        filteredPokemon =
+            [...allPokemon];
+
+    } else {
+
+        const range =
+            getGenerationRange(
+                generationNumber
+            );
+
+        if (!range) return;
+
+        filteredPokemon =
+            allPokemon.filter(
+                pokemon =>
+                    pokemon.id >=
+                        range[0] &&
+                    pokemon.id <=
+                        range[1]
+            );
+    }
+
+    visibleCount = 50;
+
+    renderPokemon();
+
+    updateGenerationMenuState();
+}
+
+/* =========================================================
+   NOVO:
+   CONSTRÓI OS DOIS MENUS NO LOCAL DOS BOTÕES ANTIGOS
+========================================================= */
+
+function setupGenerationButtons() {
+
+    const container =
+        document.querySelector(
+            ".generation-pills"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = `
+        <div
+            class="pokedex-filter-menu"
+            id="pokemonFilterMenu"
+            style="
+                position:relative;
+                display:inline-block;
+                margin-right:10px;
+            "
+        >
+
+            <button
+                type="button"
+                class="generation-pill pokedex-filter-button"
+                id="pokemonFilterButton"
+                onclick="togglePokemonFilterMenu(event)"
+            >
+                Pokémon ▾
+            </button>
+
+            <div
+                id="pokemonFilterDropdown"
+                class="pokedex-filter-dropdown"
+                style="
+                    display:none;
+                    position:absolute;
+                    top:calc(100% + 8px);
+                    left:0;
+                    z-index:9999;
+                    min-width:180px;
+                    padding:8px;
+                    border-radius:12px;
+                    background:#10151f;
+                    border:1px solid rgba(255,255,255,.12);
+                    box-shadow:0 15px 40px rgba(0,0,0,.45);
+                "
+            >
+
+                <button
+                    type="button"
+                    class="generation-pill pokemon-filter-option"
+                    data-mode="normal"
+                    onclick="selectPokemonMode('normal')"
+                    style="width:100%;"
+                >
+                    Normal
+                </button>
+
+                <button
+                    type="button"
+                    class="generation-pill pokemon-filter-option"
+                    data-mode="shiny"
+                    onclick="selectPokemonMode('shiny')"
+                    style="width:100%;"
+                >
+                    ✨ Shiny
+                </button>
+
+            </div>
+
+        </div>
+
+        <div
+            class="pokedex-filter-menu"
+            id="generationFilterMenu"
+            style="
+                position:relative;
+                display:inline-block;
+            "
+        >
+
+            <button
+                type="button"
+                class="generation-pill pokedex-filter-button"
+                id="generationFilterButton"
+                onclick="toggleGenerationFilterMenu(event)"
+            >
+                Gerações ▾
+            </button>
+
+            <div
+                id="generationFilterDropdown"
+                class="pokedex-filter-dropdown"
+                style="
+                    display:none;
+                    position:absolute;
+                    top:calc(100% + 8px);
+                    left:0;
+                    z-index:9999;
+                    min-width:220px;
+                    max-height:420px;
+                    overflow-y:auto;
+                    padding:8px;
+                    border-radius:12px;
+                    background:#10151f;
+                    border:1px solid rgba(255,255,255,.12);
+                    box-shadow:0 15px 40px rgba(0,0,0,.45);
+                "
+            >
+
+                <button
+                    type="button"
+                    class="generation-pill generation-filter-option"
+                    data-generation="0"
+                    onclick="selectGeneration(0)"
+                    style="width:100%;"
+                >
+                    Todas
+                </button>
+
+                ${generations
+                    .map(
+                        generation => `
+                            <button
+                                type="button"
+                                class="generation-pill generation-filter-option"
+                                data-generation="${generation.id}"
+                                onclick="selectGeneration(${generation.id})"
+                                style="width:100%;"
+                            >
+                                ${generation.roman} — ${generation.region}
+                            </button>
+                        `
+                    )
+                    .join("")}
+
+            </div>
+
+        </div>
+    `;
+
+    updatePokemonMenuState();
+    updateGenerationMenuState();
+}
+
+/* =========================================================
+   ABRIR/FECHAR MENU POKÉMON
+========================================================= */
+
+function togglePokemonFilterMenu(
+    event
+) {
+
+    if (event) {
+        event.stopPropagation();
+    }
+
+    const dropdown =
+        document.getElementById(
+            "pokemonFilterDropdown"
+        );
+
+    const generationDropdown =
+        document.getElementById(
+            "generationFilterDropdown"
+        );
+
+    if (!dropdown) return;
+
+    if (generationDropdown) {
+        generationDropdown.style.display =
+            "none";
+    }
+
+    dropdown.style.display =
+        dropdown.style.display === "block"
+            ? "none"
+            : "block";
+}
+
+/* =========================================================
+   ABRIR/FECHAR MENU GERAÇÕES
+========================================================= */
+
+function toggleGenerationFilterMenu(
+    event
+) {
+
+    if (event) {
+        event.stopPropagation();
+    }
+
+    const dropdown =
+        document.getElementById(
+            "generationFilterDropdown"
+        );
+
+    const pokemonDropdown =
+        document.getElementById(
+            "pokemonFilterDropdown"
+        );
+
+    if (!dropdown) return;
+
+    if (pokemonDropdown) {
+        pokemonDropdown.style.display =
+            "none";
+    }
+
+    dropdown.style.display =
+        dropdown.style.display === "block"
+            ? "none"
+            : "block";
+}
+
+/* =========================================================
+   SELECIONAR NORMAL / SHINY
+========================================================= */
+
+function selectPokemonMode(
+    mode
+) {
+
+    setPokemonDisplayMode(
+        mode
+    );
+
+    const dropdown =
+        document.getElementById(
+            "pokemonFilterDropdown"
+        );
+
+    if (dropdown) {
+        dropdown.style.display =
+            "none";
+    }
+}
+
+/* =========================================================
+   SELECIONAR GERAÇÃO
+========================================================= */
+
+function selectGeneration(
+    generation
+) {
+
+    setGenerationFilter(
+        generation
+    );
+
+    const dropdown =
+        document.getElementById(
+            "generationFilterDropdown"
+        );
+
+    if (dropdown) {
+        dropdown.style.display =
+            "none";
+    }
+}
+
+/* =========================================================
+   ATUALIZA TEXTO/ESTADO DO MENU POKÉMON
+========================================================= */
+
+function updatePokemonMenuState() {
+
+    const button =
+        document.getElementById(
+            "pokemonFilterButton"
+        );
+
+    if (button) {
+
+        button.textContent =
+            pokemonDisplayMode === "shiny"
+                ? "Pokémon • ✨ Shiny ▾"
+                : "Pokémon • Normal ▾";
+    }
+
+    document
+        .querySelectorAll(
+            ".pokemon-filter-option"
+        )
+        .forEach(
+            option => {
+
+                const mode =
+                    option.dataset.mode;
+
+                option.classList.toggle(
+                    "active",
+                    mode ===
+                    pokemonDisplayMode
+                );
+            }
+        );
+}
+
+/* =========================================================
+   ATUALIZA TEXTO/ESTADO DO MENU GERAÇÕES
+========================================================= */
+
+function updateGenerationMenuState() {
+
+    const button =
+        document.getElementById(
+            "generationFilterButton"
+        );
+
+    if (button) {
+
+        if (
+            selectedGeneration === 0
+        ) {
+
+            button.textContent =
+                "Gerações • Todas ▾";
+
+        } else {
+
+            const generation =
+                generations.find(
+                    item =>
+                        item.id ===
+                        selectedGeneration
+                );
+
+            if (generation) {
+
+                button.textContent =
+                    `Gerações • ${generation.roman} — ${generation.region} ▾`;
+            }
+        }
+    }
+
+    document
+        .querySelectorAll(
+            ".generation-filter-option"
+        )
+        .forEach(
+            option => {
+
+                const generation =
+                    Number(
+                        option.dataset.generation
+                    );
+
+                option.classList.toggle(
+                    "active",
+                    generation ===
+                    selectedGeneration
+                );
+            }
+        );
+}
+
+/* =========================================================
+   FECHAR DROPDOWNS AO CLICAR FORA
+========================================================= */
+
+document.addEventListener(
+    "click",
+    event => {
+
+        const pokemonMenu =
+            document.getElementById(
+                "pokemonFilterMenu"
+            );
+
+        const generationMenu =
+            document.getElementById(
+                "generationFilterMenu"
+            );
+
+        const pokemonDropdown =
+            document.getElementById(
+                "pokemonFilterDropdown"
+            );
+
+        const generationDropdown =
+            document.getElementById(
+                "generationFilterDropdown"
+            );
+
+        if (
+            pokemonMenu &&
+            !pokemonMenu.contains(event.target) &&
+            pokemonDropdown
+        ) {
+
+            pokemonDropdown.style.display =
+                "none";
+        }
+
+        if (
+            generationMenu &&
+            !generationMenu.contains(event.target) &&
+            generationDropdown
+        ) {
+
+            generationDropdown.style.display =
+                "none";
+        }
+    }
+);
+
+/* =========================================================
    PESQUISA HOME
 ========================================================= */
 
@@ -724,8 +1242,38 @@ function searchPokemon(
 
     if (!query) {
 
-        filteredPokemon =
-            [...allPokemon];
+        if (
+            selectedGeneration ===
+            0
+        ) {
+
+            filteredPokemon =
+                [...allPokemon];
+
+        } else {
+
+            const range =
+                getGenerationRange(
+                    selectedGeneration
+                );
+
+            if (range) {
+
+                filteredPokemon =
+                    allPokemon.filter(
+                        pokemon =>
+                            pokemon.id >=
+                                range[0] &&
+                            pokemon.id <=
+                                range[1]
+                    );
+
+            } else {
+
+                filteredPokemon =
+                    [...allPokemon];
+            }
+        }
 
         visibleCount = 50;
 
@@ -737,6 +1285,28 @@ function searchPokemon(
     filteredPokemon =
         allPokemon.filter(
             pokemon => {
+
+                if (
+                    selectedGeneration !==
+                    0
+                ) {
+
+                    const range =
+                        getGenerationRange(
+                            selectedGeneration
+                        );
+
+                    if (
+                        !range ||
+                        pokemon.id <
+                            range[0] ||
+                        pokemon.id >
+                            range[1]
+                    ) {
+
+                        return false;
+                    }
+                }
 
                 const name =
                     pokemon.name
@@ -1075,6 +1645,8 @@ function filterGeneration(
         generation === "0"
     ) {
 
+        selectedGeneration = 0;
+
         filteredPokemon =
             [...allPokemon];
 
@@ -1087,6 +1659,9 @@ function filterGeneration(
 
         if (!range) return;
 
+        selectedGeneration =
+            generationNumber;
+
         filteredPokemon =
             allPokemon.filter(
                 pokemon =>
@@ -1098,6 +1673,12 @@ function filterGeneration(
     }
 
     visibleCount = 50;
+
+    /*
+       Mantém compatibilidade com os
+       antigos botões de geração caso
+       existam em alguma parte do site.
+    */
 
     document
         .querySelectorAll(
@@ -1119,26 +1700,9 @@ function filterGeneration(
             "active"
         );
 
-    } else {
-
-        const buttons =
-            document.querySelectorAll(
-                ".generation-pill"
-            );
-
-        if (
-            buttons[
-                generationNumber
-            ]
-        ) {
-
-            buttons[
-                generationNumber
-            ].classList.add(
-                "active"
-            );
-        }
     }
+
+    updateGenerationMenuState();
 
     showPage(
         "homePage"
@@ -2239,11 +2803,6 @@ function buildStats(
 
 /* =========================================================
    EVOLUÇÕES
-   AGORA MOSTRA:
-   - evoluções anteriores
-   - evoluções posteriores
-   - NÃO mostra o Pokémon atual
-   - cada card é clicável
 ========================================================= */
 
 async function getEvolutionChain(
@@ -2276,11 +2835,6 @@ async function getEvolutionChain(
 
     return data;
 }
-
-/* ---------------------------------------------------------
-   Encontra o Pokémon atual dentro da cadeia
-   e guarda todos os ancestrais dele.
---------------------------------------------------------- */
 
 function findEvolutionNode(
     chain,
@@ -2336,11 +2890,6 @@ function findEvolutionNode(
     return null;
 }
 
-/* ---------------------------------------------------------
-   Pega TODAS as evoluções que vêm depois
-   do Pokémon atual, inclusive ramificações.
---------------------------------------------------------- */
-
 function collectDescendants(
     node,
     result = []
@@ -2370,10 +2919,6 @@ function collectDescendants(
 
     return result;
 }
-
-/* ---------------------------------------------------------
-   Cria uma lista sem duplicações.
---------------------------------------------------------- */
 
 function uniqueEvolutionNodes(
     nodes
@@ -2405,10 +2950,6 @@ function uniqueEvolutionNodes(
         }
     );
 }
-
-/* ---------------------------------------------------------
-   Monta os cards de evolução.
---------------------------------------------------------- */
 
 function buildEvolutionCards(
     nodes,
@@ -2510,10 +3051,6 @@ function buildEvolutionCards(
     `;
 }
 
-/* =========================================================
-   CONSTRUIR EVOLUÇÕES RELATIVAS AO POKÉMON ATUAL
-========================================================= */
-
 async function buildEvolutionSection(
     species,
     currentName
@@ -2552,20 +3089,11 @@ async function buildEvolutionSection(
             return;
         }
 
-        /*
-           Localiza exatamente o Pokémon aberto.
-        */
-
         const found =
             findEvolutionNode(
                 chain.chain,
                 currentName
             );
-
-        /*
-           Caso o nome não seja encontrado,
-           usamos a cadeia inteira como fallback.
-        */
 
         if (!found) {
 
@@ -2585,44 +3113,13 @@ async function buildEvolutionSection(
             return;
         }
 
-        /*
-           ANTES:
-           todos os ancestrais.
-
-           Exemplo Venusaur:
-           Bulbasaur → Ivysaur
-
-           Exemplo Ivysaur:
-           Bulbasaur
-        */
-
         const previous =
             found.ancestors || [];
-
-        /*
-           DEPOIS:
-           todas as evoluções que saem
-           do Pokémon atual.
-
-           Exemplo Bulbasaur:
-           Ivysaur → Venusaur
-
-           Exemplo Ivysaur:
-           Venusaur
-
-           Exemplo Venusaur:
-           nenhuma.
-        */
 
         const next =
             collectDescendants(
                 found.node
             );
-
-        /*
-           Junta anteriores + posteriores.
-           O atual nunca entra.
-        */
 
         const evolutionNodes =
             uniqueEvolutionNodes([
@@ -2945,37 +3442,6 @@ function setupSearch() {
 }
 
 /* =========================================================
-   BOTÕES DE GERAÇÃO
-========================================================= */
-
-function setupGenerationButtons() {
-
-    const buttons =
-        document.querySelectorAll(
-            ".generation-pills button"
-        );
-
-    buttons.forEach(
-        (
-            button,
-            index
-        ) => {
-
-            button.classList.add(
-                "generation-pill"
-            );
-
-            if (index === 0) {
-
-                button.classList.add(
-                    "active"
-                );
-            }
-        }
-    );
-}
-
-/* =========================================================
    MENU
 ========================================================= */
 
@@ -3020,6 +3486,26 @@ document.addEventListener(
         ) {
 
             closeMenu();
+
+            const pokemonDropdown =
+                document.getElementById(
+                    "pokemonFilterDropdown"
+                );
+
+            const generationDropdown =
+                document.getElementById(
+                    "generationFilterDropdown"
+                );
+
+            if (pokemonDropdown) {
+                pokemonDropdown.style.display =
+                    "none";
+            }
+
+            if (generationDropdown) {
+                generationDropdown.style.display =
+                    "none";
+            }
 
             const detail =
                 document.getElementById(
