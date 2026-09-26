@@ -1,2765 +1,1959 @@
 /* =========================================================
    POKÉDEX ONLINE — SCRIPT PRINCIPAL
    Pokémon Community
+   Nomes dos Pokémon: INGLÊS
+   Interface: PORTUGUÊS
+   Tipos: PORTUGUÊS
+   Descrições: PORTUGUÊS quando disponíveis
 ========================================================= */
-
 const API = "https://pokeapi.co/api/v2";
-
 let allPokemon = [];
 let filteredPokemon = [];
-
 let visibleCount = 50;
 let currentPokemon = null;
 let currentPage = "homePage";
-
-
+const MAX_POKEMON = 1025;
 /* =========================================================
-   TRADUÇÃO DOS NOMES
+   TRADUÇÃO DOS TIPOS
 ========================================================= */
-
-const pokemonNames = {
-
-    bulbasaur:"Bulbassauro",
-    ivysaur:"Ivysaur",
-    venusaur:"Venusaur",
-
-    charmander:"Charmander",
-    charmeleon:"Charmeleon",
-    charizard:"Charizard",
-
-    squirtle:"Squirtle",
-    wartortle:"Wartortle",
-    blastoise:"Blastoise",
-
-    caterpie:"Caterpie",
-    metapod:"Metapod",
-    butterfree:"Butterfree",
-
-    weedle:"Weedle",
-    kakuna:"Kakuna",
-    beedrill:"Beedrill",
-
-    pidgey:"Pidgey",
-    pidgeotto:"Pidgeotto",
-    pidgeot:"Pidgeot",
-
-    rattata:"Rattata",
-    raticate:"Raticate",
-
-    spearow:"Spearow",
-    fearow:"Fearow",
-
-    ekans:"Ekans",
-    arbok:"Arbok",
-
-    pikachu:"Pikachu",
-    raichu:"Raichu",
-
-    sandshrew:"Sandshrew",
-    sandslash:"Sandslash",
-
-    nidoran:"Nidoran",
-    nidorina:"Nidorina",
-    nidorino:"Nidorino",
-    nidoqueen:"Nidoqueen",
-    nidoking:"Nidoking",
-
-    clefairy:"Clefairy",
-    clefable:"Clefable",
-
-    vulpix:"Vulpix",
-    ninetales:"Ninetales",
-
-    jigglypuff:"Jigglypuff",
-    wigglytuff:"Wigglytuff",
-
-    zubat:"Zubat",
-    golbat:"Golbat",
-    crobat:"Crobat",
-
-    oddish:"Oddish",
-    gloom:"Gloom",
-    vileplume:"Vileplume",
-
-    paras:"Paras",
-    parasect:"Parasect",
-
-    venonat:"Venonat",
-    venomoth:"Venomoth",
-
-    diglett:"Diglett",
-    dugtrio:"Dugtrio",
-
-    meowth:"Meowth",
-    persian:"Persian",
-
-    psyduck:"Psyduck",
-    golduck:"Golduck",
-
-    mankey:"Mankey",
-    primeape:"Primeape",
-
-    growlithe:"Growlithe",
-    arcanine:"Arcanine",
-
-    poliwag:"Poliwag",
-    poliwhirl:"Poliwhirl",
-    poliwrath:"Poliwrath",
-
-    abra:"Abra",
-    kadabra:"Kadabra",
-    alakazam:"Alakazam",
-
-    machop:"Machop",
-    machoke:"Machoke",
-    machamp:"Machamp",
-
-    bellsprout:"Bellsprout",
-    weepinbell:"Weepinbell",
-    victreebel:"Victreebel",
-
-    tentacool:"Tentacool",
-    tentacruel:"Tentacruel",
-
-    geodude:"Geodude",
-    graveler:"Graveler",
-    golem:"Golem",
-
-    ponyta:"Ponyta",
-    rapidash:"Rapidash",
-
-    slowpoke:"Slowpoke",
-    slowbro:"Slowbro",
-
-    magnemite:"Magnemite",
-    magneton:"Magneton",
-    magnezone:"Magnezone",
-
-    farfetchd:"Farfetch'd",
-
-    doduo:"Doduo",
-    dodrio:"Dodrio",
-
-    dewgong:"Dewgong",
-
-    grimer:"Grimer",
-    muk:"Muk",
-
-    shellder:"Shellder",
-    cloyster:"Cloyster",
-
-    gastly:"Gastly",
-    haunter:"Haunter",
-    gengar:"Gengar",
-
-    onix:"Onix",
-
-    drowzee:"Drowzee",
-    hypno:"Hypno",
-
-    krabby:"Krabby",
-    kingler:"Kingler",
-
-    voltorb:"Voltorb",
-    electrode:"Electrode",
-
-    exeggcute:"Exeggcute",
-    exeggutor:"Exeggutor",
-
-    cubone:"Cubone",
-    marowak:"Marowak",
-
-    hitmonlee:"Hitmonlee",
-    hitmonchan:"Hitmonchan",
-
-    lickitung:"Lickitung",
-
-    koffing:"Koffing",
-    weezing:"Weezing",
-
-    rhyhorn:"Rhyhorn",
-    rhydon:"Rhydon",
-    rhyperior:"Rhyperior",
-
-    chansey:"Chansey",
-    blissey:"Blissey",
-
-    tangela:"Tangela",
-    tangrowth:"Tangrowth",
-
-    kangaskhan:"Kangaskhan",
-
-    horsea:"Horsea",
-    seadra:"Seadra",
-    kingdra:"Kingdra",
-
-    goldeen:"Goldeen",
-    seaking:"Seaking",
-
-    staryu:"Staryu",
-    starmie:"Starmie",
-
-    mr_mime:"Mr. Mime",
-    mrmime:"Mr. Mime",
-
-    scyther:"Scyther",
-    scizor:"Scizor",
-
-    jynx:"Jynx",
-
-    electabuzz:"Electabuzz",
-    electivire:"Electivire",
-
-    magmar:"Magmar",
-    magmortar:"Magmortar",
-
-    pinsir:"Pinsir",
-
-    tauros:"Tauros",
-
-    magikarp:"Magikarp",
-    gyarados:"Gyarados",
-
-    lapras:"Lapras",
-
-    ditto:"Ditto",
-
-    eevee:"Eevee",
-    vaporeon:"Vaporeon",
-    jolteon:"Jolteon",
-    flareon:"Flareon",
-    espeon:"Espeon",
-    umbreon:"Umbreon",
-    leafeon:"Leafeon",
-    glaceon:"Glaceon",
-    sylveon:"Sylveon",
-
-    porygon:"Porygon",
-    porygon2:"Porygon2",
-    porygon_z:"Porygon-Z",
-    porygonz:"Porygon-Z",
-
-    omanyte:"Omanyte",
-    omastar:"Omastar",
-
-    kabuto:"Kabuto",
-    kabutops:"Kabutops",
-
-    aerodactyl:"Aerodactyl",
-
-    snorlax:"Snorlax",
-
-    articuno:"Articuno",
-    zapdos:"Zapdos",
-    moltres:"Moltres",
-
-    dratini:"Dratini",
-    dragonair:"Dragonair",
-    dragonite:"Dragonite",
-
-    mewtwo:"Mewtwo",
-    mew:"Mew"
-
-};
-
-
-/* =========================================================
-   TIPOS
-========================================================= */
-
 const typeInfo = {
-
-    normal:{
-        name:"Normal",
-        icon:"⚪",
-        description:"Pokémon equilibrados e versáteis."
+    normal: {
+        name: "Normal",
+        icon: "⚪"
     },
-
-    fire:{
-        name:"Fogo",
-        icon:"🔥",
-        description:"Chamas, calor e ataques incendiários."
+    fire: {
+        name: "Fogo",
+        icon: "🔥"
     },
-
-    water:{
-        name:"Água",
-        icon:"💧",
-        description:"Força dos oceanos, rios e mares."
+    water: {
+        name: "Água",
+        icon: "💧"
     },
-
-    electric:{
-        name:"Elétrico",
-        icon:"⚡",
-        description:"Energia elétrica e descargas poderosas."
+    electric: {
+        name: "Elétrico",
+        icon: "⚡"
     },
-
-    grass:{
-        name:"Planta",
-        icon:"🌿",
-        description:"Natureza, plantas e energia vital."
+    grass: {
+        name: "Planta",
+        icon: "🌿"
     },
-
-    ice:{
-        name:"Gelo",
-        icon:"❄️",
-        description:"Frio extremo, neve e gelo."
+    ice: {
+        name: "Gelo",
+        icon: "❄️"
     },
-
-    fighting:{
-        name:"Lutador",
-        icon:"🥊",
-        description:"Força física e técnicas de combate."
+    fighting: {
+        name: "Lutador",
+        icon: "🥊"
     },
-
-    poison:{
-        name:"Veneno",
-        icon:"☠️",
-        description:"Toxinas, venenos e efeitos nocivos."
+    poison: {
+        name: "Veneno",
+        icon: "☠️"
     },
-
-    ground:{
-        name:"Terra",
-        icon:"🌍",
-        description:"Terra, areia e movimentos sísmicos."
+    ground: {
+        name: "Terra",
+        icon: "🌍"
     },
-
-    flying:{
-        name:"Voador",
-        icon:"🪽",
-        description:"Vento, velocidade e liberdade aérea."
+    flying: {
+        name: "Voador",
+        icon: "🪽"
     },
-
-    psychic:{
-        name:"Psíquico",
-        icon:"🔮",
-        description:"Poderes mentais e energia psíquica."
+    psychic: {
+        name: "Psíquico",
+        icon: "🔮"
     },
-
-    bug:{
-        name:"Inseto",
-        icon:"🦋",
-        description:"Insetos e criaturas da natureza."
+    bug: {
+        name: "Inseto",
+        icon: "🦋"
     },
-
-    rock:{
-        name:"Pedra",
-        icon:"🪨",
-        description:"Pedras, minerais e resistência."
+    rock: {
+        name: "Pedra",
+        icon: "🪨"
     },
-
-    ghost:{
-        name:"Fantasma",
-        icon:"👻",
-        description:"Espíritos e energia sobrenatural."
+    ghost: {
+        name: "Fantasma",
+        icon: "👻"
     },
-
-    dragon:{
-        name:"Dragão",
-        icon:"🐉",
-        description:"Poder ancestral e energia dracônica."
+    dragon: {
+        name: "Dragão",
+        icon: "🐉"
     },
-
-    dark:{
-        name:"Sombrio",
-        icon:"🌑",
-        description:"Sombras, astúcia e mistério."
+    dark: {
+        name: "Sombrio",
+        icon: "🌑"
     },
-
-    steel:{
-        name:"Aço",
-        icon:"⚙️",
-        description:"Metal, armadura e resistência."
+    steel: {
+        name: "Aço",
+        icon: "⚙️"
     },
-
-    fairy:{
-        name:"Fada",
-        icon:"✨",
-        description:"Magia, encanto e energia feérica."
+    fairy: {
+        name: "Fada",
+        icon: "✨"
     }
-
 };
-
-
 /* =========================================================
    GERAÇÕES
 ========================================================= */
-
 const generations = [
-
     {
-        id:1,
-        roman:"I",
-        region:"KANTO",
-        description:"A região onde tudo começou.",
-        css:"region-kanto"
+        id: 1,
+        roman: "I",
+        region: "KANTO",
+        description: "A região onde tudo começou.",
+        css: "region-kanto"
     },
-
     {
-        id:2,
-        roman:"II",
-        region:"JOHTO",
-        description:"Tradição, história e novos Pokémon.",
-        css:"region-johto"
+        id: 2,
+        roman: "II",
+        region: "JOHTO",
+        description: "Uma região repleta de tradição e mistérios.",
+        css: "region-johto"
     },
-
     {
-        id:3,
-        roman:"III",
-        region:"HOENN",
-        description:"Natureza, oceanos e clima tropical.",
-        css:"region-hoenn"
+        id: 3,
+        roman: "III",
+        region: "HOENN",
+        description: "Uma região marcada por oceanos e natureza.",
+        css: "region-hoenn"
     },
-
     {
-        id:4,
-        roman:"IV",
-        region:"SINNOH",
-        description:"Uma região de montanhas e lendas antigas.",
-        css:"region-sinnoh"
+        id: 4,
+        roman: "IV",
+        region: "SINNOH",
+        description: "Uma região antiga cercada por lendas.",
+        css: "region-sinnoh"
     },
-
     {
-        id:5,
-        roman:"V",
-        region:"UNOVA",
-        description:"Uma nova jornada em uma região moderna.",
-        css:"region-unova"
+        id: 5,
+        roman: "V",
+        region: "UNOVA",
+        description: "Uma região moderna e cheia de novidades.",
+        css: "region-unova"
     },
-
     {
-        id:6,
-        roman:"VI",
-        region:"KALOS",
-        description:"Elegância, beleza e Mega Evolução.",
-        css:"region-kalos"
+        id: 6,
+        roman: "VI",
+        region: "KALOS",
+        description: "Uma região conhecida por sua elegância.",
+        css: "region-kalos"
     },
-
     {
-        id:7,
-        roman:"VII",
-        region:"ALOLA",
-        description:"Ilhas tropicais e formas regionais.",
-        css:"region-alola"
+        id: 7,
+        roman: "VII",
+        region: "ALOLA",
+        description: "Ilhas tropicais com uma cultura única.",
+        css: "region-alola"
     },
-
     {
-        id:8,
-        roman:"VIII",
-        region:"GALAR",
-        description:"Estádios, batalhas gigantes e Dynamax.",
-        css:"region-galar"
+        id: 8,
+        roman: "VIII",
+        region: "GALAR",
+        description: "Uma região de grandes estádios e batalhas gigantes.",
+        css: "region-galar"
     },
-
     {
-        id:9,
-        roman:"IX",
-        region:"PALDEA",
-        description:"Uma região aberta e repleta de mistérios.",
-        css:"region-paldea"
+        id: 9,
+        roman: "IX",
+        region: "PALDEA",
+        description: "Uma região aberta com novas aventuras.",
+        css: "region-paldea"
     }
-
 ];
-
-
 /* =========================================================
-   FUNÇÕES AUXILIARES
+   CACHE
 ========================================================= */
-
-function capitalize(text){
-
-    if(!text){
+const pokemonCache = new Map();
+const speciesCache = new Map();
+const evolutionCache = new Map();
+/* =========================================================
+   FUNÇÕES BÁSICAS
+========================================================= */
+function capitalize(text) {
+    if (!text) {
         return "";
     }
-
     return text.charAt(0).toUpperCase() + text.slice(1);
-
 }
-
-
-function formatPokemonName(name){
-
-    if(!name){
-        return "Desconhecido";
+function formatPokemonName(name) {
+    if (!name) {
+        return "";
     }
-
-    const clean =
-        name
-            .toLowerCase()
-            .replace(/-f$/,"")
-            .replace(/-m$/,"");
-
-    if(pokemonNames[clean]){
-        return pokemonNames[clean];
-    }
-
-    return clean
+    return name
         .split("-")
-        .map(capitalize)
+        .map(part => capitalize(part))
         .join(" ");
-
 }
-
-
-function formatNumber(number){
-
-    return String(number).padStart(4,"0");
-
+function formatNumber(id) {
+    return String(id).padStart(4, "0");
 }
-
-
-function getPokemonImage(pokemon){
-
+function getIdFromUrl(url) {
+    if (!url) {
+        return null;
+    }
+    const parts = url
+        .split("/")
+        .filter(Boolean);
+    const id = Number(parts[parts.length - 1]);
+    return Number.isFinite(id) ? id : null;
+}
+function getPokemonImage(pokemon) {
     return (
         pokemon?.sprites?.other?.["official-artwork"]?.front_default ||
+        pokemon?.sprites?.other?.home?.front_default ||
         pokemon?.sprites?.front_default ||
         ""
     );
-
 }
-
-
-function getPokemonShiny(pokemon){
-
+function getPokemonShiny(pokemon) {
     return (
         pokemon?.sprites?.other?.["official-artwork"]?.front_shiny ||
+        pokemon?.sprites?.other?.home?.front_shiny ||
         pokemon?.sprites?.front_shiny ||
-        ""
+        getPokemonImage(pokemon)
     );
-
 }
-
-
-function getIdFromUrl(url){
-
-    if(!url){
-        return 0;
-    }
-
-    const parts =
-        url.split("/").filter(Boolean);
-
-    return Number(
-        parts[parts.length - 1]
-    );
-
-}
-
-
 /* =========================================================
    API
 ========================================================= */
-
-async function apiFetch(url){
-
-    try{
-
-        const response =
-            await fetch(url);
-
-        if(!response.ok){
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        return await response.json();
-
-    }catch(error){
-
-        console.error("Erro na API:",error);
-
-        return null;
-
+async function apiFetch(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(
+            `Erro HTTP ${response.status} em ${url}`
+        );
     }
-
+    return response.json();
 }
-
-
 /* =========================================================
-   CARREGAR POKÉMON
+   BUSCAR POKÉMON
 ========================================================= */
-
-async function loadPokemon(){
-
-    const grid =
-        document.getElementById("pokedex") ||
-        document.getElementById("pokemonGrid");
-
-    if(grid){
-
-        grid.innerHTML = `
-
-            <div class="loading">
-
-                <div class="loading-spinner"></div>
-
-                <p>Carregando Pokédex...</p>
-
-            </div>
-
-        `;
-
+async function getPokemon(idOrName) {
+    const key = String(idOrName).toLowerCase();
+    if (pokemonCache.has(key)) {
+        return pokemonCache.get(key);
     }
-
-    try{
-
-        const data =
-            await apiFetch(
-                `${API}/pokemon?limit=1025`
-            );
-
-        if(!data || !Array.isArray(data.results)){
-            throw new Error("Resposta inválida da PokéAPI.");
+    const pokemon = await apiFetch(
+        `${API}/pokemon/${key}`
+    );
+    pokemonCache.set(key, pokemon);
+    return pokemon;
+}
+async function getSpecies(idOrName) {
+    const key = String(idOrName).toLowerCase();
+    if (speciesCache.has(key)) {
+        return speciesCache.get(key);
+    }
+    const species = await apiFetch(
+        `${API}/pokemon-species/${key}`
+    );
+    speciesCache.set(key, species);
+    return species;
+}
+/* =========================================================
+   DADOS LOCALIZADOS
+========================================================= */
+function getLocalizedName(species, language = "en") {
+    if (!species?.names) {
+        return formatPokemonName(species?.name || "");
+    }
+    const entry = species.names.find(
+        item => item.language?.name === language
+    );
+    return entry?.name ||
+        formatPokemonName(species.name);
+}
+/*
+   IMPORTANTE:
+   Os nomes dos Pokémon continuam em inglês.
+*/
+function getEnglishPokemonName(species, pokemon) {
+    return formatPokemonName(
+        pokemon?.name ||
+        species?.name ||
+        ""
+    );
+}
+function getPortugueseDescription(species) {
+    if (!species?.flavor_text_entries) {
+        return "Descrição não disponível.";
+    }
+    const entries = species.flavor_text_entries;
+    const preferred = [
+        "pt-br",
+        "pt",
+        "en"
+    ];
+    for (const language of preferred) {
+        const entry = entries.find(
+            item =>
+                item.language?.name === language
+        );
+        if (entry?.flavor_text) {
+            return entry.flavor_text
+                .replace(/\n|\f/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
         }
-
-        allPokemon =
-            data.results.map((pokemon,index) => ({
-
-                id:index + 1,
-
-                name:pokemon.name,
-
-                url:pokemon.url,
-
-                image:
-                    `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png`
-
-            }));
-
-        filteredPokemon =
-            [...allPokemon];
-
-        visibleCount = 50;
-
+    }
+    return "Descrição não disponível.";
+}
+function getPortugueseGenus(species) {
+    if (!species?.genera) {
+        return "";
+    }
+    const entry =
+        species.genera.find(
+            item =>
+                item.language?.name === "pt-br"
+        ) ||
+        species.genera.find(
+            item =>
+                item.language?.name === "pt"
+        ) ||
+        species.genera.find(
+            item =>
+                item.language?.name === "en"
+        );
+    return entry?.genus || "";
+}
+/* =========================================================
+   CARREGAR LISTA PRINCIPAL
+========================================================= */
+async function loadPokemon() {
+    const grid =
+        document.getElementById("pokedex");
+    if (grid) {
+        grid.innerHTML = `
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Carregando Pokédex...</p>
+            </div>
+        `;
+    }
+    try {
+        const data = await apiFetch(
+            `${API}/pokemon?limit=${MAX_POKEMON}&offset=0`
+        );
+        allPokemon = data.results
+            .map((pokemon, index) => {
+                const id = index + 1;
+                return {
+                    id,
+                    name: pokemon.name,
+                    url: pokemon.url
+                };
+            })
+            .filter(
+                pokemon =>
+                    pokemon.id <= MAX_POKEMON
+            );
+        filteredPokemon = [...allPokemon];
         renderPokemon();
-
-    }catch(error){
-
+    } catch (error) {
         console.error(
-            "Erro carregando Pokédex:",
+            "Erro ao carregar Pokémon:",
             error
         );
-
-        if(grid){
-
+        if (grid) {
             grid.innerHTML = `
-
                 <div class="error-message">
-
-                    <div style="font-size:50px;">
-                        ⚠️
-                    </div>
-
-                    <h2>
+                    <div style="font-size:42px;">⚠️</div>
+                    <h3>
                         Não foi possível carregar a Pokédex
-                    </h2>
-
+                    </h3>
                     <p>
                         Verifique sua conexão e tente novamente.
                     </p>
-
                     <button onclick="loadPokemon()">
                         Tentar novamente
                     </button>
-
                 </div>
-
             `;
-
         }
-
     }
-
 }
-
-
 /* =========================================================
    RENDERIZAÇÃO
 ========================================================= */
-
-function renderPokemon(){
-
+function renderPokemon() {
     const grid =
-        document.getElementById("pokedex") ||
-        document.getElementById("pokemonGrid");
-
-    if(!grid){
+        document.getElementById("pokedex");
+    if (!grid) {
         return;
     }
-
-    const list =
-        Array.isArray(filteredPokemon)
-            ? filteredPokemon
-            : [];
-
+    grid.innerHTML = "";
     const visible =
-        list.slice(0,visibleCount);
-
-    if(!visible.length){
-
+        filteredPokemon.slice(
+            0,
+            visibleCount
+        );
+    if (!visible.length) {
         grid.innerHTML = `
-
-            <div class="empty-message">
-
-                <div style="font-size:50px;">
-                    🔎
-                </div>
-
-                <h3>
-                    Nenhum Pokémon encontrado
-                </h3>
-
+            <div class="error-message">
+                <div style="font-size:42px;">🔎</div>
+                <h3>Nenhum Pokémon encontrado</h3>
                 <p>
-                    Tente pesquisar outro nome ou número.
+                    Tente outro nome ou número.
                 </p>
-
             </div>
-
         `;
-
         updateLoadMoreButton();
-
         return;
-
     }
-
-    grid.innerHTML =
-        visible
-            .map(createPokemonCard)
-            .join("");
-
+    visible.forEach(pokemon => {
+        grid.appendChild(
+            createPokemonCard(pokemon)
+        );
+    });
     updateLoadMoreButton();
-
-    visible.forEach(
-        pokemon => loadCardTypes(pokemon)
-    );
-
+    loadCardTypes(visible);
 }
-
-
 /* =========================================================
    CARD
 ========================================================= */
-
-function createPokemonCard(pokemon){
-
-    const id =
-        Number(pokemon.id);
-
-    const name =
-        formatPokemonName(pokemon.name);
-
-    const image =
-        pokemon.image ||
-        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
-
-    return `
-
-        <article
-            class="pokemon-card"
-            data-id="${id}"
-            onclick="openPokemon(${id})"
-        >
-
-            <div class="pokemon-image-container">
-
-                <span class="pokemon-number">
-                    #${formatNumber(id)}
+function createPokemonCard(pokemon) {
+    const card =
+        document.createElement("article");
+    card.className = "pokemon-card";
+    card.dataset.id = pokemon.id;
+    card.innerHTML = `
+        <div class="pokemon-card-number">
+            #${formatNumber(pokemon.id)}
+        </div>
+        <div class="pokemon-card-image">
+            <div class="card-loading">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+        <div class="pokemon-card-info">
+            <h3>
+                ${formatPokemonName(pokemon.name)}
+            </h3>
+            <div
+                class="pokemon-card-types"
+                data-types="${pokemon.id}"
+            >
+                <span class="type-loading">
+                    ...
                 </span>
-
+            </div>
+        </div>
+    `;
+    card.addEventListener(
+        "click",
+        () => openPokemon(pokemon.id)
+    );
+    loadCardData(card, pokemon);
+    return card;
+}
+/* =========================================================
+   DADOS DO CARD
+========================================================= */
+async function loadCardData(card, pokemon) {
+    try {
+        const data =
+            await getPokemon(pokemon.id);
+        const image =
+            getPokemonImage(data);
+        const imageContainer =
+            card.querySelector(
+                ".pokemon-card-image"
+            );
+        if (imageContainer) {
+            imageContainer.innerHTML = `
                 <img
-                    class="pokemon-image"
                     src="${image}"
-                    alt="${name}"
+                    alt="${formatPokemonName(pokemon.name)}"
                     loading="lazy"
                 >
-
-            </div>
-
-            <div class="pokemon-card-info">
-
-                <h3 class="pokemon-name">
-                    ${name}
-                </h3>
-
-                <div
-                    class="card-types"
-                    id="card-types-${id}"
-                >
-                    <span class="type-badge">
-                        ...
-                    </span>
+            `;
+        }
+        const typeContainer =
+            card.querySelector(
+                `[data-types="${pokemon.id}"]`
+            );
+        if (typeContainer) {
+            typeContainer.innerHTML =
+                data.types
+                    .map(item => {
+                        const type =
+                            item.type.name;
+                        const info =
+                            typeInfo[type];
+                        return `
+                            <span
+                                class="
+                                    type-badge
+                                    type-${type}
+                                "
+                            >
+                                ${info?.name || capitalize(type)}
+                            </span>
+                        `;
+                    })
+                    .join("");
+        }
+    } catch (error) {
+        console.warn(
+            "Erro ao carregar card:",
+            pokemon.name,
+            error
+        );
+        const imageContainer =
+            card.querySelector(
+                ".pokemon-card-image"
+            );
+        if (imageContainer) {
+            imageContainer.innerHTML = `
+                <div class="card-error">
+                    ⚠️
                 </div>
-
-            </div>
-
-        </article>
-
-    `;
-
+            `;
+        }
+    }
 }
-
-
-/* =========================================================
-   TIPOS DOS CARDS
-========================================================= */
-
-async function loadCardTypes(pokemon){
-
-    const container =
-        document.getElementById(
-            `card-types-${pokemon.id}`
-        );
-
-    if(!container){
+/*
+   Mantida para compatibilidade com versões
+   anteriores do site.
+*/
+async function loadCardTypes(pokemonList) {
+    if (!Array.isArray(pokemonList)) {
         return;
     }
-
-    const data =
-        await apiFetch(
-            `${API}/pokemon/${pokemon.id}`
-        );
-
-    if(!data){
-
-        container.innerHTML = "";
-
-        return;
-
-    }
-
-    container.innerHTML =
-        data.types
-            .sort((a,b) => a.slot - b.slot)
-            .map(typeData => {
-
-                const type =
-                    typeData.type.name;
-
-                const info =
-                    typeInfo[type] || {};
-
-                return `
-
-                    <span
-                        class="type-badge type-${type}"
-                        title="${info.name || type}"
-                    >
-                        ${info.icon || "●"}
-                        ${info.name || capitalize(type)}
-                    </span>
-
-                `;
-
-            })
-            .join("");
-
+    /*
+       Os cards já carregam seus próprios tipos.
+       Esta função fica como compatibilidade.
+    */
 }
-
-
 /* =========================================================
-   CARREGAR MAIS
+   BOTÃO CARREGAR MAIS
 ========================================================= */
-
-function updateLoadMoreButton(){
-
-    let button =
+function updateLoadMoreButton() {
+    const button =
         document.getElementById(
             "loadMoreButton"
         );
-
-    if(!button){
-
-        const grid =
-            document.getElementById("pokedex") ||
-            document.getElementById("pokemonGrid");
-
-        if(!grid){
-            return;
-        }
-
-        button =
-            document.createElement("button");
-
-        button.id =
-            "loadMoreButton";
-
-        button.className =
-            "load-more";
-
-        grid.parentElement.appendChild(button);
-
+    if (!button) {
+        return;
     }
-
-    button.onclick =
-        loadMorePokemon;
-
-    if(
+    if (
         visibleCount >=
         filteredPokemon.length
-    ){
-
+    ) {
         button.style.display = "none";
-
-    }else{
-
+    } else {
         button.style.display = "block";
-
         button.textContent =
-            `CARREGAR MAIS — ${Math.min(
-                visibleCount,
-                filteredPokemon.length
-            )}/${filteredPokemon.length}`;
-
+            "Carregar mais Pokémon";
     }
-
 }
-
-
-function loadMorePokemon(){
-
+function loadMorePokemon() {
     visibleCount += 50;
-
     renderPokemon();
-
 }
-
-
+function loadMore() {
+    loadMorePokemon();
+}
 /* =========================================================
-   PESQUISA
+   PESQUISA — HOME
 ========================================================= */
-
-function searchPokemon(query){
-
-    /*
-     * Compatibilidade com:
-     * oninput="searchPokemon()"
-     */
-    if(query === undefined){
-
-        const homeInput =
-            document.getElementById(
-                "homeSearchInput"
-            );
-
-        query =
-            homeInput
-                ? homeInput.value
-                : "";
-
+function searchPokemon(query) {
+    const input =
+        document.getElementById(
+            "homeSearchInput"
+        );
+    if (
+        query === undefined ||
+        query === null
+    ) {
+        query = input?.value || "";
     }
-
-    const value =
-        String(query || "")
+    query =
+        String(query)
             .trim()
             .toLowerCase();
-
-    if(!value){
-
+    if (!query) {
         filteredPokemon =
             [...allPokemon];
-
         visibleCount = 50;
-
         renderPokemon();
-
         return;
-
     }
-
     filteredPokemon =
         allPokemon.filter(pokemon => {
-
-            const id =
-                String(pokemon.id);
-
             const name =
                 pokemon.name.toLowerCase();
-
-            const translated =
-                formatPokemonName(
-                    pokemon.name
-                ).toLowerCase();
-
+            const id =
+                String(pokemon.id);
             return (
-                name.includes(value) ||
-                translated.includes(value) ||
-                id === value ||
-                id.padStart(4,"0") === value
+                name.includes(query) ||
+                id.includes(query)
             );
-
         });
-
     visibleCount = 50;
-
     renderPokemon();
-
 }
-
-
-/*
- * Compatibilidade com o HTML:
- * oninput="searchFromPage()"
- */
-function searchFromPage(){
-
+/* =========================================================
+   PESQUISA — PÁGINA
+========================================================= */
+function searchFromPage() {
     const input =
         document.getElementById(
             "searchPageInput"
         );
-
     const results =
         document.getElementById(
             "searchResults"
         );
-
-    if(!input || !results){
+    if (!input || !results) {
         return;
     }
-
-    const value =
+    const query =
         input.value
             .trim()
             .toLowerCase();
-
-    if(!value){
-
-        results.innerHTML = "";
-
+    if (!query) {
+        results.innerHTML = `
+            <div class="search-empty">
+                <div style="font-size:42px;">🔎</div>
+                <p>
+                    Digite o nome ou número de um Pokémon.
+                </p>
+            </div>
+        `;
         return;
-
     }
-
     const matches =
         allPokemon.filter(pokemon => {
-
-            const id =
-                String(pokemon.id);
-
-            const name =
-                pokemon.name.toLowerCase();
-
-            const translated =
-                formatPokemonName(
-                    pokemon.name
-                ).toLowerCase();
-
             return (
-                name.includes(value) ||
-                translated.includes(value) ||
-                id === value ||
-                id.padStart(4,"0") === value
+                pokemon.name
+                    .toLowerCase()
+                    .includes(query) ||
+                String(pokemon.id)
+                    .includes(query)
             );
-
-        }).slice(0,50);
-
-    if(!matches.length){
-
+        });
+    if (!matches.length) {
         results.innerHTML = `
-
-            <div class="empty-message">
-
-                <div style="font-size:45px;">
-                    🔎
-                </div>
-
+            <div class="search-empty">
+                <div style="font-size:42px;">😕</div>
                 <h3>
                     Nenhum Pokémon encontrado
                 </h3>
-
                 <p>
                     Tente outro nome ou número.
                 </p>
-
             </div>
-
         `;
-
         return;
-
     }
-
-    results.innerHTML =
-        matches
-            .map(pokemon => `
-
-                <article
-                    class="pokemon-card"
-                    onclick="openPokemon(${pokemon.id})"
-                >
-
-                    <div class="pokemon-image-container">
-
-                        <span class="pokemon-number">
-                            #${formatNumber(pokemon.id)}
-                        </span>
-
-                        <img
-                            class="pokemon-image"
-                            src="${pokemon.image}"
-                            alt="${formatPokemonName(pokemon.name)}"
-                            loading="lazy"
-                        >
-
-                    </div>
-
-                    <div class="pokemon-card-info">
-
-                        <h3 class="pokemon-name">
-                            ${formatPokemonName(pokemon.name)}
-                        </h3>
-
-                    </div>
-
-                </article>
-
-            `)
-            .join("");
-
+    results.innerHTML = "";
+    matches
+        .slice(0, 100)
+        .forEach(pokemon => {
+            const card =
+                createPokemonCard(pokemon);
+            results.appendChild(card);
+        });
 }
-
-
 /* =========================================================
-   FILTRO DE TIPO
+   FILTRO POR TIPO
 ========================================================= */
-
-async function filterType(type){
-
-    if(!type){
+async function filterType(type) {
+    if (!type) {
         return;
     }
-
-    if(typeof filterByType === "function"){
-
-        await filterByType(type);
-
-        return;
-
-    }
-
+    await filterByType(type);
 }
-
-
+async function filterByType(type) {
+    try {
+        showPage("homePage");
+        const grid =
+            document.getElementById("pokedex");
+        if (grid) {
+            grid.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>
+                        Carregando Pokémon do tipo
+                        ${typeInfo[type]?.name || type}...
+                    </p>
+                </div>
+            `;
+        }
+        const data =
+            await apiFetch(
+                `${API}/type/${type}`
+            );
+        const ids =
+            data.pokemon
+                .map(item =>
+                    getIdFromUrl(
+                        item.pokemon?.url
+                    )
+                )
+                .filter(
+                    id =>
+                        Number.isFinite(id) &&
+                        id > 0 &&
+                        id <= MAX_POKEMON
+                );
+        const idSet =
+            new Set(ids);
+        filteredPokemon =
+            allPokemon.filter(
+                pokemon =>
+                    idSet.has(
+                        Number(pokemon.id)
+                    )
+            );
+        visibleCount = 50;
+        renderPokemon();
+        if (
+            typeof updateTypeFilterIndicator ===
+            "function"
+        ) {
+            updateTypeFilterIndicator(type);
+        }
+        setTimeout(() => {
+            const target =
+                document.getElementById(
+                    "pokedex"
+                );
+            if (target) {
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        }, 100);
+    } catch (error) {
+        console.error(
+            "Erro ao filtrar tipo:",
+            error
+        );
+        const grid =
+            document.getElementById(
+                "pokedex"
+            );
+        if (grid) {
+            grid.innerHTML = `
+                <div class="error-message">
+                    <div style="font-size:42px;">
+                        ⚠️
+                    </div>
+                    <h3>
+                        Não foi possível carregar este tipo
+                    </h3>
+                    <p>
+                        Tente novamente em alguns segundos.
+                    </p>
+                    <button
+                        onclick="filterByType('${type}')"
+                    >
+                        Tentar novamente
+                    </button>
+                </div>
+            `;
+        }
+    }
+}
 /* =========================================================
-   FILTRO DE GERAÇÃO
+   FILTRO POR GERAÇÃO
 ========================================================= */
-
-function filterGeneration(generation){
-
-    const gen =
-        Number(generation);
-
-    if(!gen){
-
+function getGenerationRange(generation) {
+    const ranges = {
+        1: [1, 151],
+        2: [152, 251],
+        3: [252, 386],
+        4: [387, 493],
+        5: [494, 649],
+        6: [650, 721],
+        7: [722, 809],
+        8: [810, 905],
+        9: [906, 1025]
+    };
+    return ranges[generation] || null;
+}
+function filterGeneration(generation, button) {
+    if (
+        generation === 0 ||
+        generation === "0"
+    ) {
         filteredPokemon =
             [...allPokemon];
-
-    }else{
-
-        const ranges = {
-
-            1:[1,151],
-            2:[152,251],
-            3:[252,386],
-            4:[387,493],
-            5:[494,649],
-            6:[650,721],
-            7:[722,809],
-            8:[810,905],
-            9:[906,1025]
-
-        };
-
+    } else {
         const range =
-            ranges[gen];
-
-        if(!range){
+            getGenerationRange(
+                Number(generation)
+            );
+        if (!range) {
             return;
         }
-
         filteredPokemon =
             allPokemon.filter(
                 pokemon =>
                     pokemon.id >= range[0] &&
                     pokemon.id <= range[1]
             );
-
     }
-
     visibleCount = 50;
-
-    /*
-     * Suporta tanto:
-     * .generation-pill
-     * quanto os botões atuais dentro de .generation-pills
-     */
-    const generationButtons =
-        document.querySelectorAll(
-            ".generation-pill, .generation-pills button"
+    document
+        .querySelectorAll(
+            ".generation-pill"
+        )
+        .forEach(item => {
+            item.classList.remove(
+                "active"
+            );
+        });
+    if (button) {
+        button.classList.add(
+            "active"
         );
-
-    generationButtons.forEach((button,index) => {
-
-        const buttonGeneration =
-            button.dataset.generation
-                ? Number(button.dataset.generation)
-                : index;
-
-        button.classList.toggle(
-            "active",
-            buttonGeneration === gen
-        );
-
-    });
-
+    } else {
+        const buttons =
+            document.querySelectorAll(
+                ".generation-pill"
+            );
+        const index =
+            Number(generation);
+        if (buttons[index]) {
+            buttons[index]
+                .classList.add("active");
+        }
+    }
     renderPokemon();
-
 }
-
-
 /* =========================================================
    GERAÇÕES
 ========================================================= */
-
-function buildGenerations(){
-
+function buildGenerations() {
     const grid =
         document.getElementById(
             "generationsGrid"
         );
-
-    if(!grid){
+    if (!grid) {
         return;
     }
-
-    grid.innerHTML =
-        generations
-            .map(gen => `
-
-                <article
-                    class="
-                        generation-card
-                        ${gen.css}
-                    "
-                    onclick="filterGeneration(${gen.id})"
+    grid.innerHTML = "";
+    generations.forEach(generation => {
+        const card =
+            document.createElement(
+                "article"
+            );
+        card.className =
+            `generation-card ${generation.css}`;
+        card.innerHTML = `
+            <div class="generation-card-glow"></div>
+            <div class="generation-card-content">
+                <div class="generation-number">
+                    GERAÇÃO ${generation.roman}
+                </div>
+                <h2>
+                    ${generation.region}
+                </h2>
+                <p>
+                    ${generation.description}
+                </p>
+                <button
+                    class="generation-card-button"
+                    onclick="filterGeneration(${generation.id})"
                 >
-
-                    <div class="region-animation"></div>
-
-                    <div class="generation-number">
-                        ${gen.roman}
-                    </div>
-
-                    <div class="generation-content">
-
-                        <span>
-                            GERAÇÃO ${gen.id}
-                        </span>
-
-                        <h3>
-                            ${gen.region}
-                        </h3>
-
-                        <p>
-                            ${gen.description}
-                        </p>
-
-                        <button
-                            onclick="
-                                event.stopPropagation();
-                                filterGeneration(${gen.id});
-                            "
-                        >
-                            VER POKÉMON
-                        </button>
-
-                    </div>
-
-                </article>
-
-            `)
-            .join("");
-
+                    Explorar Pokémon
+                </button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
 }
-
-
 /* =========================================================
    ABRIR POKÉMON
 ========================================================= */
-
-async function openPokemon(id){
-
-    const numericId =
-        Number(id);
-
-    if(!numericId){
+async function openPokemon(idOrPokemon) {
+    let id =
+        typeof idOrPokemon === "object"
+            ? idOrPokemon.id
+            : idOrPokemon;
+    if (!id) {
         return;
     }
-
-    /*
-     * Abre imediatamente a tela de detalhes.
-     */
-    showPage("pokemonDetails");
-
-    const container =
+    currentPage =
+        "pokemonDetails";
+    const detailPage =
+        document.getElementById(
+            "pokemonDetails"
+        );
+    const detailContent =
         document.getElementById(
             "detailContent"
         );
-
-    if(container){
-
-        container.innerHTML = `
-
-            <div class="detail-loading">
-
-                <div class="loading-spinner"></div>
-
-                <p>
-                    Carregando Pokémon...
-                </p>
-
-            </div>
-
-        `;
-
-    }
-
-    const pokemon =
-        await apiFetch(
-            `${API}/pokemon/${numericId}`
-        );
-
-    if(!pokemon){
-
-        if(container){
-
-            container.innerHTML = `
-
-                <div class="error-message">
-
-                    <div style="font-size:50px;">
-                        ⚠️
-                    </div>
-
-                    <h2>
-                        Não foi possível carregar este Pokémon.
-                    </h2>
-
-                    <button onclick="closePokemon()">
-                        Voltar
-                    </button>
-
-                </div>
-
-            `;
-
-        }
-
+    if (!detailPage || !detailContent) {
         return;
-
     }
-
-    currentPokemon =
-        pokemon;
-
-    await buildPokemonDetails(
-        pokemon
-    );
-
+    detailPage.classList.add("active");
+    document
+        .querySelectorAll(".page")
+        .forEach(page => {
+            page.classList.remove("active");
+        });
+    detailContent.innerHTML = `
+        <div class="loading detail-loading">
+            <div class="loading-spinner"></div>
+            <p>
+                Carregando informações...
+            </p>
+        </div>
+    `;
     window.scrollTo({
-        top:0,
-        behavior:"smooth"
+        top: 0,
+        behavior: "smooth"
     });
-
+    try {
+        const pokemon =
+            await getPokemon(id);
+        currentPokemon =
+            pokemon;
+        await buildPokemonDetails(
+            pokemon
+        );
+    } catch (error) {
+        console.error(
+            "Erro ao abrir Pokémon:",
+            error
+        );
+        detailContent.innerHTML = `
+            <div class="error-message">
+                <div style="font-size:50px;">
+                    ⚠️
+                </div>
+                <h2>
+                    Não foi possível carregar este Pokémon
+                </h2>
+                <p>
+                    Verifique sua conexão e tente novamente.
+                </p>
+                <button
+                    onclick="openPokemon(${id})"
+                >
+                    Tentar novamente
+                </button>
+            </div>
+        `;
+    }
 }
-
-
 /* =========================================================
    FECHAR FICHA
 ========================================================= */
-
-function closePokemon(){
-
+function closePokemon() {
+    const detailPage =
+        document.getElementById(
+            "pokemonDetails"
+        );
+    if (detailPage) {
+        detailPage.classList.remove(
+            "active"
+        );
+    }
     currentPokemon = null;
-
     showPage("homePage");
-
 }
-
-
 /* =========================================================
    FICHA COMPLETA
 ========================================================= */
-
-async function buildPokemonDetails(pokemon){
-
-    const container =
+async function buildPokemonDetails(
+    pokemon
+) {
+    const detailContent =
         document.getElementById(
             "detailContent"
         );
-
-    if(!container){
+    if (!detailContent) {
         return;
     }
-
-    container.innerHTML = `
-
-        <div class="detail-loading">
-
-            <div class="loading-spinner"></div>
-
-            <p>
-                Carregando informações de
-                ${formatPokemonName(pokemon.name)}...
-            </p>
-
-        </div>
-
-    `;
-
-    const speciesPromise =
-        apiFetch(
-            `${API}/pokemon-species/${pokemon.id}`
+    const species =
+        await getSpecies(
+            pokemon.id
         );
-
-    const evolutionPromise =
-        speciesPromise.then(species =>
-            species?.evolution_chain?.url
-                ? apiFetch(
-                    species.evolution_chain.url
-                )
-                : null
+    const englishName =
+        getEnglishPokemonName(
+            species,
+            pokemon
         );
-
-    const [
-        species,
-        evolutionChain
-    ] =
-        await Promise.all([
-            speciesPromise,
-            evolutionPromise
-        ]);
-
+    const portugueseDescription =
+        getPortugueseDescription(
+            species
+        );
+    const genus =
+        getPortugueseGenus(
+            species
+        );
+    const image =
+        getPokemonImage(
+            pokemon
+        );
+    const shiny =
+        getPokemonShiny(
+            pokemon
+        );
     const types =
-        [...(pokemon.types || [])]
-            .sort(
-                (a,b) =>
-                    a.slot - b.slot
-            )
-            .map(
-                item =>
-                    item.type.name
-            );
-
+        pokemon.types || [];
     const abilities =
         pokemon.abilities || [];
-
-    const image =
-        getPokemonImage(pokemon);
-
-    const shiny =
-        getPokemonShiny(pokemon);
-
-    const weaknesses =
-        calculateWeaknesses(types);
-
-    container.innerHTML = `
-
-        <div class="pokemon-detail">
-
-            <button
-                class="back-button"
-                onclick="closePokemon()"
-            >
-                ← VOLTAR PARA A POKÉDEX
-            </button>
-
-            <div class="detail-header">
-
-                <div class="detail-main-image">
-
-                    <span class="detail-number">
-                        #${formatNumber(pokemon.id)}
-                    </span>
-
-                    <img
-                        src="${image}"
-                        alt="${formatPokemonName(pokemon.name)}"
-                    >
-
-                </div>
-
-                <div class="detail-title">
-
-                    <div class="detail-original-name">
-                        ${pokemon.name.toUpperCase()}
-                    </div>
-
-                    <h1>
-                        ${formatPokemonName(pokemon.name)}
-                    </h1>
-
-                    <div class="detail-types">
-
-                        ${types.map(type => {
-
-                            const info =
-                                typeInfo[type] || {};
-
-                            return `
-
-                                <span
-                                    class="
-                                        detail-type
-                                        type-${type}
-                                    "
-                                >
-                                    ${info.icon || ""}
-                                    ${info.name || capitalize(type)}
-                                </span>
-
-                            `;
-
-                        }).join("")}
-
-                    </div>
-
-                    <div class="detail-description">
-
-                        ${getSpeciesDescription(species)}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="detail-sections">
-
-                ${buildBasicInfo(pokemon)}
-
-                ${buildAbilities(abilities)}
-
-                ${buildWeaknesses(weaknesses)}
-
-                ${buildStats(pokemon)}
-
-                ${buildShinySection(
-                    image,
-                    shiny,
-                    pokemon.name
-                )}
-
-                ${buildEvolutionSection(
-                    evolutionChain
-                )}
-
-                <section class="detail-section mega-section">
-
-                    <div class="section-title">
-
-                        <span>
-                            ✨
-                        </span>
-
-                        <h2>
-                            Mega Evoluções
-                        </h2>
-
-                    </div>
-
-                    <div id="megaContainer">
-
-                        <div class="loading">
-                            Carregando Mega Evoluções...
-                        </div>
-
-                    </div>
-
-                </section>
-
-            </div>
-
-        </div>
-
-    `;
-
-    /*
-     * mega.js fica responsável pelas Mega Evoluções.
-     */
-    if(typeof loadMegaTab === "function"){
-
-        await loadMegaTab(
-            pokemon.name
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   INFORMAÇÕES BÁSICAS
-========================================================= */
-
-function buildBasicInfo(pokemon){
-
+    const stats =
+        pokemon.stats || [];
     const height =
         (pokemon.height / 10)
             .toFixed(1);
-
     const weight =
         (pokemon.weight / 10)
             .toFixed(1);
-
-    return `
-
-        <section class="detail-section">
-
-            <div class="section-title">
-
-                <span>
-                    📋
-                </span>
-
+    detailContent.innerHTML = `
+        <div class="pokemon-detail-header">
+            <div class="pokemon-detail-number">
+                #${formatNumber(pokemon.id)}
+            </div>
+            <h1>
+                ${englishName}
+            </h1>
+            ${
+                genus
+                    ? `
+                        <div class="pokemon-genus">
+                            ${genus}
+                        </div>
+                    `
+                    : ""
+            }
+            <div class="pokemon-detail-types">
+                ${types
+                    .map(item => {
+                        const type =
+                            item.type.name;
+                        return `
+                            <span
+                                class="
+                                    type-badge
+                                    type-${type}
+                                "
+                            >
+                                ${
+                                    typeInfo[type]
+                                        ?.name ||
+                                    capitalize(type)
+                                }
+                            </span>
+                        `;
+                    })
+                    .join("")}
+            </div>
+        </div>
+        <div class="pokemon-main-showcase">
+            <div class="pokemon-main-image">
+                <img
+                    src="${image}"
+                    alt="${englishName}"
+                >
+            </div>
+            <div class="pokemon-description">
                 <h2>
-                    Informações
+                    Sobre este Pokémon
                 </h2>
-
+                <p>
+                    ${portugueseDescription}
+                </p>
+                <div class="pokemon-measures">
+                    <div class="measure-box">
+                        <span class="measure-label">
+                            Altura
+                        </span>
+                        <strong>
+                            ${height} m
+                        </strong>
+                    </div>
+                    <div class="measure-box">
+                        <span class="measure-label">
+                            Peso
+                        </span>
+                        <strong>
+                            ${weight} kg
+                        </strong>
+                    </div>
+                </div>
             </div>
-
-            <div class="info-grid">
-
-                <div class="info-box">
-
-                    <span>
-                        Altura
-                    </span>
-
-                    <strong>
-                        ${height} m
-                    </strong>
-
-                </div>
-
-                <div class="info-box">
-
-                    <span>
-                        Peso
-                    </span>
-
-                    <strong>
-                        ${weight} kg
-                    </strong>
-
-                </div>
-
-                <div class="info-box">
-
-                    <span>
-                        Experiência base
-                    </span>
-
-                    <strong>
-                        ${pokemon.base_experience || "—"}
-                    </strong>
-
-                </div>
-
-                <div class="info-box">
-
-                    <span>
-                        ID
-                    </span>
-
-                    <strong>
-                        #${formatNumber(pokemon.id)}
-                    </strong>
-
-                </div>
-
+        </div>
+        <div class="detail-section">
+            <h2>
+                Informações básicas
+            </h2>
+            <div
+                id="basicInfoContainer"
+                class="basic-info-grid"
+            >
+                ${buildBasicInfo(
+                    pokemon,
+                    species
+                )}
             </div>
-
-        </section>
-
+        </div>
+        <div class="detail-section">
+            <h2>
+                Habilidades
+            </h2>
+            <div
+                id="abilitiesContainer"
+                class="abilities-list"
+            >
+                ${buildAbilities(
+                    abilities
+                )}
+            </div>
+        </div>
+        <div class="detail-section">
+            <h2>
+                Fraquezas
+            </h2>
+            <div
+                id="weaknessesContainer"
+                class="weaknesses-list"
+            >
+                ${await buildWeaknesses(
+                    pokemon
+                )}
+            </div>
+        </div>
+        <div class="detail-section">
+            <h2>
+                Estatísticas
+            </h2>
+            <div
+                id="statsContainer"
+                class="stats-container"
+            >
+                ${buildStats(
+                    stats
+                )}
+            </div>
+        </div>
+        <div class="detail-section shiny-section">
+            <h2>
+                ✨ Shiny
+            </h2>
+            <div class="shiny-content">
+                <div class="shiny-card">
+                    <div class="shiny-label">
+                        NORMAL
+                    </div>
+                    <img
+                        src="${image}"
+                        alt="${englishName}"
+                        loading="lazy"
+                    >
+                    <strong>
+                        ${englishName}
+                    </strong>
+                </div>
+                <div class="shiny-card">
+                    <div class="shiny-label">
+                        SHINY
+                    </div>
+                    <img
+                        src="${shiny}"
+                        alt="${englishName} Shiny"
+                        loading="lazy"
+                    >
+                    <strong>
+                        ${englishName} Shiny
+                    </strong>
+                </div>
+            </div>
+        </div>
+        <div class="detail-section">
+            <h2>
+                🧬 Evoluções
+            </h2>
+            <div
+                id="evolutionContainer"
+                class="evolution-container"
+            >
+                <div class="loading">
+                    Carregando evoluções...
+                </div>
+            </div>
+        </div>
+        <div class="detail-section mega-section">
+            <h2>
+                ✨ Mega Evoluções
+            </h2>
+            <div
+                id="megaContainer"
+                class="mega-container"
+            >
+                <div class="loading">
+                    Carregando Mega Evoluções...
+                </div>
+            </div>
+        </div>
     `;
-
+    /*
+       Evoluções
+    */
+    buildEvolutionSection(
+        species
+    );
+    /*
+       Mega Evoluções
+       pertence ao mega.js
+    */
+    if (
+        typeof loadMegaTab ===
+        "function"
+    ) {
+        loadMegaTab(
+            pokemon.name
+        );
+    }
 }
-
-
+/* =========================================================
+   INFORMAÇÕES BÁSICAS
+========================================================= */
+function buildBasicInfo(
+    pokemon,
+    species
+) {
+    const genderRate =
+        species?.gender_rate;
+    let genderText =
+        "Desconhecido";
+    if (genderRate === -1) {
+        genderText =
+            "Sem gênero";
+    } else if (
+        typeof genderRate ===
+        "number"
+    ) {
+        const female =
+            genderRate * 12.5;
+        const male =
+            100 - female;
+        genderText =
+            `${male}% ♂ / ${female}% ♀`;
+    }
+    const legendary =
+        species?.is_legendary
+            ? "Sim"
+            : "Não";
+    const mythical =
+        species?.is_mythical
+            ? "Sim"
+            : "Não";
+    return `
+        <div class="info-box">
+            <span>
+                Nº Nacional
+            </span>
+            <strong>
+                #${formatNumber(pokemon.id)}
+            </strong>
+        </div>
+        <div class="info-box">
+            <span>
+                Gênero
+            </span>
+            <strong>
+                ${genderText}
+            </strong>
+        </div>
+        <div class="info-box">
+            <span>
+                Lendário
+            </span>
+            <strong>
+                ${legendary}
+            </strong>
+        </div>
+        <div class="info-box">
+            <span>
+                Mítico
+            </span>
+            <strong>
+                ${mythical}
+            </strong>
+        </div>
+        <div class="info-box">
+            <span>
+                Taxa de captura
+            </span>
+            <strong>
+                ${species?.capture_rate ?? "—"}
+            </strong>
+        </div>
+        <div class="info-box">
+            <span>
+                Felicidade base
+            </span>
+            <strong>
+                ${species?.base_happiness ?? "—"}
+            </strong>
+        </div>
+    `;
+}
 /* =========================================================
    HABILIDADES
 ========================================================= */
-
-function buildAbilities(abilities){
-
-    return `
-
-        <section class="detail-section">
-
-            <div class="section-title">
-
-                <span>
-                    ⚡
-                </span>
-
-                <h2>
-                    Habilidades
-                </h2>
-
-            </div>
-
-            <div class="abilities-list">
-
-                ${
-                    abilities.length
-                        ? abilities.map(
-                            ability => `
-
-                                <div class="ability">
-
-                                    <strong>
-                                        ${formatPokemonName(
-                                            ability.ability.name
-                                        )}
-                                    </strong>
-
-                                    ${
-                                        ability.is_hidden
-                                            ? `<small>Habilidade oculta</small>`
-                                            : ""
-                                    }
-
-                                </div>
-
-                            `
-                        ).join("")
-                        : `
-                            <div class="no-data">
-                                Nenhuma informação.
-                            </div>
-                        `
-                }
-
-            </div>
-
-        </section>
-
-    `;
-
+function buildAbilities(
+    abilities
+) {
+    if (!abilities?.length) {
+        return `
+            <p>
+                Nenhuma habilidade disponível.
+            </p>
+        `;
+    }
+    return abilities
+        .map(ability => {
+            const name =
+                formatPokemonName(
+                    ability.ability?.name
+                );
+            const hidden =
+                ability.is_hidden
+                    ? "Oculta"
+                    : "Normal";
+            return `
+                <div class="ability-card">
+                    <div class="ability-name">
+                        ${name}
+                    </div>
+                    <div class="ability-status">
+                        ${hidden}
+                    </div>
+                </div>
+            `;
+        })
+        .join("");
 }
-
-
 /* =========================================================
    FRAQUEZAS
 ========================================================= */
-
-function calculateWeaknesses(types){
-
-    const defensive = {
-
-        normal:{
-            ghost:0,
-            fighting:2
-        },
-
-        fire:{
-            fire:0.5,
-            water:2,
-            grass:0.5,
-            ice:0.5,
-            bug:0.5,
-            rock:2,
-            steel:0.5,
-            fairy:0.5
-        },
-
-        water:{
-            fire:0.5,
-            water:0.5,
-            electric:2,
-            grass:2,
-            ice:0.5,
-            steel:0.5
-        },
-
-        electric:{
-            electric:0.5,
-            ground:2,
-            flying:0.5,
-            steel:0.5
-        },
-
-        grass:{
-            fire:2,
-            water:0.5,
-            electric:0.5,
-            grass:0.5,
-            ice:2,
-            poison:2,
-            ground:0.5,
-            flying:2,
-            bug:2
-        },
-
-        ice:{
-            fire:2,
-            ice:0.5,
-            fighting:2,
-            rock:2,
-            steel:2
-        },
-
-        fighting:{
-            flying:2,
-            psychic:2,
-            bug:0.5,
-            rock:0.5,
-            dark:0.5,
-            fairy:2
-        },
-
-        poison:{
-            grass:0.5,
-            poison:0.5,
-            ground:2,
-            psychic:2,
-            bug:0.5,
-            fairy:0.5
-        },
-
-        ground:{
-            water:2,
-            electric:0,
-            grass:2,
-            ice:2,
-            poison:0.5,
-            rock:0.5
-        },
-
-        flying:{
-            electric:2,
-            grass:0.5,
-            ice:2,
-            fighting:0.5,
-            ground:0,
-            bug:0.5,
-            rock:2
-        },
-
-        psychic:{
-            fighting:0.5,
-            psychic:0.5,
-            bug:2,
-            ghost:2,
-            dark:2,
-            fairy:0.5
-        },
-
-        bug:{
-            fire:2,
-            grass:0.5,
-            fighting:0.5,
-            ground:0.5,
-            flying:2,
-            rock:2
-        },
-
-        rock:{
-            normal:0.5,
-            fire:0.5,
-            water:2,
-            grass:2,
-            fighting:2,
-            poison:0.5,
-            ground:2,
-            flying:0.5,
-            steel:2
-        },
-
-        ghost:{
-            normal:0,
-            fighting:0,
-            poison:0.5,
-            bug:0.5,
-            ghost:2,
-            dark:2
-        },
-
-        dragon:{
-            fire:0.5,
-            water:0.5,
-            electric:0.5,
-            grass:0.5,
-            ice:2,
-            dragon:2,
-            fairy:2
-        },
-
-        dark:{
-            psychic:0,
-            ghost:0.5,
-            dark:0.5,
-            fighting:2,
-            bug:2,
-            fairy:2
-        },
-
-        steel:{
-            normal:0.5,
-            fire:2,
-            water:1,
-            electric:1,
-            grass:0.5,
-            ice:0.5,
-            fighting:2,
-            poison:0,
-            ground:2,
-            flying:0.5,
-            psychic:0.5,
-            bug:0.5,
-            rock:0.5,
-            dragon:0.5,
-            steel:0.5,
-            fairy:0.5
-        },
-
-        fairy:{
-            fire:2,
-            fighting:0.5,
-            poison:2,
-            bug:0.5,
-            dragon:0,
-            dark:0.5,
-            steel:2
-        }
-
-    };
-
-    const result = {};
-
-    Object.keys(typeInfo).forEach(type => {
-
-        let multiplier = 1;
-
-        types.forEach(defendingType => {
-
-            const chart =
-                defensive[defendingType];
-
-            if(
-                chart &&
-                chart[type] !== undefined
-            ){
-
-                multiplier *=
-                    chart[type];
-
-            }
-
+async function calculateWeaknesses(
+    pokemon
+) {
+    const multiplier =
+        {};
+    Object.keys(typeInfo)
+        .forEach(type => {
+            multiplier[type] = 1;
         });
-
-        result[type] =
-            multiplier;
-
-    });
-
-    return result;
-
-}
-
-
-function buildWeaknesses(multipliers){
-
-    const entries =
-        Object.entries(multipliers)
-            .filter(
-                ([type,multiplier]) =>
-                    multiplier > 1
-            )
-            .sort(
-                (a,b) =>
-                    b[1] - a[1]
+    for (
+        const item of pokemon.types
+    ) {
+        try {
+            const data =
+                await apiFetch(
+                    `${API}/type/${item.type.name}`
+                );
+            const relations =
+                data.damage_relations;
+            relations.double_damage_from
+                .forEach(entry => {
+                    multiplier[
+                        entry.name
+                    ] *= 2;
+                });
+            relations.half_damage_from
+                .forEach(entry => {
+                    multiplier[
+                        entry.name
+                    ] *= 0.5;
+                });
+            relations.no_damage_from
+                .forEach(entry => {
+                    multiplier[
+                        entry.name
+                    ] = 0;
+                });
+        } catch (error) {
+            console.warn(
+                "Erro ao calcular fraquezas:",
+                error
             );
-
-    return `
-
-        <section class="detail-section">
-
-            <div class="section-title">
-
-                <span>
-                    🛡️
-                </span>
-
-                <h2>
-                    Fraquezas
-                </h2>
-
-            </div>
-
-            <div class="weaknesses-list">
-
-                ${
-                    entries.length
-                        ? entries.map(
-                            ([type,multiplier]) => {
-
-                                const info =
-                                    typeInfo[type];
-
-                                return `
-
-                                    <div
-                                        class="
-                                            weakness
-                                            type-${type}
-                                        "
-                                    >
-
-                                        <span>
-                                            ${info.icon}
-                                            ${info.name}
-                                        </span>
-
-                                        <strong>
-                                            ×${multiplier}
-                                        </strong>
-
-                                    </div>
-
-                                `;
-
-                            }
-                        ).join("")
-                        : `
-                            <div class="no-data">
-                                Nenhuma fraqueza encontrada.
-                            </div>
-                        `
-                }
-
-            </div>
-
-        </section>
-
-    `;
-
+        }
+    }
+    return multiplier;
 }
-
-
+async function buildWeaknesses(
+    pokemon
+) {
+    const multiplier =
+        await calculateWeaknesses(
+            pokemon
+        );
+    const order =
+        Object.keys(typeInfo);
+    return order
+        .filter(
+            type =>
+                multiplier[type] !== 1
+        )
+        .sort(
+            (a, b) =>
+                multiplier[b] -
+                multiplier[a]
+        )
+        .map(type => {
+            const value =
+                multiplier[type];
+            let label = "";
+            if (value === 4) {
+                label = "4×";
+            } else if (value === 2) {
+                label = "2×";
+            } else if (value === 0.5) {
+                label = "½×";
+            } else if (value === 0.25) {
+                label = "¼×";
+            } else if (value === 0) {
+                label = "0×";
+            } else {
+                label = `${value}×`;
+            }
+            return `
+                <div
+                    class="
+                        weakness-item
+                        type-${type}
+                    "
+                >
+                    <span>
+                        ${typeInfo[type].icon}
+                    </span>
+                    <strong>
+                        ${typeInfo[type].name}
+                    </strong>
+                    <b>
+                        ${label}
+                    </b>
+                </div>
+            `;
+        })
+        .join("");
+}
 /* =========================================================
    ESTATÍSTICAS
 ========================================================= */
-
-function buildStats(pokemon){
-
-    const stats =
-        pokemon.stats || [];
-
-    return `
-
-        <section class="detail-section">
-
-            <div class="section-title">
-
-                <span>
-                    📊
-                </span>
-
-                <h2>
-                    Estatísticas Base
-                </h2>
-
-            </div>
-
-            <div class="stats-list">
-
-                ${
-                    stats.map(stat => {
-
-                        const name =
-                            translateStat(
-                                stat.stat.name
-                            );
-
-                        const value =
-                            stat.base_stat;
-
-                        const percentage =
-                            Math.min(
-                                100,
-                                (value / 255) * 100
-                            );
-
-                        return `
-
-                            <div class="stat-row">
-
-                                <div class="stat-name">
-                                    ${name}
-                                </div>
-
-                                <div class="stat-value">
-                                    ${value}
-                                </div>
-
-                                <div class="stat-bar">
-
-                                    <span
-                                        style="
-                                            width:${percentage}%;
-                                        "
-                                    ></span>
-
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }).join("")
-                }
-
-            </div>
-
-        </section>
-
-    `;
-
-}
-
-
-function translateStat(stat){
-
-    const translations = {
-
-        hp:"HP",
-        attack:"Ataque",
-        defense:"Defesa",
-        "special-attack":"Ataque Especial",
-        "special-defense":"Defesa Especial",
-        speed:"Velocidade"
-
+function translateStat(stat) {
+    const names = {
+        hp: "HP",
+        attack: "Ataque",
+        defense: "Defesa",
+        "special-attack":
+            "Ataque Especial",
+        "special-defense":
+            "Defesa Especial",
+        speed:
+            "Velocidade"
     };
-
     return (
-        translations[stat] ||
+        names[stat] ||
         capitalize(stat)
     );
-
 }
-
-
+function buildStats(stats) {
+    if (!stats?.length) {
+        return `
+            <p>
+                Estatísticas indisponíveis.
+            </p>
+        `;
+    }
+    const total =
+        stats.reduce(
+            (
+                sum,
+                item
+            ) =>
+                sum +
+                item.base_stat,
+            0
+        );
+    return `
+        <div class="stats-list">
+            ${stats
+                .map(item => {
+                    const name =
+                        item.stat.name;
+                    const value =
+                        item.base_stat;
+                    const percentage =
+                        Math.min(
+                            100,
+                            (value / 255) *
+                            100
+                        );
+                    return `
+                        <div class="stat-row">
+                            <div class="stat-name">
+                                ${translateStat(name)}
+                            </div>
+                            <div class="stat-value">
+                                ${value}
+                            </div>
+                            <div class="stat-bar">
+                                <div
+                                    class="stat-bar-fill"
+                                    style="
+                                        width:${percentage}%
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .join("")}
+            <div class="stat-total">
+                <span>
+                    Total
+                </span>
+                <strong>
+                    ${total}
+                </strong>
+            </div>
+        </div>
+    `;
+}
 /* =========================================================
    SHINY
 ========================================================= */
-
 function buildShinySection(
-    normalImage,
-    shinyImage,
-    name
-){
-
+    pokemon
+) {
+    const image =
+        getPokemonImage(
+            pokemon
+        );
+    const shiny =
+        getPokemonShiny(
+            pokemon
+        );
+    const name =
+        formatPokemonName(
+            pokemon.name
+        );
     return `
-
-        <section class="detail-section shiny-section">
-
-            <div class="section-title">
-
-                <span>
-                    ✨
-                </span>
-
-                <h2>
-                    Forma Shiny
-                </h2>
-
-            </div>
-
-            <div class="shiny-container">
-
-                <div class="shiny-card">
-
-                    <img
-                        class="shiny-art"
-                        src="${normalImage}"
-                        alt="${name}"
-                        loading="lazy"
-                    >
-
-                    <div class="shiny-info">
-
-                        <strong>
-                            Normal
-                        </strong>
-
-                        <span>
-                            Forma original
-                        </span>
-
-                    </div>
-
+        <div class="shiny-content">
+            <div class="shiny-card">
+                <div class="shiny-label">
+                    NORMAL
                 </div>
-
-                <div class="shiny-card shiny-special">
-
-                    <img
-                        class="shiny-art"
-                        src="${shinyImage || normalImage}"
-                        alt="${name} Shiny"
-                        loading="lazy"
-                    >
-
-                    <div class="shiny-info">
-
-                        <strong>
-                            ✨ Shiny
-                        </strong>
-
-                        <span>
-                            Coloração alternativa
-                        </span>
-
-                    </div>
-
-                </div>
-
+                <img
+                    src="${image}"
+                    alt="${name}"
+                    loading="lazy"
+                >
+                <strong>
+                    ${name}
+                </strong>
             </div>
-
-        </section>
-
+            <div class="shiny-card">
+                <div class="shiny-label">
+                    SHINY
+                </div>
+                <img
+                    src="${shiny}"
+                    alt="${name} Shiny"
+                    loading="lazy"
+                >
+                <strong>
+                    ${name} Shiny
+                </strong>
+            </div>
+        </div>
     `;
-
 }
-
-
 /* =========================================================
    EVOLUÇÕES
 ========================================================= */
-
-function buildEvolutionSection(chain){
-
-    if(!chain){
-
-        return `
-
-            <section class="detail-section">
-
-                <div class="section-title">
-
-                    <span>
-                        🔄
-                    </span>
-
-                    <h2>
-                        Evoluções
-                    </h2>
-
-                </div>
-
-                <div class="no-data">
-                    Nenhuma cadeia de evolução encontrada.
-                </div>
-
-            </section>
-
-        `;
-
+async function getEvolutionChain(
+    species
+) {
+    const url =
+        species?.evolution_chain?.url;
+    if (!url) {
+        return null;
     }
-
-    const stages = [];
-
-    function collect(node){
-
-        if(!node){
+    if (evolutionCache.has(url)) {
+        return evolutionCache.get(url);
+    }
+    const data =
+        await apiFetch(url);
+    evolutionCache.set(
+        url,
+        data
+    );
+    return data;
+}
+function flattenEvolutionChain(
+    chain,
+    result = []
+) {
+    if (!chain) {
+        return result;
+    }
+    result.push({
+        name:
+            chain.species?.name,
+        url:
+            chain.species?.url,
+        details:
+            chain.evolution_details || []
+    });
+    if (
+        Array.isArray(
+            chain.evolves_to
+        )
+    ) {
+        chain.evolves_to.forEach(
+            next => {
+                flattenEvolutionChain(
+                    next,
+                    result
+                );
+            }
+        );
+    }
+    return result;
+}
+async function buildEvolutionSection(
+    species
+) {
+    const container =
+        document.getElementById(
+            "evolutionContainer"
+        );
+    if (!container) {
+        return;
+    }
+    try {
+        const chain =
+            await getEvolutionChain(
+                species
+            );
+        if (!chain) {
+            container.innerHTML = `
+                <p>
+                    Este Pokémon não possui uma cadeia de evolução.
+                </p>
+            `;
             return;
         }
-
-        stages.push({
-
-            name:node.species.name,
-
-            id:getIdFromUrl(
-                node.species.url
-            )
-
-        });
-
-        if(
-            node.evolves_to &&
-            node.evolves_to.length
-        ){
-
-            node.evolves_to.forEach(
-                child =>
-                    collect(child)
+        const evolutionList =
+            flattenEvolutionChain(
+                chain.chain
             );
-
+        if (!evolutionList.length) {
+            container.innerHTML = `
+                <p>
+                    Nenhuma evolução encontrada.
+                </p>
+            `;
+            return;
         }
-
-    }
-
-    collect(chain);
-
-    const unique =
-        stages.filter(
-            (item,index,self) =>
-                index ===
-                self.findIndex(
-                    other =>
-                        other.id === item.id
-                )
-        );
-
-    return `
-
-        <section class="detail-section">
-
-            <div class="section-title">
-
-                <span>
-                    🔄
-                </span>
-
-                <h2>
-                    Linha Evolutiva
-                </h2>
-
-            </div>
-
+        container.innerHTML = `
             <div class="evolution-chain">
-
-                ${
-                    unique.map(
-                        (stage,index) => `
-
-                            <div
-                                class="evolution-item"
-                                onclick="openPokemon(${stage.id})"
-                                style="cursor:pointer"
-                            >
-
-                                <img
-                                    src="
-                                        https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${stage.id}.png
+                ${evolutionList
+                    .map(
+                        (
+                            evolution,
+                            index
+                        ) => {
+                            const name =
+                                formatPokemonName(
+                                    evolution.name
+                                );
+                            const id =
+                                getIdFromUrl(
+                                    evolution.url
+                                );
+                            return `
+                                ${
+                                    index > 0
+                                        ? `
+                                            <div
+                                                class="
+                                                    evolution-arrow
+                                                "
+                                            >
+                                                →
+                                            </div>
+                                        `
+                                        : ""
+                                }
+                                <div
+                                    class="
+                                        evolution-card
                                     "
-                                    alt="${formatPokemonName(stage.name)}"
-                                    loading="lazy"
+                                    onclick="
+                                        openPokemon(${id})
+                                    "
                                 >
-
-                                <strong>
-                                    ${formatPokemonName(stage.name)}
-                                </strong>
-
-                                <span>
-                                    #${formatNumber(stage.id)}
-                                </span>
-
-                            </div>
-
-                            ${
-                                index <
-                                unique.length - 1
-                                    ? `
-                                        <div class="evolution-arrow">
-                                            →
-                                        </div>
-                                    `
-                                    : ""
-                            }
-
-                        `
-                    ).join("")
-                }
-
+                                    <div
+                                        class="
+                                            evolution-number
+                                        "
+                                    >
+                                        #${formatNumber(id)}
+                                    </div>
+                                    <img
+                                        src="
+                                            https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png
+                                        "
+                                        alt="${name}"
+                                        loading="lazy"
+                                    >
+                                    <strong>
+                                        ${name}
+                                    </strong>
+                                </div>
+                            `;
+                        }
+                    )
+                    .join("")}
             </div>
-
-        </section>
-
-    `;
-
-}
-
-
-/* =========================================================
-   DESCRIÇÃO
-========================================================= */
-
-function getSpeciesDescription(species){
-
-    if(!species){
-        return "Informações sobre este Pokémon.";
+        `;
+    } catch (error) {
+        console.error(
+            "Erro nas evoluções:",
+            error
+        );
+        container.innerHTML = `
+            <p>
+                Não foi possível carregar as evoluções.
+            </p>
+        `;
     }
-
-    const entry =
-        species.flavor_text_entries
-            ?.find(
-                item =>
-                    item.language?.name === "pt-br"
-            ) ||
-        species.flavor_text_entries
-            ?.find(
-                item =>
-                    item.language?.name === "en"
+}
+/* =========================================================
+   PÁGINAS
+========================================================= */
+function showPage(pageId) {
+    const detailPage =
+        document.getElementById(
+            "pokemonDetails"
+        );
+    if (detailPage) {
+        detailPage.classList.remove(
+            "active"
+        );
+    }
+    document
+        .querySelectorAll(".page")
+        .forEach(page => {
+            page.classList.remove(
+                "active"
             );
-
-    if(!entry){
-        return "Informações sobre este Pokémon.";
+        });
+    const page =
+        document.getElementById(
+            pageId
+        );
+    if (page) {
+        page.classList.add(
+            "active"
+        );
+        currentPage =
+            pageId;
     }
-
-    return entry.flavor_text
-        .replace(/\n|\f/g," ");
-
-}
-
-
-/* =========================================================
-   NAVEGAÇÃO
-========================================================= */
-
-function showPage(pageId){
-
-    const home =
-        document.getElementById("homePage");
-
-    const search =
-        document.getElementById("searchPage");
-
-    const types =
-        document.getElementById("typesPage");
-
-    const generationsPage =
-        document.getElementById("generationsPage");
-
-    const details =
-        document.getElementById("pokemonDetails");
-
-    const pages = [
-        home,
-        search,
-        types,
-        generationsPage
-    ];
-
-    pages.forEach(page => {
-
-        if(page){
-
-            page.classList.remove("active");
-            page.style.display = "none";
-
-        }
-
-    });
-
-    /*
-     * pokemonDetails não possui .page no HTML atual.
-     * Por isso ele precisa ser tratado separadamente.
-     */
-    if(details){
-
-        details.style.display =
-            pageId === "pokemonDetails"
-                ? "block"
-                : "none";
-
+    if (
+        pageId === "typesPage" &&
+        typeof buildTypesPage ===
+        "function"
+    ) {
+        buildTypesPage();
     }
-
-    const target =
-        document.getElementById(pageId);
-
-    if(
-        target &&
-        pageId !== "pokemonDetails"
-    ){
-
-        target.classList.add("active");
-        target.style.display = "block";
-
-    }
-
-    currentPage =
-        pageId;
-
-    closeSideMenu();
-
-    if(pageId === "typesPage"){
-
-        if(typeof buildTypesPage === "function"){
-            buildTypesPage();
-        }
-
-    }
-
-    if(pageId === "generationsPage"){
-
+    if (
+        pageId === "generationsPage"
+    ) {
         buildGenerations();
-
     }
-
+    closeMenu();
     window.scrollTo({
-        top:0,
-        behavior:"smooth"
+        top: 0,
+        behavior: "smooth"
     });
-
 }
-
-
 /* =========================================================
    MENU
 ========================================================= */
-
-function openSideMenu(){
-
-    const menu =
-        document.getElementById("sideMenu") ||
-        document.querySelector(".side-menu");
-
-    const overlay =
-        document.getElementById("menuOverlay");
-
-    if(menu){
-        menu.classList.add("active");
-    }
-
-    if(overlay){
-        overlay.classList.add("active");
-    }
-
-}
-
-
-function closeSideMenu(){
-
-    const menu =
-        document.getElementById("sideMenu") ||
-        document.querySelector(".side-menu");
-
-    const overlay =
-        document.getElementById("menuOverlay");
-
-    if(menu){
-        menu.classList.remove("active");
-    }
-
-    if(overlay){
-        overlay.classList.remove("active");
-    }
-
-}
-
-
-/*
- * Compatibilidade com o index.html atual.
- */
-function openMenu(){
-    openSideMenu();
-}
-
-
-function closeMenu(event){
-
-    /*
-     * Se clicou diretamente no overlay,
-     * fecha o menu.
-     */
-    if(
-        event &&
-        event.target &&
-        event.target.id !== "menuOverlay"
-    ){
-
-        return;
-
-    }
-
-    closeSideMenu();
-
-}
-
-
-/* =========================================================
-   BOTÃO VOLTAR
-========================================================= */
-
-function goHome(){
-
-    filteredPokemon =
-        [...allPokemon];
-
-    visibleCount = 50;
-
-    closePokemon();
-
-}
-
-
-/* =========================================================
-   EVENTOS DE PESQUISA
-========================================================= */
-
-function setupSearch(){
-
-    const homeInput =
-        document.getElementById(
-            "homeSearchInput"
-        );
-
-    const searchPageInput =
-        document.getElementById(
-            "searchPageInput"
-        );
-
-    /*
-     * O HTML atual já usa oninput.
-     * Estes listeners servem também para
-     * garantir funcionamento caso o atributo
-     * seja removido futuramente.
-     */
-
-    if(homeInput){
-
-        homeInput.addEventListener(
-            "input",
-            event => {
-
-                searchPokemon(
-                    event.target.value
-                );
-
-            }
-        );
-
-    }
-
-    if(searchPageInput){
-
-        searchPageInput.addEventListener(
-            "input",
-            searchFromPage
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   BOTÕES DE GERAÇÃO
-========================================================= */
-
-function setupGenerationButtons(){
-
-    const buttons =
-        document.querySelectorAll(
-            ".generation-pill, .generation-pills button"
-        );
-
-    buttons.forEach((button,index) => {
-
-        /*
-         * Evita duplicar eventos se o HTML
-         * já possuir onclick.
-         */
-        button.addEventListener(
-            "click",
-            () => {
-
-                const generation =
-                    button.dataset.generation
-                        ? Number(
-                            button.dataset.generation
-                        )
-                        : index;
-
-                filterGeneration(
-                    generation
-                );
-
-            }
-        );
-
-    });
-
-}
-
-
-/* =========================================================
-   MENU / OVERLAY
-========================================================= */
-
-function setupMenu(){
-
+function openSideMenu() {
     const overlay =
         document.getElementById(
             "menuOverlay"
         );
-
-    if(!overlay){
+    if (overlay) {
+        overlay.classList.add(
+            "active"
+        );
+    }
+}
+function closeSideMenu(
+    event
+) {
+    const overlay =
+        document.getElementById(
+            "menuOverlay"
+        );
+    if (!overlay) {
         return;
     }
-
-    /*
-     * Não usamos aqui o clique geral no overlay
-     * porque o próprio HTML já chama closeMenu(event).
-     */
-
+    if (
+        event &&
+        event.target !== overlay
+    ) {
+        return;
+    }
+    overlay.classList.remove(
+        "active"
+    );
 }
-
-
+function openMenu() {
+    openSideMenu();
+}
+function closeMenu(
+    event
+) {
+    closeSideMenu(event);
+}
 /* =========================================================
-   TECLADO
+   HOME
 ========================================================= */
-
+function goHome() {
+    showPage(
+        "homePage"
+    );
+}
+/* =========================================================
+   PESQUISA
+========================================================= */
+function setupSearch() {
+    const homeInput =
+        document.getElementById(
+            "homeSearchInput"
+        );
+    if (homeInput) {
+        homeInput.addEventListener(
+            "input",
+            () => {
+                searchPokemon(
+                    homeInput.value
+                );
+            }
+        );
+    }
+    const pageInput =
+        document.getElementById(
+            "searchPageInput"
+        );
+    if (pageInput) {
+        pageInput.addEventListener(
+            "input",
+            searchFromPage
+        );
+    }
+}
+/* =========================================================
+   BOTÕES DE GERAÇÃO
+========================================================= */
+function setupGenerationButtons() {
+    /*
+       O index.html já possui onclick.
+       Não adicionamos outro evento para evitar
+       executar a filtragem duas vezes.
+    */
+    const buttons =
+        document.querySelectorAll(
+            ".generation-pills button"
+        );
+    buttons.forEach(
+        (
+            button,
+            index
+        ) => {
+            button.classList.toggle(
+                "generation-pill",
+                true
+            );
+            if (index === 0) {
+                button.classList.add(
+                    "active"
+                );
+            }
+        }
+    );
+}
+/* =========================================================
+   MENU
+========================================================= */
+function setupMenu() {
+    const overlay =
+        document.getElementById(
+            "menuOverlay"
+        );
+    if (!overlay) {
+        return;
+    }
+    /*
+       Evita que o clique dentro do menu
+       feche o overlay.
+    */
+    const sideMenu =
+        overlay.querySelector(
+            ".side-menu"
+        );
+    if (sideMenu) {
+        sideMenu.addEventListener(
+            "click",
+            event => {
+                event.stopPropagation();
+            }
+        );
+    }
+}
+/* =========================================================
+   TECLA ESC
+========================================================= */
 document.addEventListener(
     "keydown",
     event => {
-
-        if(event.key === "Escape"){
-
-            closeSideMenu();
-
+        if (
+            event.key === "Escape"
+        ) {
+            closeMenu();
+            const detail =
+                document.getElementById(
+                    "pokemonDetails"
+                );
+            if (
+                detail &&
+                detail.classList.contains(
+                    "active"
+                )
+            ) {
+                closePokemon();
+            }
         }
-
     }
 );
-
-
-/* =========================================================
-   COMPATIBILIDADE DO BOTÃO CARREGAR MAIS
-========================================================= */
-
-function loadMore(){
-
-    loadMorePokemon();
-
-}
-
-
 /* =========================================================
    INICIALIZAÇÃO
 ========================================================= */
-
 document.addEventListener(
     "DOMContentLoaded",
     async () => {
-
-        console.log(
-            "Pokédex Online iniciando..."
-        );
-
         setupSearch();
-
         setupGenerationButtons();
-
         setupMenu();
-
         buildGenerations();
-
         await loadPokemon();
-
-        console.log(
-            `Pokédex carregada: ${allPokemon.length} Pokémon`
-        );
-
     }
 );
