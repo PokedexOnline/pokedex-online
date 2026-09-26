@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Pokédex Online</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #0b0f14;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #121923;
+      border-bottom: 1px solid #263241;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: #ff3b30;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      color: #c9d1d9;
+      text-decoration: none;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    nav a:hover {
+      color: #ffffff;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 50px 20px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 span {
+      color: #ff3b30;
+    }
+
+    .hero p {
+      color: #9da9b5;
+      font-size: 17px;
+    }
+
+    .search-area {
+      max-width: 700px;
+      margin: 30px auto 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-area input {
+      flex: 1;
+      padding: 16px 18px;
+      border-radius: 10px;
+      border: 1px solid #303c4c;
+      background: #151d27;
+      color: white;
+      outline: none;
+      font-size: 16px;
+    }
+
+    .search-area input:focus {
+      border-color: #ff3b30;
+    }
+
+    .search-area button {
+      padding: 0 25px;
+      border: none;
+      border-radius: 10px;
+      background: #ff3b30;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .search-area button:hover {
+      background: #e52f26;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 35px;
+    }
+
+    .filter {
+      background: #151d27;
+      color: #c9d1d9;
+      border: 1px solid #303c4c;
+      padding: 10px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .filter:hover,
+    .filter.active {
+      background: #ff3b30;
+      color: white;
+      border-color: #ff3b30;
+    }
+
+    .section-title {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .pokemon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 18px;
+    }
+
+    .pokemon-card {
+      background: #121923;
+      border: 1px solid #263241;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .pokemon-card:hover {
+      transform: translateY(-5px);
+      border-color: #ff3b30;
+    }
+
+    .pokemon-number {
+      color: #778493;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .pokemon-card img {
+      width: 130px;
+      height: 130px;
+      object-fit: contain;
+      margin: 5px auto;
+      display: block;
+    }
+
+    .pokemon-card h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .types {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .type {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .type.eletrico {
+      background: #f5c518;
+      color: #111;
+    }
+
+    .type.grama {
+      background: #4caf50;
+    }
+
+    .type.fogo {
+      background: #f4511e;
+    }
+
+    .type.agua {
+      background: #2196f3;
+    }
+
+    .type.normal {
+      background: #8d99ae;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding: 30px 20px;
+      text-align: center;
+      border-top: 1px solid #263241;
+      color: #778493;
+      font-size: 14px;
+    }
+
+    @media (max-width: 700px) {
+      .header-content {
+        flex-direction: column;
+      }
+
+      nav {
+        gap: 15px;
+      }
+
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .search-area {
+        flex-direction: column;
+      }
+
+      .search-area button {
+        padding: 14px;
+      }
+
+      .pokemon-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-content">
+
+      <div class="logo">
+        <span>Poké</span>dex Online
+      </div>
+
+      <nav>
+        <a href="#">Início</a>
+        <a href="#">Pokédex</a>
+        <a href="#">Tipos</a>
+        <a href="#">Gerações</a>
+      </nav>
+
+    </div>
+  </header>
+
+  <main>
+
+    <section class="hero">
+
+      <h1>
+        <span>Pokédex</span> Online
+      </h1>
+
+      <p>
+        Explore todos os Pokémon, suas evoluções, ataques, tipos e muito mais.
+      </p>
+
+      <div class="search-area">
+        <input
+          type="text"
+          placeholder="Pesquise por nome ou número..."
+        >
+
+        <button>
+          Pesquisar
+        </button>
+      </div>
+
+    </section>
+
+    <div class="filters">
+
+      <button class="filter active">
+        Todos
+      </button>
+
+      <button class="filter">
+        Geração I
+      </button>
+
+      <button class="filter">
+        Geração II
+      </button>
+
+      <button class="filter">
+        Geração III
+      </button>
+
+      <button class="filter">
+        Geração IV
+      </button>
+
+      <button class="filter">
+        Geração V
+      </button>
+
+      <button class="filter">
+        Geração VI
+      </button>
+
+      <button class="filter">
+        Geração VII
+      </button>
+
+      <button class="filter">
+        Geração VIII
+      </button>
+
+      <button class="filter">
+        Geração IX
+      </button>
+
+    </div>
+
+    <h2 class="section-title">
+      Pokémon
+    </h2>
+
+    <section class="pokemon-grid">
+
+      <div class="pokemon-card">
+
+        <div class="pokemon-number">
+          #001
+        </div>
+
+        <img
+          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+          alt="Bulbasaur"
+        >
+
+        <h3>Bulbasaur</h3>
+
+        <div class="types">
+          <span class="type grama">🌿 Planta</span>
+          <span class="type">☠️ Veneno</span>
+        </div>
+
+      </div>
+
+      <div class="pokemon-card">
+
+        <div class="pokemon-number">
+          #004
+        </div>
+
+        <img
+          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"
+          alt="Charmander"
+        >
+
+        <h3>Charmander</h3>
+
+        <div class="types">
+          <span class="type fogo">🔥 Fogo</span>
+        </div>
+
+      </div>
+
+      <div class="pokemon-card">
+
+        <div class="pokemon-number">
+          #007
+        </div>
+
+        <img
+          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png"
+          alt="Squirtle"
+        >
+
+        <h3>Squirtle</h3>
+
+        <div class="types">
+          <span class="type agua">💧 Água</span>
+        </div>
+
+      </div>
+
+      <div class="pokemon-card">
+
+        <div class="pokemon-number">
+          #025
+        </div>
+
+        <img
+          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
+          alt="Pikachu"
+        >
+
+        <h3>Pikachu</h3>
+
+        <div class="types">
+          <span class="type eletrico">⚡ Elétrico</span>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    Pokédex Online © 2026 — Projeto em desenvolvimento
+  </footer>
+
+</body>
+</html>
