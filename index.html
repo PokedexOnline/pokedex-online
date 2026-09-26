@@ -7,9 +7,6 @@
     <title>Pokédex Online — Comunidade Pokémon</title>
     <link rel="stylesheet" href="style.css?v=2">
 
-    <!-- =========================
-         NOVO LOGO + HERO ANIMADO
-         ========================= -->
     <style>
         /* LOGO DO HEADER */
         .pokemon-wordmark {
@@ -421,7 +418,6 @@
             z-index: 11;
         }
 
-        /* ENERGIA EXISTENTE */
         .hero-animation .energy {
             z-index: 1;
         }
@@ -520,7 +516,6 @@
             }
         }
 
-        /* HERO EM TELAS MENORES */
         @media (max-width: 700px) {
             .hero-pokemon {
                 opacity: .55;
@@ -561,9 +556,6 @@
 
 <body>
 
-    <!-- =========================
-         HEADER
-    ========================== -->
     <header class="header">
         <button
             class="menu-button"
@@ -582,7 +574,13 @@
         >
             <span class="pokemon-wordmark">
                 <span class="letter logo-p">P</span>
-                <span class="letter logo-ball" aria-label="O">O</span>
+
+                <!-- SOMENTE A POKÉ BALL — SEM O TEXTUAL -->
+                <span
+                    class="letter logo-ball"
+                    aria-label="O"
+                ></span>
+
                 <span class="letter logo-k">K</span>
                 <span class="letter logo-e-accent">É</span>
                 <span class="letter logo-d">D</span>
@@ -601,10 +599,6 @@
         </div>
     </header>
 
-
-    <!-- =========================
-         MENU LATERAL
-    ========================== -->
     <div
         class="menu-overlay"
         id="menuOverlay"
@@ -643,10 +637,6 @@
         </aside>
     </div>
 
-
-    <!-- =========================
-         HOME
-    ========================== -->
     <main>
 
         <section
@@ -654,19 +644,9 @@
             class="page active"
         >
 
-            <!-- =========================
-                 HERO
-            ========================== -->
             <section class="hero">
 
                 <div class="hero-animation">
-
-                    <!--
-                        Sprites animados Shiny da PokeAPI.
-                        Greninja Shiny = 658
-                        Rayquaza Shiny = 384
-                        Mewtwo Shiny = 150
-                    -->
 
                     <img
                         class="hero-pokemon hero-greninja"
@@ -692,7 +672,6 @@
                         draggable="false"
                     >
 
-                    <!-- Energia já existente -->
                     <div class="energy energy-1"></div>
                     <div class="energy energy-2"></div>
                     <div class="energy energy-3"></div>
@@ -700,7 +679,6 @@
                     <div class="energy energy-5"></div>
 
                 </div>
-
 
                 <div class="hero-content">
 
@@ -711,12 +689,11 @@
                                 P
                             </span>
 
+                            <!-- SOMENTE A POKÉ BALL — SEM O TEXTUAL -->
                             <span
                                 class="letter logo-ball"
                                 aria-label="O"
-                            >
-                                O
-                            </span>
+                            ></span>
 
                             <span class="letter logo-k">
                                 K
@@ -769,7 +746,6 @@
                         </span>
                     </h1>
 
-
                     <p class="hero-subtitle">
                         Explore o mundo Pokémon
                     </p>
@@ -783,10 +759,6 @@
 
             </section>
 
-
-            <!-- =========================
-                 BOAS-VINDAS
-            ========================== -->
             <section
                 class="welcome-box"
                 id="welcomeBox"
@@ -812,10 +784,6 @@
 
             </section>
 
-
-            <!-- =========================
-                 PESQUISA
-            ========================== -->
             <section class="home-search">
 
                 <input
@@ -828,10 +796,6 @@
 
             </section>
 
-
-            <!-- =========================
-                 GERAÇÕES
-            ========================== -->
             <section class="generation-section">
 
                 <h2>
@@ -884,18 +848,12 @@
 
             </section>
 
-
-            <!-- =========================
-                 POKÉDEX
-            ========================== -->
             <section class="pokedex-section">
 
                 <div
                     id="pokedex"
                     class="pokedex"
-                >
-                    <!-- Pokémon carregados pelo JavaScript -->
-                </div>
+                ></div>
 
                 <button
                     id="loadMoreButton"
@@ -909,10 +867,6 @@
 
         </section>
 
-
-        <!-- =========================
-             PESQUISA
-        ========================== -->
         <section
             id="searchPage"
             class="page"
@@ -933,7 +887,6 @@
 
                 </div>
 
-
                 <div class="search-page-box">
 
                     <input
@@ -946,22 +899,15 @@
 
                 </div>
 
-
                 <div
                     id="searchResults"
                     class="search-results"
-                >
-                    <!-- Resultados da pesquisa -->
-                </div>
+                ></div>
 
             </div>
 
         </section>
 
-
-        <!-- =========================
-             TIPOS
-        ========================== -->
         <section
             id="typesPage"
             class="page"
@@ -982,22 +928,15 @@
 
                 </div>
 
-
                 <div
                     id="typesGrid"
                     class="types-grid"
-                >
-                    <!-- Tipos carregados pelo JavaScript -->
-                </div>
+                ></div>
 
             </div>
 
         </section>
 
-
-        <!-- =========================
-             GERAÇÕES
-        ========================== -->
         <section
             id="generationsPage"
             class="page"
@@ -1018,22 +957,15 @@
 
                 </div>
 
-
                 <div
                     id="generationsGrid"
                     class="generations-grid"
-                >
-                    <!-- Gerações carregadas pelo JavaScript -->
-                </div>
+                ></div>
 
             </div>
 
         </section>
 
-
-        <!-- =========================
-             DETALHES DO POKÉMON
-        ========================== -->
         <section
             id="pokemonDetails"
             class="pokemon-details"
@@ -1049,18 +981,12 @@
             <div
                 id="detailContent"
                 class="detail-content"
-            >
-                <!-- Informações completas do Pokémon -->
-            </div>
+            ></div>
 
         </section>
 
     </main>
 
-
-    <!-- =========================
-         SCRIPTS
-    ========================== -->
     <script src="types.js?v=2"></script>
     <script src="mega.js?v=2"></script>
     <script src="script.js?v=2"></script>
