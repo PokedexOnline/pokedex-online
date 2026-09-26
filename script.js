@@ -264,7 +264,7 @@ const pokemonNames = {
 
 
 /* =========================================================
-   INFORMAÇÕES DOS TIPOS
+   TIPOS
 ========================================================= */
 
 const typeInfo = {
@@ -471,10 +471,7 @@ function capitalize(text){
         return "";
     }
 
-    return text
-        .charAt(0)
-        .toUpperCase() +
-        text.slice(1);
+    return text.charAt(0).toUpperCase() + text.slice(1);
 
 }
 
@@ -505,8 +502,7 @@ function formatPokemonName(name){
 
 function formatNumber(number){
 
-    return String(number)
-        .padStart(4,"0");
+    return String(number).padStart(4,"0");
 
 }
 
@@ -533,6 +529,22 @@ function getPokemonShiny(pokemon){
 }
 
 
+function getIdFromUrl(url){
+
+    if(!url){
+        return 0;
+    }
+
+    const parts =
+        url.split("/").filter(Boolean);
+
+    return Number(
+        parts[parts.length - 1]
+    );
+
+}
+
+
 /* =========================================================
    API
 ========================================================= */
@@ -545,21 +557,14 @@ async function apiFetch(url){
             await fetch(url);
 
         if(!response.ok){
-
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-
+            throw new Error(`HTTP ${response.status}`);
         }
 
         return await response.json();
 
     }catch(error){
 
-        console.error(
-            "Erro na API:",
-            error
-        );
+        console.error("Erro na API:",error);
 
         return null;
 
@@ -586,9 +591,7 @@ async function loadPokemon(){
 
                 <div class="loading-spinner"></div>
 
-                <p>
-                    Carregando Pokédex...
-                </p>
+                <p>Carregando Pokédex...</p>
 
             </div>
 
@@ -604,33 +607,25 @@ async function loadPokemon(){
             );
 
         if(!data || !Array.isArray(data.results)){
-
-            throw new Error(
-                "Resposta inválida da PokéAPI."
-            );
-
+            throw new Error("Resposta inválida da PokéAPI.");
         }
 
-        /*
-         * Carrega os Pokémon básicos primeiro.
-         */
         allPokemon =
-            data.results.map(
-                (pokemon,index) => ({
+            data.results.map((pokemon,index) => ({
 
-                    id:index + 1,
+                id:index + 1,
 
-                    name:pokemon.name,
+                name:pokemon.name,
 
-                    url:pokemon.url,
+                url:pokemon.url,
 
-                    image:
-                        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png`
+                image:
+                    `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png`
 
-                })
-            );
+            }));
 
-        filteredPokemon = [...allPokemon];
+        filteredPokemon =
+            [...allPokemon];
 
         visibleCount = 50;
 
@@ -677,7 +672,7 @@ async function loadPokemon(){
 
 
 /* =========================================================
-   RENDERIZAÇÃO DOS CARDS
+   RENDERIZAÇÃO
 ========================================================= */
 
 function renderPokemon(){
@@ -696,10 +691,7 @@ function renderPokemon(){
             : [];
 
     const visible =
-        list.slice(
-            0,
-            visibleCount
-        );
+        list.slice(0,visibleCount);
 
     if(!visible.length){
 
@@ -723,30 +715,28 @@ function renderPokemon(){
 
         `;
 
+        updateLoadMoreButton();
+
         return;
 
     }
 
     grid.innerHTML =
         visible
-            .map(pokemon => createPokemonCard(pokemon))
+            .map(createPokemonCard)
             .join("");
 
     updateLoadMoreButton();
 
-    /*
-     * Carrega os tipos reais dos cards.
-     */
     visible.forEach(
-        pokemon =>
-            loadCardTypes(pokemon)
+        pokemon => loadCardTypes(pokemon)
     );
 
 }
 
 
 /* =========================================================
-   CRIA CARD
+   CARD
 ========================================================= */
 
 function createPokemonCard(pokemon){
@@ -794,11 +784,9 @@ function createPokemonCard(pokemon){
                     class="card-types"
                     id="card-types-${id}"
                 >
-
                     <span class="type-badge">
                         ...
                     </span>
-
                 </div>
 
             </div>
@@ -840,10 +828,7 @@ async function loadCardTypes(pokemon){
 
     container.innerHTML =
         data.types
-            .sort(
-                (a,b) =>
-                    a.slot - b.slot
-            )
+            .sort((a,b) => a.slot - b.slot)
             .map(typeData => {
 
                 const type =
@@ -858,10 +843,8 @@ async function loadCardTypes(pokemon){
                         class="type-badge type-${type}"
                         title="${info.name || type}"
                     >
-
                         ${info.icon || "●"}
                         ${info.name || capitalize(type)}
-
                     </span>
 
                 `;
@@ -902,30 +885,23 @@ function updateLoadMoreButton(){
         button.className =
             "load-more";
 
-        button.textContent =
-            "CARREGAR MAIS";
-
-        button.onclick =
-            loadMorePokemon;
-
-        grid.parentElement.appendChild(
-            button
-        );
+        grid.parentElement.appendChild(button);
 
     }
+
+    button.onclick =
+        loadMorePokemon;
 
     if(
         visibleCount >=
         filteredPokemon.length
     ){
 
-        button.style.display =
-            "none";
+        button.style.display = "none";
 
     }else{
 
-        button.style.display =
-            "block";
+        button.style.display = "block";
 
         button.textContent =
             `CARREGAR MAIS — ${Math.min(
@@ -953,6 +929,24 @@ function loadMorePokemon(){
 
 function searchPokemon(query){
 
+    /*
+     * Compatibilidade com:
+     * oninput="searchPokemon()"
+     */
+    if(query === undefined){
+
+        const homeInput =
+            document.getElementById(
+                "homeSearchInput"
+            );
+
+        query =
+            homeInput
+                ? homeInput.value
+                : "";
+
+    }
+
     const value =
         String(query || "")
             .trim()
@@ -972,33 +966,153 @@ function searchPokemon(query){
     }
 
     filteredPokemon =
-        allPokemon.filter(
-            pokemon => {
+        allPokemon.filter(pokemon => {
 
-                const id =
-                    String(pokemon.id);
+            const id =
+                String(pokemon.id);
 
-                const name =
-                    pokemon.name.toLowerCase();
+            const name =
+                pokemon.name.toLowerCase();
 
-                const translated =
-                    formatPokemonName(
-                        pokemon.name
-                    ).toLowerCase();
+            const translated =
+                formatPokemonName(
+                    pokemon.name
+                ).toLowerCase();
 
-                return (
-                    name.includes(value) ||
-                    translated.includes(value) ||
-                    id === value ||
-                    id.padStart(4,"0") === value
-                );
+            return (
+                name.includes(value) ||
+                translated.includes(value) ||
+                id === value ||
+                id.padStart(4,"0") === value
+            );
 
-            }
-        );
+        });
 
     visibleCount = 50;
 
     renderPokemon();
+
+}
+
+
+/*
+ * Compatibilidade com o HTML:
+ * oninput="searchFromPage()"
+ */
+function searchFromPage(){
+
+    const input =
+        document.getElementById(
+            "searchPageInput"
+        );
+
+    const results =
+        document.getElementById(
+            "searchResults"
+        );
+
+    if(!input || !results){
+        return;
+    }
+
+    const value =
+        input.value
+            .trim()
+            .toLowerCase();
+
+    if(!value){
+
+        results.innerHTML = "";
+
+        return;
+
+    }
+
+    const matches =
+        allPokemon.filter(pokemon => {
+
+            const id =
+                String(pokemon.id);
+
+            const name =
+                pokemon.name.toLowerCase();
+
+            const translated =
+                formatPokemonName(
+                    pokemon.name
+                ).toLowerCase();
+
+            return (
+                name.includes(value) ||
+                translated.includes(value) ||
+                id === value ||
+                id.padStart(4,"0") === value
+            );
+
+        }).slice(0,50);
+
+    if(!matches.length){
+
+        results.innerHTML = `
+
+            <div class="empty-message">
+
+                <div style="font-size:45px;">
+                    🔎
+                </div>
+
+                <h3>
+                    Nenhum Pokémon encontrado
+                </h3>
+
+                <p>
+                    Tente outro nome ou número.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    results.innerHTML =
+        matches
+            .map(pokemon => `
+
+                <article
+                    class="pokemon-card"
+                    onclick="openPokemon(${pokemon.id})"
+                >
+
+                    <div class="pokemon-image-container">
+
+                        <span class="pokemon-number">
+                            #${formatNumber(pokemon.id)}
+                        </span>
+
+                        <img
+                            class="pokemon-image"
+                            src="${pokemon.image}"
+                            alt="${formatPokemonName(pokemon.name)}"
+                            loading="lazy"
+                        >
+
+                    </div>
+
+                    <div class="pokemon-card-info">
+
+                        <h3 class="pokemon-name">
+                            ${formatPokemonName(pokemon.name)}
+                        </h3>
+
+                    </div>
+
+                </article>
+
+            `)
+            .join("");
 
 }
 
@@ -1072,20 +1186,29 @@ function filterGeneration(generation){
 
     visibleCount = 50;
 
-    document
-        .querySelectorAll(
-            ".generation-pill"
-        )
-        .forEach(button => {
+    /*
+     * Suporta tanto:
+     * .generation-pill
+     * quanto os botões atuais dentro de .generation-pills
+     */
+    const generationButtons =
+        document.querySelectorAll(
+            ".generation-pill, .generation-pills button"
+        );
 
-            button.classList.toggle(
-                "active",
-                Number(
-                    button.dataset.generation
-                ) === gen
-            );
+    generationButtons.forEach((button,index) => {
 
-        });
+        const buttonGeneration =
+            button.dataset.generation
+                ? Number(button.dataset.generation)
+                : index;
+
+        button.classList.toggle(
+            "active",
+            buttonGeneration === gen
+        );
+
+    });
 
     renderPokemon();
 
@@ -1164,16 +1287,71 @@ function buildGenerations(){
 
 async function openPokemon(id){
 
+    const numericId =
+        Number(id);
+
+    if(!numericId){
+        return;
+    }
+
+    /*
+     * Abre imediatamente a tela de detalhes.
+     */
+    showPage("pokemonDetails");
+
+    const container =
+        document.getElementById(
+            "detailContent"
+        );
+
+    if(container){
+
+        container.innerHTML = `
+
+            <div class="detail-loading">
+
+                <div class="loading-spinner"></div>
+
+                <p>
+                    Carregando Pokémon...
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
     const pokemon =
         await apiFetch(
-            `${API}/pokemon/${id}`
+            `${API}/pokemon/${numericId}`
         );
 
     if(!pokemon){
 
-        alert(
-            "Não foi possível carregar este Pokémon."
-        );
+        if(container){
+
+            container.innerHTML = `
+
+                <div class="error-message">
+
+                    <div style="font-size:50px;">
+                        ⚠️
+                    </div>
+
+                    <h2>
+                        Não foi possível carregar este Pokémon.
+                    </h2>
+
+                    <button onclick="closePokemon()">
+                        Voltar
+                    </button>
+
+                </div>
+
+            `;
+
+        }
 
         return;
 
@@ -1181,8 +1359,6 @@ async function openPokemon(id){
 
     currentPokemon =
         pokemon;
-
-    showPage("pokemonDetails");
 
     await buildPokemonDetails(
         pokemon
@@ -1192,6 +1368,19 @@ async function openPokemon(id){
         top:0,
         behavior:"smooth"
     });
+
+}
+
+
+/* =========================================================
+   FECHAR FICHA
+========================================================= */
+
+function closePokemon(){
+
+    currentPokemon = null;
+
+    showPage("homePage");
 
 }
 
@@ -1226,22 +1415,18 @@ async function buildPokemonDetails(pokemon){
 
     `;
 
-    /*
-     * Carrega dados adicionais em paralelo.
-     */
     const speciesPromise =
         apiFetch(
             `${API}/pokemon-species/${pokemon.id}`
         );
 
     const evolutionPromise =
-        speciesPromise.then(
-            species =>
-                species?.evolution_chain?.url
-                    ? apiFetch(
-                        species.evolution_chain.url
-                    )
-                    : null
+        speciesPromise.then(species =>
+            species?.evolution_chain?.url
+                ? apiFetch(
+                    species.evolution_chain.url
+                )
+                : null
         );
 
     const [
@@ -1254,7 +1439,7 @@ async function buildPokemonDetails(pokemon){
         ]);
 
     const types =
-        pokemon.types
+        [...(pokemon.types || [])]
             .sort(
                 (a,b) =>
                     a.slot - b.slot
@@ -1282,7 +1467,7 @@ async function buildPokemonDetails(pokemon){
 
             <button
                 class="back-button"
-                onclick="showPage('homePage')"
+                onclick="closePokemon()"
             >
                 ← VOLTAR PARA A POKÉDEX
             </button>
@@ -1314,38 +1499,32 @@ async function buildPokemonDetails(pokemon){
 
                     <div class="detail-types">
 
-                        ${types
-                            .map(type => {
+                        ${types.map(type => {
 
-                                const info =
-                                    typeInfo[type] || {};
+                            const info =
+                                typeInfo[type] || {};
 
-                                return `
+                            return `
 
-                                    <span
-                                        class="
-                                            detail-type
-                                            type-${type}
-                                        "
-                                    >
-                                        ${info.icon || ""}
-                                        ${info.name || capitalize(type)}
-                                    </span>
+                                <span
+                                    class="
+                                        detail-type
+                                        type-${type}
+                                    "
+                                >
+                                    ${info.icon || ""}
+                                    ${info.name || capitalize(type)}
+                                </span>
 
-                                `;
+                            `;
 
-                            })
-                            .join("")}
+                        }).join("")}
 
                     </div>
 
                     <div class="detail-description">
 
-                        ${
-                            getSpeciesDescription(
-                                species
-                            )
-                        }
+                        ${getSpeciesDescription(species)}
 
                     </div>
 
@@ -1404,13 +1583,9 @@ async function buildPokemonDetails(pokemon){
     `;
 
     /*
-     * Mega.js é responsável exclusivamente
-     * por esta parte.
+     * mega.js fica responsável pelas Mega Evoluções.
      */
-    if(
-        typeof loadMegaTab ===
-        "function"
-    ){
+    if(typeof loadMegaTab === "function"){
 
         await loadMegaTab(
             pokemon.name
@@ -1557,7 +1732,11 @@ function buildAbilities(abilities){
 
                             `
                         ).join("")
-                        : `<div class="no-data">Nenhuma informação.</div>`
+                        : `
+                            <div class="no-data">
+                                Nenhuma informação.
+                            </div>
+                        `
                 }
 
             </div>
@@ -1575,309 +1754,6 @@ function buildAbilities(abilities){
 
 function calculateWeaknesses(types){
 
-    const multipliers = {};
-
-    Object.keys(typeInfo)
-        .forEach(type => {
-
-            multipliers[type] = 1;
-
-        });
-
-    const chart = {
-
-        normal:{
-            rock:0.5,
-            ghost:0,
-            steel:0.5
-        },
-
-        fire:{
-            fire:0.5,
-            water:0.5,
-            rock:0.5,
-            ground:0.5,
-            dragon:0.5
-        },
-
-        water:{
-            water:0.5,
-            grass:0.5,
-            dragon:0.5
-        },
-
-        electric:{
-            electric:0.5,
-            grass:0.5,
-            dragon:0.5,
-            ground:0
-        },
-
-        grass:{
-            fire:0.5,
-            grass:0.5,
-            poison:0.5,
-            flying:0.5,
-            bug:0.5,
-            dragon:0.5,
-            steel:0.5
-        },
-
-        ice:{
-            fire:0.5,
-            water:0.5,
-            ice:0.5,
-            steel:0.5
-        },
-
-        fighting:{
-            poison:0.5,
-            flying:0.5,
-            psychic:0.5,
-            bug:0.5,
-            fairy:0.5,
-            ghost:0
-        },
-
-        poison:{
-            poison:0.5,
-            ground:0.5,
-            rock:0.5,
-            ghost:0.5,
-            steel:0
-        },
-
-        ground:{
-            grass:0.5,
-            bug:0.5,
-            flying:0
-        },
-
-        flying:{
-            electric:0.5,
-            rock:0.5,
-            steel:0.5
-        },
-
-        psychic:{
-            psychic:0.5,
-            steel:0.5,
-            dark:0
-        },
-
-        bug:{
-            fire:0.5,
-            fighting:0.5,
-            poison:0.5,
-            flying:0.5,
-            ghost:0.5,
-            steel:0.5,
-            fairy:0.5
-        },
-
-        rock:{
-            fighting:0.5,
-            ground:0.5,
-            steel:0.5
-        },
-
-        ghost:{
-            dark:0.5,
-            normal:0
-        },
-
-        dragon:{
-            steel:0.5,
-            fairy:0
-        },
-
-        dark:{
-            fighting:0.5,
-            dark:0.5,
-            fairy:0.5
-        },
-
-        steel:{
-            fire:0.5,
-            water:0.5,
-            electric:0.5,
-            steel:0.5
-        },
-
-        fairy:{
-            fire:0.5,
-            poison:0.5,
-            steel:0.5
-        }
-
-    };
-
-    types.forEach(defendingType => {
-
-        const weaknesses =
-            chart[defendingType] || {};
-
-        Object.entries(
-            weaknesses
-        ).forEach(
-            ([attackingType,multiplier]) => {
-
-                /*
-                 * O chart acima representa resistência
-                 * do defensor ao ataque.
-                 *
-                 * Para fraquezas usamos o inverso:
-                 * 0.5 = resistente
-                 * 0 = imune
-                 * ausência = 1
-                 */
-
-                if(multiplier === 0.5){
-
-                    multipliers[attackingType] *= 2;
-
-                }else if(multiplier === 0){
-
-                    multipliers[attackingType] = 0;
-
-                }
-
-            }
-        );
-
-    });
-
-    /*
-     * Correções para fraquezas reais.
-     */
-    const weaknessChart = {
-
-        normal:["fighting"],
-
-        fire:["water","ground","rock"],
-
-        water:["electric","grass"],
-
-        electric:["ground"],
-
-        grass:[
-            "fire",
-            "ice",
-            "poison",
-            "flying",
-            "bug"
-        ],
-
-        ice:[
-            "fire",
-            "fighting",
-            "rock",
-            "steel"
-        ],
-
-        fighting:[
-            "flying",
-            "psychic",
-            "fairy"
-        ],
-
-        poison:[
-            "ground",
-            "psychic"
-        ],
-
-        ground:[
-            "water",
-            "grass",
-            "ice"
-        ],
-
-        flying:[
-            "electric",
-            "ice",
-            "rock"
-        ],
-
-        psychic:[
-            "bug",
-            "ghost",
-            "dark"
-        ],
-
-        bug:[
-            "fire",
-            "flying",
-            "rock"
-        ],
-
-        rock:[
-            "water",
-            "grass",
-            "fighting",
-            "ground",
-            "steel"
-        ],
-
-        ghost:[
-            "ghost",
-            "dark"
-        ],
-
-        dragon:[
-            "ice",
-            "dragon",
-            "fairy"
-        ],
-
-        dark:[
-            "fighting",
-            "bug",
-            "fairy"
-        ],
-
-        steel:[
-            "fire",
-            "fighting",
-            "ground"
-        ],
-
-        fairy:[
-            "poison",
-            "steel"
-        ]
-
-    };
-
-    const finalMultipliers = {};
-
-    Object.keys(typeInfo)
-        .forEach(type => {
-
-            finalMultipliers[type] = 1;
-
-        });
-
-    types.forEach(defendingType => {
-
-        const weaknesses =
-            weaknessChart[defendingType] || [];
-
-        weaknesses.forEach(
-            attackingType => {
-
-                finalMultipliers[
-                    attackingType
-                ] *= 2;
-
-            }
-        );
-
-    });
-
-    /*
-     * Calcula resistências e imunidades
-     * também através da tabela oficial.
-     */
     const defensive = {
 
         normal:{
@@ -2058,37 +1934,33 @@ function calculateWeaknesses(types){
 
     };
 
-    /*
-     * Calcula multiplicadores corretamente.
-     */
     const result = {};
 
-    Object.keys(typeInfo)
-        .forEach(type => {
+    Object.keys(typeInfo).forEach(type => {
 
-            let multiplier = 1;
+        let multiplier = 1;
 
-            types.forEach(defendingType => {
+        types.forEach(defendingType => {
 
-                const chart =
-                    defensive[defendingType];
+            const chart =
+                defensive[defendingType];
 
-                if(
-                    chart &&
-                    chart[type] !== undefined
-                ){
+            if(
+                chart &&
+                chart[type] !== undefined
+            ){
 
-                    multiplier *=
-                        chart[type];
+                multiplier *=
+                    chart[type];
 
-                }
-
-            });
-
-            result[type] =
-                multiplier;
+            }
 
         });
+
+        result[type] =
+            multiplier;
+
+    });
 
     return result;
 
@@ -2098,17 +1970,15 @@ function calculateWeaknesses(types){
 function buildWeaknesses(multipliers){
 
     const entries =
-        Object.entries(
-            multipliers
-        )
-        .filter(
-            ([type,multiplier]) =>
-                multiplier > 1
-        )
-        .sort(
-            (a,b) =>
-                b[1] - a[1]
-        );
+        Object.entries(multipliers)
+            .filter(
+                ([type,multiplier]) =>
+                    multiplier > 1
+            )
+            .sort(
+                (a,b) =>
+                    b[1] - a[1]
+            );
 
     return `
 
@@ -2265,10 +2135,8 @@ function translateStat(stat){
         hp:"HP",
         attack:"Ataque",
         defense:"Defesa",
-        "special-attack":
-            "Ataque Especial",
-        "special-defense":
-            "Defesa Especial",
+        "special-attack":"Ataque Especial",
+        "special-defense":"Defesa Especial",
         speed:"Velocidade"
 
     };
@@ -2368,66 +2236,6 @@ function buildShinySection(
    EVOLUÇÕES
 ========================================================= */
 
-async function loadEvolutionChain(chain){
-
-    if(!chain){
-        return "";
-    }
-
-    const stages = [];
-
-    function collect(node){
-
-        if(!node){
-            return;
-        }
-
-        stages.push({
-            name:node.species.name,
-            id:getIdFromUrl(
-                node.species.url
-            )
-        });
-
-        if(
-            node.evolves_to &&
-            node.evolves_to.length
-        ){
-
-            node.evolves_to.forEach(
-                child =>
-                    collect(child)
-            );
-
-        }
-
-    }
-
-    collect(chain);
-
-    return stages;
-
-}
-
-
-function getIdFromUrl(url){
-
-    if(!url){
-        return 0;
-    }
-
-    const parts =
-        url
-            .split("/")
-            .filter(Boolean);
-
-    return Number(
-        parts[parts.length - 1]
-    );
-
-}
-
-
 function buildEvolutionSection(chain){
 
     if(!chain){
@@ -2467,13 +2275,19 @@ function buildEvolutionSection(chain){
         }
 
         stages.push({
+
             name:node.species.name,
+
             id:getIdFromUrl(
                 node.species.url
             )
+
         });
 
-        if(node.evolves_to){
+        if(
+            node.evolves_to &&
+            node.evolves_to.length
+        ){
 
             node.evolves_to.forEach(
                 child =>
@@ -2486,9 +2300,6 @@ function buildEvolutionSection(chain){
 
     collect(chain);
 
-    /*
-     * Remove duplicados.
-     */
     const unique =
         stages.filter(
             (item,index,self) =>
@@ -2521,7 +2332,11 @@ function buildEvolutionSection(chain){
                     unique.map(
                         (stage,index) => `
 
-                            <div class="evolution-item">
+                            <div
+                                class="evolution-item"
+                                onclick="openPokemon(${stage.id})"
+                                style="cursor:pointer"
+                            >
 
                                 <img
                                     src="
@@ -2566,7 +2381,7 @@ function buildEvolutionSection(chain){
 
 
 /* =========================================================
-   DESCRIÇÃO DA ESPÉCIE
+   DESCRIÇÃO
 ========================================================= */
 
 function getSpeciesDescription(species){
@@ -2588,9 +2403,7 @@ function getSpeciesDescription(species){
             );
 
     if(!entry){
-
         return "Informações sobre este Pokémon.";
-
     }
 
     return entry.flavor_text
@@ -2600,71 +2413,75 @@ function getSpeciesDescription(species){
 
 
 /* =========================================================
-   NAVEGAÇÃO ENTRE PÁGINAS
+   NAVEGAÇÃO
 ========================================================= */
 
 function showPage(pageId){
 
-    const pages =
-        document.querySelectorAll(
-            ".page"
-        );
+    const home =
+        document.getElementById("homePage");
+
+    const search =
+        document.getElementById("searchPage");
+
+    const types =
+        document.getElementById("typesPage");
+
+    const generationsPage =
+        document.getElementById("generationsPage");
+
+    const details =
+        document.getElementById("pokemonDetails");
+
+    const pages = [
+        home,
+        search,
+        types,
+        generationsPage
+    ];
+
+    pages.forEach(page => {
+
+        if(page){
+
+            page.classList.remove("active");
+            page.style.display = "none";
+
+        }
+
+    });
 
     /*
-     * Se o HTML antigo não usa .page,
-     * esconde manualmente as páginas conhecidas.
+     * pokemonDetails não possui .page no HTML atual.
+     * Por isso ele precisa ser tratado separadamente.
      */
-    if(!pages.length){
+    if(details){
 
-        const knownPages = [
-            "homePage",
-            "searchPage",
-            "typesPage",
-            "generationsPage",
-            "pokemonDetails"
-        ];
+        details.style.display =
+            pageId === "pokemonDetails"
+                ? "block"
+                : "none";
 
-        knownPages.forEach(id => {
+    }
 
-            const element =
-                document.getElementById(id);
+    const target =
+        document.getElementById(pageId);
 
-            if(element){
+    if(
+        target &&
+        pageId !== "pokemonDetails"
+    ){
 
-                element.style.display =
-                    id === pageId
-                        ? ""
-                        : "none";
-
-            }
-
-        });
-
-    }else{
-
-        pages.forEach(page => {
-
-            page.classList.toggle(
-                "active",
-                page.id === pageId
-            );
-
-        });
+        target.classList.add("active");
+        target.style.display = "block";
 
     }
 
     currentPage =
         pageId;
 
-    /*
-     * Fecha menu lateral.
-     */
     closeSideMenu();
 
-    /*
-     * Algumas páginas precisam
-     * ser construídas ao abrir.
-     */
     if(pageId === "typesPage"){
 
         if(typeof buildTypesPage === "function"){
@@ -2688,38 +2505,24 @@ function showPage(pageId){
 
 
 /* =========================================================
-   MENU LATERAL
+   MENU
 ========================================================= */
 
 function openSideMenu(){
 
     const menu =
-        document.getElementById(
-            "sideMenu"
-        ) ||
-        document.querySelector(
-            ".side-menu"
-        );
+        document.getElementById("sideMenu") ||
+        document.querySelector(".side-menu");
 
     const overlay =
-        document.getElementById(
-            "menuOverlay"
-        );
+        document.getElementById("menuOverlay");
 
     if(menu){
-
-        menu.classList.add(
-            "active"
-        );
-
+        menu.classList.add("active");
     }
 
     if(overlay){
-
-        overlay.classList.add(
-            "active"
-        );
-
+        overlay.classList.add("active");
     }
 
 }
@@ -2728,33 +2531,48 @@ function openSideMenu(){
 function closeSideMenu(){
 
     const menu =
-        document.getElementById(
-            "sideMenu"
-        ) ||
-        document.querySelector(
-            ".side-menu"
-        );
+        document.getElementById("sideMenu") ||
+        document.querySelector(".side-menu");
 
     const overlay =
-        document.getElementById(
-            "menuOverlay"
-        );
+        document.getElementById("menuOverlay");
 
     if(menu){
-
-        menu.classList.remove(
-            "active"
-        );
-
+        menu.classList.remove("active");
     }
 
     if(overlay){
+        overlay.classList.remove("active");
+    }
 
-        overlay.classList.remove(
-            "active"
-        );
+}
+
+
+/*
+ * Compatibilidade com o index.html atual.
+ */
+function openMenu(){
+    openSideMenu();
+}
+
+
+function closeMenu(event){
+
+    /*
+     * Se clicou diretamente no overlay,
+     * fecha o menu.
+     */
+    if(
+        event &&
+        event.target &&
+        event.target.id !== "menuOverlay"
+    ){
+
+        return;
 
     }
+
+    closeSideMenu();
 
 }
 
@@ -2770,11 +2588,7 @@ function goHome(){
 
     visibleCount = 50;
 
-    showPage(
-        "homePage"
-    );
-
-    renderPokemon();
+    closePokemon();
 
 }
 
@@ -2785,29 +2599,26 @@ function goHome(){
 
 function setupSearch(){
 
-    const inputs = [
-
+    const homeInput =
         document.getElementById(
             "homeSearchInput"
-        ),
+        );
 
+    const searchPageInput =
         document.getElementById(
             "searchPageInput"
-        ),
+        );
 
-        document.getElementById(
-            "homeSearch"
-        ),
+    /*
+     * O HTML atual já usa oninput.
+     * Estes listeners servem também para
+     * garantir funcionamento caso o atributo
+     * seja removido futuramente.
+     */
 
-        document.getElementById(
-            "searchInput"
-        )
+    if(homeInput){
 
-    ].filter(Boolean);
-
-    inputs.forEach(input => {
-
-        input.addEventListener(
+        homeInput.addEventListener(
             "input",
             event => {
 
@@ -2818,29 +2629,16 @@ function setupSearch(){
             }
         );
 
-        input.addEventListener(
-            "keydown",
-            event => {
+    }
 
-                if(
-                    event.key ===
-                    "Enter"
-                ){
+    if(searchPageInput){
 
-                    searchPokemon(
-                        event.target.value
-                    );
-
-                    showPage(
-                        "homePage"
-                    );
-
-                }
-
-            }
+        searchPageInput.addEventListener(
+            "input",
+            searchFromPage
         );
 
-    });
+    }
 
 }
 
@@ -2851,24 +2649,36 @@ function setupSearch(){
 
 function setupGenerationButtons(){
 
-    document
-        .querySelectorAll(
-            ".generation-pill"
-        )
-        .forEach(button => {
+    const buttons =
+        document.querySelectorAll(
+            ".generation-pill, .generation-pills button"
+        );
 
-            button.addEventListener(
-                "click",
-                () => {
+    buttons.forEach((button,index) => {
 
-                    filterGeneration(
-                        button.dataset.generation
-                    );
+        /*
+         * Evita duplicar eventos se o HTML
+         * já possuir onclick.
+         */
+        button.addEventListener(
+            "click",
+            () => {
 
-                }
-            );
+                const generation =
+                    button.dataset.generation
+                        ? Number(
+                            button.dataset.generation
+                        )
+                        : index;
 
-        });
+                filterGeneration(
+                    generation
+                );
+
+            }
+        );
+
+    });
 
 }
 
@@ -2884,14 +2694,14 @@ function setupMenu(){
             "menuOverlay"
         );
 
-    if(overlay){
-
-        overlay.addEventListener(
-            "click",
-            closeSideMenu
-        );
-
+    if(!overlay){
+        return;
     }
+
+    /*
+     * Não usamos aqui o clique geral no overlay
+     * porque o próprio HTML já chama closeMenu(event).
+     */
 
 }
 
@@ -2904,10 +2714,7 @@ document.addEventListener(
     "keydown",
     event => {
 
-        if(
-            event.key ===
-            "Escape"
-        ){
+        if(event.key === "Escape"){
 
             closeSideMenu();
 
@@ -2915,6 +2722,17 @@ document.addEventListener(
 
     }
 );
+
+
+/* =========================================================
+   COMPATIBILIDADE DO BOTÃO CARREGAR MAIS
+========================================================= */
+
+function loadMore(){
+
+    loadMorePokemon();
+
+}
 
 
 /* =========================================================
