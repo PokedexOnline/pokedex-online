@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#070a10">
-<title>Pokédex Online</title>
+<title>Pokédex Online — Comunidade Pokémon</title>
 
 <style>
 *{
@@ -25,38 +25,35 @@ body{
     overflow-x:hidden;
 }
 
-/* FUNDO ANIMADO */
+button,
+input{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+/* =========================
+   FUNDO GERAL
+========================= */
+
 body::before{
     content:"";
     position:fixed;
-    inset:-50%;
-    z-index:-2;
-    background:
-        radial-gradient(circle at 20% 20%,rgba(0,119,255,.18),transparent 25%),
-        radial-gradient(circle at 80% 30%,rgba(255,0,85,.14),transparent 25%),
-        radial-gradient(circle at 50% 80%,rgba(120,0,255,.15),transparent 25%);
-    animation:bgMove 15s ease-in-out infinite alternate;
-}
-
-body::after{
-    content:"";
-    position:fixed;
     inset:0;
-    z-index:-1;
+    z-index:-5;
     background:
-        linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
-    background-size:50px 50px;
-    pointer-events:none;
+        radial-gradient(circle at 20% 20%,rgba(40,90,180,.12),transparent 30%),
+        radial-gradient(circle at 80% 70%,rgba(120,40,180,.10),transparent 30%),
+        #070a10;
 }
 
-@keyframes bgMove{
-    from{transform:translate(-3%,-2%) scale(1)}
-    to{transform:translate(3%,2%) scale(1.08)}
-}
+/* =========================
+   HEADER
+========================= */
 
-/* HEADER */
-header{
+.header{
     position:sticky;
     top:0;
     z-index:1000;
@@ -64,61 +61,56 @@ header{
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:0 25px;
-    background:rgba(7,10,16,.82);
+    background:rgba(7,10,16,.88);
     backdrop-filter:blur(18px);
     border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 .logo{
-    font-size:24px;
+    font-size:25px;
     font-weight:900;
-    letter-spacing:-1px;
-}
-
-.logo span{
+    letter-spacing:.5px;
     color:#ffcb05;
+    text-shadow:0 2px 15px rgba(255,203,5,.2);
 }
 
-/* BOTÃO MENU */
 .menu-button{
     position:absolute;
-    left:20px;
-    top:50%;
-    transform:translateY(-50%);
-    width:45px;
-    height:45px;
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:13px;
-    background:rgba(255,255,255,.06);
+    left:18px;
+    top:17px;
+    width:40px;
+    height:40px;
+    border:0;
+    border-radius:12px;
+    background:rgba(255,255,255,.07);
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
     gap:5px;
-    cursor:pointer;
     transition:.25s;
 }
 
 .menu-button:hover{
-    background:rgba(255,255,255,.12);
-    transform:translateY(-50%) scale(1.05);
+    background:rgba(255,255,255,.13);
 }
 
 .menu-button span{
-    width:21px;
+    width:20px;
     height:2px;
-    background:white;
-    border-radius:5px;
+    border-radius:2px;
+    background:#fff;
 }
 
-/* MENU LATERAL */
+/* =========================
+   MENU
+========================= */
+
 .menu-overlay{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.55);
-    backdrop-filter:blur(3px);
     z-index:1500;
+    background:rgba(0,0,0,.55);
     opacity:0;
     visibility:hidden;
     transition:.25s;
@@ -131,13 +123,12 @@ header{
 
 .side-menu{
     position:absolute;
-    top:0;
     left:0;
-    width:290px;
-    max-width:85%;
-    height:100%;
-    background:linear-gradient(180deg,#101624,#080b12);
-    border-right:1px solid rgba(255,255,255,.1);
+    top:0;
+    bottom:0;
+    width:min(310px,85vw);
+    background:#0c111b;
+    border-right:1px solid rgba(255,255,255,.08);
     padding:90px 20px 25px;
     transform:translateX(-100%);
     transition:.3s ease;
@@ -149,63 +140,47 @@ header{
 
 .close-menu{
     position:absolute;
-    top:20px;
-    right:20px;
+    top:18px;
+    right:18px;
     width:38px;
     height:38px;
     border:0;
     border-radius:10px;
     background:rgba(255,255,255,.06);
-    color:white;
-    font-size:24px;
-    cursor:pointer;
+    color:#fff;
+    font-size:22px;
 }
 
 .menu-title{
-    font-size:12px;
-    color:#7e8aa5;
+    color:#7f8ca3;
     text-transform:uppercase;
-    letter-spacing:2px;
-    margin-bottom:12px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    margin:0 0 12px 8px;
 }
 
 .menu-link{
     width:100%;
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:16px;
-    margin-bottom:8px;
     border:0;
-    border-radius:14px;
-    color:#fff;
     background:transparent;
-    font-size:16px;
-    font-weight:700;
-    cursor:pointer;
+    color:#fff;
     text-align:left;
+    padding:15px 14px;
+    border-radius:12px;
+    margin-bottom:5px;
+    font-size:16px;
     transition:.2s;
 }
 
 .menu-link:hover{
-    background:rgba(255,255,255,.08);
-    transform:translateX(4px);
-}
-
-.menu-icon{
-    width:35px;
-    height:35px;
-    display:grid;
-    place-items:center;
-    border-radius:10px;
     background:rgba(255,255,255,.07);
-    font-size:18px;
+    color:#ffcb05;
 }
 
-/* CONTEÚDO */
-main{
-    width:100%;
-}
+/* =========================
+   PÁGINAS
+========================= */
 
 .page{
     display:none;
@@ -215,525 +190,1266 @@ main{
     display:block;
 }
 
-/* HERO */
+/* =========================
+   HERO HOME
+========================= */
+
 .hero{
+    position:relative;
+    min-height:440px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     text-align:center;
-    padding:75px 20px 35px;
+    overflow:hidden;
+    border-bottom:1px solid rgba(255,255,255,.06);
 }
 
-.hero-badge{
-    display:inline-block;
-    padding:8px 15px;
-    border-radius:30px;
-    background:rgba(255,203,5,.1);
-    border:1px solid rgba(255,203,5,.25);
-    color:#ffcb05;
-    font-size:12px;
-    font-weight:bold;
-    text-transform:uppercase;
-    letter-spacing:1.5px;
-    margin-bottom:18px;
+.hero-content{
+    position:relative;
+    z-index:4;
+    padding:60px 20px;
 }
 
 .hero h1{
-    font-size:clamp(38px,7vw,72px);
-    font-weight:1000;
-    letter-spacing:-4px;
-    background:linear-gradient(90deg,#fff,#ffcb05,#fff);
-    background-size:200%;
-    -webkit-background-clip:text;
-    color:transparent;
-    animation:titleGlow 5s linear infinite;
-}
-
-@keyframes titleGlow{
-    to{background-position:200%}
+    font-size:clamp(38px,7vw,78px);
+    font-weight:900;
+    line-height:1;
+    letter-spacing:-3px;
+    text-shadow:
+        0 5px 30px rgba(0,0,0,.8),
+        0 0 50px rgba(255,203,5,.12);
 }
 
 .hero p{
-    color:#8994aa;
-    margin-top:14px;
-    font-size:16px;
+    max-width:650px;
+    margin:20px auto 0;
+    color:#b8c0ce;
+    font-size:17px;
+    line-height:1.6;
 }
 
-/* MENSAGEM INICIAL */
-.welcome-box{
+/* animação do fundo */
+
+.hero-animation{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 50% 55%,rgba(42,90,170,.35),transparent 25%),
+        linear-gradient(180deg,#101a2d,#070a10);
+}
+
+.hero-animation::before{
+    content:"";
+    position:absolute;
+    width:500px;
+    height:500px;
+    border-radius:50%;
+    border:1px solid rgba(255,203,5,.15);
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    animation:heroPulse 7s ease-in-out infinite;
+}
+
+.hero-animation::after{
+    content:"";
+    position:absolute;
+    width:850px;
+    height:850px;
+    border-radius:50%;
+    border:1px solid rgba(80,150,255,.08);
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    animation:heroPulse2 10s ease-in-out infinite;
+}
+
+@keyframes heroPulse{
+    0%,100%{
+        transform:translate(-50%,-50%) scale(.85);
+        opacity:.35;
+    }
+    50%{
+        transform:translate(-50%,-50%) scale(1.2);
+        opacity:.8;
+    }
+}
+
+@keyframes heroPulse2{
+    0%,100%{
+        transform:translate(-50%,-50%) scale(.7);
+    }
+    50%{
+        transform:translate(-50%,-50%) scale(1.05);
+    }
+}
+
+.energy{
+    position:absolute;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#ffcb05;
+    box-shadow:0 0 18px #ffcb05;
+    animation:floatEnergy linear infinite;
+}
+
+.energy:nth-child(1){
+    left:10%;
+    top:70%;
+    animation-duration:7s;
+}
+
+.energy:nth-child(2){
+    left:20%;
+    top:30%;
+    animation-duration:10s;
+    animation-delay:-2s;
+}
+
+.energy:nth-child(3){
+    left:75%;
+    top:65%;
+    animation-duration:8s;
+    animation-delay:-4s;
+}
+
+.energy:nth-child(4){
+    left:85%;
+    top:25%;
+    animation-duration:11s;
+    animation-delay:-5s;
+}
+
+.energy:nth-child(5){
+    left:55%;
+    top:85%;
+    animation-duration:9s;
+    animation-delay:-3s;
+}
+
+@keyframes floatEnergy{
+    0%{
+        transform:translateY(50px) scale(.5);
+        opacity:0;
+    }
+    20%{
+        opacity:1;
+    }
+    80%{
+        opacity:1;
+    }
+    100%{
+        transform:translateY(-260px) scale(1.5);
+        opacity:0;
+    }
+}
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome{
+    width:min(1000px,calc(100% - 30px));
+    margin:30px auto;
     position:relative;
-    width:min(850px,calc(100% - 30px));
-    margin:10px auto 30px;
     padding:25px 55px 25px 25px;
     border-radius:18px;
-    background:linear-gradient(
-        135deg,
-        rgba(35,48,75,.72),
-        rgba(12,16,25,.82)
-    );
-    border:1px solid rgba(255,255,255,.1);
-    box-shadow:0 15px 45px rgba(0,0,0,.25);
+    background:rgba(17,23,35,.8);
+    border:1px solid rgba(255,255,255,.07);
 }
 
-.welcome-box h2{
-    font-size:20px;
+.welcome h2{
     margin-bottom:8px;
+    font-size:20px;
 }
 
-.welcome-box p{
-    color:#9da8bb;
+.welcome p{
+    color:#9ca8bb;
     line-height:1.6;
-    font-size:14px;
 }
 
 .welcome-close{
     position:absolute;
-    top:12px;
     right:14px;
-    width:28px;
-    height:28px;
+    top:14px;
+    width:30px;
+    height:30px;
     border:0;
     background:transparent;
-    color:#8d97a8;
-    font-size:24px;
-    cursor:pointer;
-    line-height:1;
+    color:#788398;
+    font-size:20px;
 }
 
-.welcome-close:hover{
-    color:white;
-}
+/* =========================
+   BUSCA HOME
+========================= */
 
-/* BUSCA */
-.search-area{
+.home-search{
     width:min(850px,calc(100% - 30px));
-    margin:0 auto 25px;
-}
-
-.search-box{
-    position:relative;
-}
-
-.search-box input{
-    width:100%;
+    margin:25px auto 35px;
     height:58px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 18px;
     border-radius:16px;
-    border:1px solid rgba(255,255,255,.1);
-    outline:none;
-    padding:0 20px;
-    background:rgba(15,20,31,.9);
-    color:white;
-    font-size:16px;
-    transition:.25s;
+    background:#101620;
+    border:1px solid rgba(255,255,255,.08);
 }
 
-.search-box input:focus{
-    border-color:#536dfe;
-    box-shadow:0 0 0 4px rgba(83,109,254,.1);
+.home-search span{
+    font-size:20px;
 }
 
-.search-box input::placeholder{
-    color:#69758b;
+.home-search input{
+    width:100%;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:#fff;
 }
 
-/* FILTROS */
-.filters{
+.home-search input::placeholder{
+    color:#69758a;
+}
+
+/* =========================
+   SEÇÃO
+========================= */
+
+.section-header{
+    width:min(1200px,calc(100% - 30px));
+    margin:45px auto 25px;
+}
+
+.section-header h2{
+    font-size:30px;
+    margin-bottom:7px;
+}
+
+.section-header p{
+    color:#8490a4;
+}
+
+/* =========================
+   GERAÇÕES PILLS
+========================= */
+
+.generation-filters{
+    width:min(1200px,calc(100% - 30px));
+    margin:0 auto 30px;
     display:flex;
     flex-wrap:wrap;
-    justify-content:center;
     gap:8px;
-    width:min(1100px,calc(100% - 30px));
-    margin:0 auto 35px;
 }
 
-.filter-btn{
-    border:1px solid rgba(255,255,255,.1);
-    background:rgba(255,255,255,.045);
-    color:#aeb8c9;
+.generation-pill{
+    border:1px solid rgba(255,255,255,.08);
+    background:#111722;
+    color:#aeb8c8;
     padding:9px 15px;
-    border-radius:30px;
-    cursor:pointer;
-    font-weight:bold;
+    border-radius:999px;
     transition:.2s;
 }
 
-.filter-btn:hover,
-.filter-btn.active{
+.generation-pill:hover,
+.generation-pill.active{
     background:#ffcb05;
-    color:#171717;
+    color:#101010;
     border-color:#ffcb05;
 }
 
-/* GRID */
+/* =========================
+   POKÉDEX GRID
+========================= */
+
 .pokedex{
-    width:min(1250px,calc(100% - 30px));
-    margin:auto;
+    width:min(1200px,calc(100% - 30px));
+    margin:0 auto;
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
-    gap:18px;
+    grid-template-columns:repeat(5,1fr);
+    gap:16px;
 }
 
 .pokemon-card{
     position:relative;
-    overflow:hidden;
+    min-width:0;
     padding:16px;
-    min-height:250px;
-    border-radius:22px;
-    background:linear-gradient(145deg,#141b2b,#0d111b);
+    border-radius:18px;
+    background:linear-gradient(145deg,#121a27,#0d121b);
     border:1px solid rgba(255,255,255,.07);
+    text-align:center;
     cursor:pointer;
-    transition:.3s;
-}
-
-.pokemon-card::before{
-    content:"";
-    position:absolute;
-    width:130px;
-    height:130px;
-    border-radius:50%;
-    background:rgba(255,203,5,.08);
-    right:-35px;
-    top:-35px;
+    overflow:hidden;
+    transition:.25s;
 }
 
 .pokemon-card:hover{
-    transform:translateY(-7px);
+    transform:translateY(-5px);
     border-color:rgba(255,203,5,.35);
-    box-shadow:0 15px 35px rgba(0,0,0,.35);
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
 }
 
 .pokemon-number{
-    position:relative;
-    color:#647086;
+    color:#56647a;
     font-size:12px;
-    font-weight:bold;
+    text-align:left;
 }
 
 .pokemon-image{
-    position:relative;
-    display:block;
-    width:150px;
-    height:150px;
+    width:100%;
+    max-width:150px;
+    aspect-ratio:1;
     object-fit:contain;
-    margin:0 auto 5px;
-    transition:.3s;
-    filter:drop-shadow(0 12px 10px rgba(0,0,0,.35));
+    display:block;
+    margin:5px auto;
+    transition:.25s;
 }
 
 .pokemon-card:hover .pokemon-image{
-    transform:scale(1.08) translateY(-4px);
+    transform:scale(1.07);
 }
 
 .pokemon-name{
-    position:relative;
-    text-align:center;
-    font-size:18px;
-    font-weight:900;
     text-transform:capitalize;
-    margin-bottom:10px;
+    font-weight:800;
+    font-size:17px;
+    margin:5px 0 10px;
 }
 
 .types{
-    position:relative;
     display:flex;
     justify-content:center;
-    flex-wrap:wrap;
     gap:5px;
+    flex-wrap:wrap;
 }
 
 .type{
     padding:5px 9px;
-    border-radius:7px;
+    border-radius:999px;
     font-size:10px;
-    font-weight:900;
+    font-weight:800;
     text-transform:uppercase;
+    letter-spacing:.3px;
 }
 
-/* TIPOS */
-.normal{background:#a8a77a;color:#111}
-.fogo{background:#ee8130}
-.agua{background:#6390f0}
-.eletrico{background:#f7d02c;color:#111}
-.planta{background:#7ac74c}
-.gelo{background:#96d9d6;color:#111}
-.lutador{background:#c22e28}
-.veneno{background:#a33ea1}
-.terra{background:#e2bf65;color:#111}
-.voador{background:#a98ff3}
-.psiquico{background:#f95587}
-.inseto{background:#a6b91a}
-.pedra{background:#b6a136}
-.fantasma{background:#735797}
-.dragao{background:#6f35fc}
-.sombrio{background:#705746}
-.aco{background:#b7b7ce;color:#111}
-.fada{background:#d685ad}
+/* =========================
+   TIPOS
+========================= */
 
-/* CARREGAR */
-.load-area{
-    text-align:center;
-    padding:35px 20px 60px;
-}
-
-.load-btn{
-    border:0;
-    padding:13px 25px;
-    border-radius:30px;
-    background:#ffcb05;
-    color:#161616;
-    font-weight:900;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.load-btn:hover{
-    transform:scale(1.04);
-}
-
-/* TÍTULOS DE PÁGINAS */
-.section-header{
-    text-align:center;
-    padding:65px 20px 35px;
-}
-
-.section-header h2{
-    font-size:clamp(32px,6vw,55px);
-    font-weight:1000;
-    letter-spacing:-2px;
-}
-
-.section-header p{
-    color:#8994aa;
-    margin-top:10px;
-}
-
-/* TIPOS */
 .types-grid{
     width:min(1200px,calc(100% - 30px));
-    margin:auto;
+    margin:0 auto 60px;
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-    gap:18px;
-    padding-bottom:70px;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
 }
 
 .type-card{
     position:relative;
     min-height:190px;
+    border-radius:22px;
     overflow:hidden;
-    border-radius:24px;
-    border:1px solid rgba(255,255,255,.12);
     cursor:pointer;
-    padding:25px;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-end;
-    isolation:isolate;
+    border:1px solid rgba(255,255,255,.1);
+    background:#111;
     transition:.3s;
 }
 
-.type-card::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    z-index:-2;
-    background:
-        radial-gradient(circle at 20% 20%,rgba(255,255,255,.35),transparent 25%),
-        radial-gradient(circle at 85% 80%,rgba(0,0,0,.4),transparent 45%);
-}
-
-.type-card::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    z-index:-1;
-    background:linear-gradient(transparent 20%,rgba(0,0,0,.72));
-}
-
 .type-card:hover{
-    transform:translateY(-8px) scale(1.015);
-    box-shadow:0 20px 45px rgba(0,0,0,.35);
+    transform:translateY(-6px);
+    box-shadow:0 20px 40px rgba(0,0,0,.35);
 }
 
-.type-symbol{
+.type-card-content{
     position:absolute;
-    top:15px;
-    right:18px;
-    font-size:65px;
-    opacity:.3;
+    inset:0;
+    z-index:5;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    padding:22px;
+    background:linear-gradient(
+        180deg,
+        transparent 20%,
+        rgba(0,0,0,.75) 100%
+    );
+}
+
+.type-icon{
+    font-size:45px;
+    margin-bottom:8px;
+    filter:drop-shadow(0 5px 12px rgba(0,0,0,.5));
 }
 
 .type-card h3{
-    font-size:23px;
-    font-weight:1000;
+    font-size:22px;
 }
 
 .type-card p{
-    margin-top:5px;
-    color:rgba(255,255,255,.72);
+    margin-top:4px;
+    color:#d2d7df;
     font-size:12px;
 }
 
-/* FUNDOS DOS TIPOS */
-.type-normal-card{background:linear-gradient(135deg,#85856b,#3e3d31)}
-.type-fire-card{background:linear-gradient(135deg,#ff6b1a,#7c1307)}
-.type-water-card{background:linear-gradient(135deg,#218cff,#063264)}
-.type-electric-card{background:linear-gradient(135deg,#ffd91a,#806700)}
-.type-grass-card{background:linear-gradient(135deg,#3caf58,#123d22)}
-.type-ice-card{background:linear-gradient(135deg,#8cefff,#236d83)}
-.type-fighting-card{background:linear-gradient(135deg,#db3c32,#59100d)}
-.type-poison-card{background:linear-gradient(135deg,#bd4bc0,#401144)}
-.type-ground-card{background:linear-gradient(135deg,#d39c43,#59401c)}
-.type-flying-card{background:linear-gradient(135deg,#9e9cfb,#423e87)}
-.type-psychic-card{background:linear-gradient(135deg,#ff5790,#721738)}
-.type-bug-card{background:linear-gradient(135deg,#a8c52b,#39440c)}
-.type-rock-card{background:linear-gradient(135deg,#ad9650,#4a3e1d)}
-.type-ghost-card{background:linear-gradient(135deg,#7652a2,#241336)}
-.type-dragon-card{background:linear-gradient(135deg,#734bff,#21105e)}
-.type-dark-card{background:linear-gradient(135deg,#695243,#211813)}
-.type-steel-card{background:linear-gradient(135deg,#aeb8d0,#414758)}
-.type-fairy-card{background:linear-gradient(135deg,#ef9ec4,#652d48)}
+/* animações dos tipos */
 
-/* GERAÇÕES */
+.type-animation{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+}
+
+/* WATER */
+
+.anim-water{
+    background:
+        linear-gradient(180deg,#075985,#082f49);
+}
+
+.anim-water::before,
+.anim-water::after{
+    content:"";
+    position:absolute;
+    left:-20%;
+    width:140%;
+    height:90px;
+    border-radius:50%;
+    border-top:3px solid rgba(120,210,255,.45);
+    animation:waterWave 4s linear infinite;
+}
+
+.anim-water::before{
+    top:25%;
+}
+
+.anim-water::after{
+    top:55%;
+    animation-delay:-2s;
+}
+
+@keyframes waterWave{
+    0%{transform:translateX(-10%) rotate(2deg);}
+    50%{transform:translateX(5%) rotate(-2deg);}
+    100%{transform:translateX(-10%) rotate(2deg);}
+}
+
+/* FIRE */
+
+.anim-fire{
+    background:linear-gradient(180deg,#7c2d12,#1c0702);
+}
+
+.anim-fire::before,
+.anim-fire::after{
+    content:"";
+    position:absolute;
+    bottom:-45px;
+    width:100px;
+    height:180px;
+    background:linear-gradient(180deg,#ffd166,#ef4444 55%,transparent);
+    border-radius:60% 40% 50% 50%;
+    filter:blur(4px);
+    animation:fireMove 1.5s ease-in-out infinite alternate;
+}
+
+.anim-fire::before{
+    left:15%;
+}
+
+.anim-fire::after{
+    right:20%;
+    height:220px;
+    animation-delay:-.7s;
+}
+
+@keyframes fireMove{
+    from{transform:rotate(-7deg) scale(.9);}
+    to{transform:rotate(8deg) scale(1.1);}
+}
+
+/* ELECTRIC */
+
+.anim-electric{
+    background:linear-gradient(135deg,#713f12,#17110a);
+}
+
+.anim-electric::before,
+.anim-electric::after{
+    content:"⚡";
+    position:absolute;
+    color:#ffe600;
+    font-size:70px;
+    filter:drop-shadow(0 0 15px #ffe600);
+    animation:flash 2s infinite;
+}
+
+.anim-electric::before{
+    left:20%;
+    top:20%;
+}
+
+.anim-electric::after{
+    right:18%;
+    bottom:15%;
+    animation-delay:-1s;
+}
+
+@keyframes flash{
+    0%,80%,100%{opacity:.15;transform:scale(.8);}
+    85%{opacity:1;transform:scale(1.15);}
+}
+
+/* GRASS */
+
+.anim-grass{
+    background:linear-gradient(180deg,#166534,#052e16);
+}
+
+.anim-grass::before{
+    content:"🍃";
+    position:absolute;
+    font-size:70px;
+    left:15%;
+    top:20%;
+    animation:leafFloat 5s ease-in-out infinite;
+}
+
+.anim-grass::after{
+    content:"🍃";
+    position:absolute;
+    font-size:55px;
+    right:18%;
+    top:45%;
+    animation:leafFloat 6s ease-in-out infinite reverse;
+}
+
+@keyframes leafFloat{
+    0%,100%{transform:translate(0,0) rotate(-10deg);}
+    50%{transform:translate(30px,20px) rotate(20deg);}
+}
+
+/* ICE */
+
+.anim-ice{
+    background:linear-gradient(180deg,#164e63,#082f49);
+}
+
+.anim-ice::before{
+    content:"❄ ❄ ❄ ❄ ❄";
+    position:absolute;
+    inset:-100px 0 0;
+    color:#dff8ff;
+    font-size:28px;
+    letter-spacing:25px;
+    animation:snow 7s linear infinite;
+}
+
+@keyframes snow{
+    from{transform:translateY(-80px);}
+    to{transform:translateY(230px);}
+}
+
+/* FIGHTING */
+
+.anim-fighting{
+    background:linear-gradient(135deg,#7f1d1d,#2b0808);
+}
+
+.anim-fighting::before{
+    content:"✊";
+    position:absolute;
+    font-size:110px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    animation:punch 1.8s ease-in-out infinite;
+}
+
+@keyframes punch{
+    0%,100%{transform:translate(-50%,-50%) scale(.85) rotate(-8deg);}
+    50%{transform:translate(-50%,-50%) scale(1.15) rotate(8deg);}
+}
+
+/* POISON */
+
+.anim-poison{
+    background:linear-gradient(180deg,#581c87,#18051f);
+}
+
+.anim-poison::before,
+.anim-poison::after{
+    content:"";
+    position:absolute;
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:rgba(217,70,239,.35);
+    filter:blur(10px);
+    animation:bubble 4s linear infinite;
+}
+
+.anim-poison::before{
+    left:20%;
+    bottom:-30px;
+}
+
+.anim-poison::after{
+    right:20%;
+    bottom:-60px;
+    animation-delay:-2s;
+}
+
+@keyframes bubble{
+    to{
+        transform:translateY(-260px) scale(1.3);
+        opacity:0;
+    }
+}
+
+/* GROUND */
+
+.anim-ground{
+    background:linear-gradient(180deg,#78350f,#291406);
+}
+
+.anim-ground::before{
+    content:"";
+    position:absolute;
+    left:-10%;
+    right:-10%;
+    bottom:-45px;
+    height:110px;
+    background:#92400e;
+    border-radius:50% 50% 0 0;
+    animation:groundMove 4s ease-in-out infinite alternate;
+}
+
+@keyframes groundMove{
+    to{transform:translateY(-12px);}
+}
+
+/* FLYING */
+
+.anim-flying{
+    background:linear-gradient(180deg,#2563eb,#172554);
+}
+
+.anim-flying::before{
+    content:"☁";
+    position:absolute;
+    font-size:85px;
+    left:10%;
+    top:20%;
+    opacity:.5;
+    animation:cloud 10s linear infinite;
+}
+
+.anim-flying::after{
+    content:"☁";
+    position:absolute;
+    font-size:65px;
+    right:5%;
+    top:50%;
+    opacity:.4;
+    animation:cloud 13s linear infinite reverse;
+}
+
+@keyframes cloud{
+    from{transform:translateX(-80px);}
+    to{transform:translateX(350px);}
+}
+
+/* PSYCHIC */
+
+.anim-psychic{
+    background:linear-gradient(135deg,#86198f,#3b0764);
+}
+
+.anim-psychic::before{
+    content:"";
+    position:absolute;
+    width:230px;
+    height:230px;
+    border-radius:50%;
+    border:2px solid rgba(255,160,255,.5);
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    animation:psychic 4s ease-in-out infinite;
+}
+
+@keyframes psychic{
+    0%,100%{transform:translate(-50%,-50%) scale(.6);opacity:.2;}
+    50%{transform:translate(-50%,-50%) scale(1.2);opacity:.9;}
+}
+
+/* BUG */
+
+.anim-bug{
+    background:linear-gradient(180deg,#3f6212,#172600);
+}
+
+.anim-bug::before{
+    content:"🦋";
+    position:absolute;
+    font-size:80px;
+    left:50%;
+    top:35%;
+    transform:translateX(-50%);
+    animation:butterfly 3s ease-in-out infinite;
+}
+
+@keyframes butterfly{
+    0%,100%{transform:translateX(-50%) translateY(15px) rotate(-8deg);}
+    50%{transform:translateX(-50%) translateY(-20px) rotate(8deg);}
+}
+
+/* ROCK */
+
+.anim-rock{
+    background:linear-gradient(180deg,#57534e,#1c1917);
+}
+
+.anim-rock::before{
+    content:"◆ ◆ ◆";
+    position:absolute;
+    font-size:55px;
+    color:#a8a29e;
+    left:20%;
+    top:25%;
+    transform:rotate(20deg);
+    animation:rockFloat 4s ease-in-out infinite;
+}
+
+@keyframes rockFloat{
+    50%{transform:translateY(20px) rotate(35deg);}
+}
+
+/* GHOST */
+
+.anim-ghost{
+    background:linear-gradient(180deg,#312e81,#09051c);
+}
+
+.anim-ghost::before{
+    content:"👻";
+    position:absolute;
+    font-size:90px;
+    left:50%;
+    top:45%;
+    transform:translate(-50%,-50%);
+    animation:ghost 3s ease-in-out infinite;
+    filter:drop-shadow(0 0 20px #8b5cf6);
+}
+
+@keyframes ghost{
+    0%,100%{transform:translate(-50%,-50%);}
+    50%{transform:translate(-50%,-65%);}
+}
+
+/* DRAGON */
+
+.anim-dragon{
+    background:linear-gradient(135deg,#312e81,#111827);
+}
+
+.anim-dragon::before{
+    content:"🐉";
+    position:absolute;
+    font-size:95px;
+    left:50%;
+    top:45%;
+    transform:translate(-50%,-50%);
+    animation:dragon 4s ease-in-out infinite;
+    filter:drop-shadow(0 0 18px rgba(96,165,250,.7));
+}
+
+@keyframes dragon{
+    0%,100%{transform:translate(-50%,-50%) scale(.9);}
+    50%{transform:translate(-50%,-55%) scale(1.08);}
+}
+
+/* DARK */
+
+.anim-dark{
+    background:linear-gradient(135deg,#171717,#020202);
+}
+
+.anim-dark::before{
+    content:"☾";
+    position:absolute;
+    font-size:120px;
+    color:#a78bfa;
+    right:15%;
+    top:10%;
+    opacity:.35;
+    animation:moon 6s ease-in-out infinite;
+}
+
+@keyframes moon{
+    50%{transform:translateY(15px);opacity:.6;}
+}
+
+/* STEEL */
+
+.anim-steel{
+    background:linear-gradient(135deg,#475569,#111827);
+}
+
+.anim-steel::before{
+    content:"⚙";
+    position:absolute;
+    font-size:130px;
+    color:#cbd5e1;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    opacity:.3;
+    animation:gear 8s linear infinite;
+}
+
+@keyframes gear{
+    to{transform:translate(-50%,-50%) rotate(360deg);}
+}
+
+/* FAIRY */
+
+.anim-fairy{
+    background:linear-gradient(135deg,#be185d,#4c0519);
+}
+
+.anim-fairy::before{
+    content:"✦ ✧ ✦";
+    position:absolute;
+    width:100%;
+    top:25%;
+    text-align:center;
+    color:#fbcfe8;
+    font-size:45px;
+    letter-spacing:20px;
+    animation:fairy 3s ease-in-out infinite;
+}
+
+@keyframes fairy{
+    50%{transform:translateY(20px) scale(1.15);opacity:.5;}
+}
+
+/* NORMAL */
+
+.anim-normal{
+    background:linear-gradient(135deg,#64748b,#1e293b);
+}
+
+.anim-normal::before{
+    content:"✦";
+    position:absolute;
+    font-size:100px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    opacity:.25;
+    animation:normalPulse 3s infinite;
+}
+
+@keyframes normalPulse{
+    50%{transform:translate(-50%,-50%) scale(1.3);opacity:.6;}
+}
+
+/* =========================
+   GERAÇÕES
+========================= */
+
 .generations-grid{
     width:min(1200px,calc(100% - 30px));
-    margin:auto;
+    margin:0 auto 60px;
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-    padding-bottom:70px;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
 }
 
 .generation-card{
     position:relative;
+    min-height:260px;
+    border-radius:22px;
     overflow:hidden;
-    min-height:230px;
-    border-radius:26px;
-    padding:25px;
+    border:1px solid rgba(255,255,255,.1);
     cursor:pointer;
-    border:1px solid rgba(255,255,255,.12);
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-end;
     transition:.3s;
 }
 
-.generation-card::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:
-        radial-gradient(circle at 20% 20%,rgba(255,255,255,.22),transparent 30%),
-        radial-gradient(circle at 80% 80%,rgba(0,0,0,.45),transparent 50%);
-}
-
-.generation-card::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:linear-gradient(transparent 15%,rgba(0,0,0,.8));
-}
-
 .generation-card:hover{
-    transform:translateY(-8px);
+    transform:translateY(-6px);
     box-shadow:0 20px 45px rgba(0,0,0,.35);
 }
 
-.generation-number,
-.generation-region{
-    position:relative;
-    z-index:2;
+.generation-content{
+    position:absolute;
+    inset:0;
+    z-index:5;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    padding:25px;
+    background:linear-gradient(
+        180deg,
+        transparent 25%,
+        rgba(0,0,0,.8)
+    );
 }
 
-.generation-number{
-    font-size:50px;
-    font-weight:1000;
-    line-height:.9;
+.generation-content span{
+    color:#ffcb05;
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:2px;
 }
 
-.generation-region{
+.generation-content h3{
+    font-size:30px;
+    margin-top:5px;
+}
+
+.generation-content p{
+    color:#c4cbd6;
+    margin-top:5px;
+}
+
+/* cenários */
+
+.region-animation{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+}
+
+/* KANTO */
+.region-kanto{
+    background:
+        linear-gradient(180deg,#2563eb 0%,#60a5fa 55%,#166534 56%,#14532d 100%);
+}
+
+.region-kanto::before{
+    content:"🌊  🌊  🌊";
+    position:absolute;
+    left:-20%;
+    bottom:25%;
+    width:140%;
+    font-size:38px;
+    animation:sea 5s linear infinite;
+}
+
+@keyframes sea{
+    50%{transform:translateX(35px);}
+}
+
+/* JOHTO */
+.region-johto{
+    background:
+        linear-gradient(180deg,#312e81 0%,#7c3aed 48%,#365314 49%,#14532d 100%);
+}
+
+.region-johto::before{
+    content:"🌸  🌸  🌸  🌸";
+    position:absolute;
+    top:20%;
+    left:5%;
+    font-size:35px;
+    animation:johto 5s ease-in-out infinite;
+}
+
+@keyframes johto{
+    50%{transform:translateY(25px);}
+}
+
+/* HOENN */
+.region-hoenn{
+    background:linear-gradient(180deg,#0369a1 0%,#38bdf8 48%,#0f766e 49%,#064e3b 100%);
+}
+
+.region-hoenn::before{
+    content:"🌊";
+    position:absolute;
+    font-size:120px;
+    left:15%;
+    bottom:5%;
+    opacity:.35;
+    animation:hoennWave 4s ease-in-out infinite;
+}
+
+@keyframes hoennWave{
+    50%{transform:translateY(-20px) rotate(5deg);}
+}
+
+/* SINNOH */
+.region-sinnoh{
+    background:linear-gradient(180deg,#cbd5e1 0%,#64748b 45%,#334155 46%,#0f172a 100%);
+}
+
+.region-sinnoh::before{
+    content:"❄  ❄  ❄";
+    position:absolute;
+    top:10%;
+    left:10%;
+    color:white;
+    font-size:38px;
+    animation:snowRegion 5s linear infinite;
+}
+
+@keyframes snowRegion{
+    to{transform:translateY(160px);}
+}
+
+/* UNOVA */
+.region-unova{
+    background:linear-gradient(180deg,#1e3a8a,#3b82f6 45%,#172554 46%,#020617);
+}
+
+.region-unova::before{
+    content:"🏙️";
+    position:absolute;
+    font-size:120px;
+    left:50%;
+    top:35%;
+    transform:translateX(-50%);
+    opacity:.35;
+    animation:city 4s ease-in-out infinite;
+}
+
+@keyframes city{
+    50%{transform:translateX(-50%) translateY(-8px);}
+}
+
+/* KALOS */
+.region-kalos{
+    background:linear-gradient(180deg,#581c87,#c026d3 45%,#365314 46%,#14532d);
+}
+
+.region-kalos::before{
+    content:"🌹  ✨  🌹";
+    position:absolute;
+    top:25%;
+    width:100%;
+    text-align:center;
+    font-size:38px;
+    animation:kalos 3s ease-in-out infinite;
+}
+
+@keyframes kalos{
+    50%{transform:scale(1.1);}
+}
+
+/* ALOLA */
+.region-alola{
+    background:linear-gradient(180deg,#0c4a6e,#38bdf8 50%,#15803d 51%,#14532d);
+}
+
+.region-alola::before{
+    content:"🌴   🌴   🌴";
+    position:absolute;
+    bottom:10%;
+    width:100%;
+    text-align:center;
+    font-size:48px;
+    animation:palm 4s ease-in-out infinite alternate;
+}
+
+@keyframes palm{
+    to{transform:rotate(2deg) translateX(10px);}
+}
+
+/* GALAR */
+.region-galar{
+    background:linear-gradient(180deg,#334155,#64748b 45%,#475569 46%,#111827);
+}
+
+.region-galar::before{
+    content:"⚡";
+    position:absolute;
+    font-size:130px;
+    right:15%;
+    top:15%;
+    color:#facc15;
+    opacity:.4;
+    animation:galar 2s infinite;
+}
+
+@keyframes galar{
+    0%,80%,100%{opacity:.2;}
+    85%{opacity:.9;}
+}
+
+/* PALDEA */
+.region-paldea{
+    background:linear-gradient(180deg,#7c2d12,#f97316 45%,#166534 46%,#14532d);
+}
+
+.region-paldea::before{
+    content:"☀️";
+    position:absolute;
+    font-size:100px;
+    right:15%;
+    top:10%;
+    animation:sun 5s ease-in-out infinite;
+}
+
+@keyframes sun{
+    50%{transform:scale(1.15);opacity:.8;}
+}
+
+/* =========================
+   BUSCA EXCLUSIVA
+========================= */
+
+.search-page-box{
+    width:min(850px,calc(100% - 30px));
+    margin:0 auto 35px;
+}
+
+.big-search{
+    height:70px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:0 22px;
+    border-radius:20px;
+    background:rgba(15,20,31,.92);
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:0 15px 40px rgba(0,0,0,.25);
+    transition:.25s;
+}
+
+.big-search:focus-within{
+    border-color:#ffcb05;
+    box-shadow:
+        0 0 0 4px rgba(255,203,5,.08),
+        0 15px 40px rgba(0,0,0,.25);
+}
+
+.big-search span{
     font-size:25px;
-    font-weight:1000;
-    letter-spacing:3px;
-    margin-top:10px;
 }
 
-.generation-desc{
-    position:relative;
-    z-index:2;
-    color:rgba(255,255,255,.7);
-    margin-top:7px;
-    font-size:12px;
+.big-search input{
+    width:100%;
+    height:100%;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:#fff;
+    font-size:18px;
 }
 
-/* FUNDOS GERAÇÕES */
-.gen1{background:linear-gradient(135deg,#287b45,#102e21)}
-.gen2{background:linear-gradient(135deg,#76512f,#271a12)}
-.gen3{background:linear-gradient(135deg,#167e9c,#082f3d)}
-.gen4{background:linear-gradient(135deg,#536b83,#1a2533)}
-.gen5{background:linear-gradient(135deg,#444b62,#171a27)}
-.gen6{background:linear-gradient(135deg,#70589d,#281d3b)}
-.gen7{background:linear-gradient(135deg,#db7b42,#573019)}
-.gen8{background:linear-gradient(135deg,#486c9e,#182a43)}
-.gen9{background:linear-gradient(135deg,#a84e45,#421a19)}
+.big-search input::placeholder{
+    color:#68748a;
+}
 
-/* DETALHES */
+.search-results{
+    padding-bottom:60px;
+}
+
+.loading{
+    grid-column:1/-1;
+    text-align:center;
+    padding:70px 20px;
+    color:#7f8ca3;
+    line-height:1.7;
+}
+
+/* =========================
+   BOTÃO CARREGAR
+========================= */
+
+.load-more{
+    display:block;
+    margin:30px auto 60px;
+    padding:13px 25px;
+    border:0;
+    border-radius:12px;
+    background:#ffcb05;
+    color:#111;
+    font-weight:800;
+}
+
+/* =========================
+   DETALHES
+========================= */
+
 #pokemonDetails{
     display:none;
     width:min(1100px,calc(100% - 30px));
-    margin:45px auto 80px;
+    margin:35px auto 70px;
 }
 
-.back-btn{
-    border:1px solid rgba(255,255,255,.1);
-    background:rgba(255,255,255,.06);
-    color:white;
-    padding:10px 17px;
-    border-radius:12px;
-    cursor:pointer;
+.back-button{
+    border:0;
+    background:#111722;
+    color:#b9c3d2;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:11px;
+    padding:11px 16px;
     margin-bottom:20px;
 }
 
 .detail-card{
-    background:linear-gradient(145deg,#131a29,#0c1018);
+    background:#0f151f;
     border:1px solid rgba(255,255,255,.08);
-    border-radius:28px;
+    border-radius:25px;
     overflow:hidden;
 }
 
 .detail-top{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:30px;
-    padding:35px;
+    grid-template-columns:1fr 1.2fr;
+    gap:20px;
+    padding:30px;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(255,203,5,.08),transparent 35%),
+        #111925;
 }
 
-.detail-image-area{
+.detail-art{
     display:flex;
     align-items:center;
     justify-content:center;
     min-height:350px;
 }
 
-.detail-image-area img{
-    width:min(380px,100%);
-    height:380px;
+.detail-art img{
+    width:min(360px,90%);
+    max-height:350px;
     object-fit:contain;
-    filter:drop-shadow(0 25px 20px rgba(0,0,0,.5));
+    filter:drop-shadow(0 20px 25px rgba(0,0,0,.4));
 }
 
-.detail-info h1{
-    font-size:45px;
-    text-transform:capitalize;
-    margin-bottom:8px;
+.detail-info{
+    padding:20px 0;
 }
 
 .detail-number{
-    color:#6e7b91;
-    font-weight:bold;
-    margin-bottom:20px;
+    color:#68758a;
+    font-size:15px;
 }
 
-.detail-info .types{
-    justify-content:flex-start;
+.detail-name{
+    font-size:clamp(38px,6vw,65px);
+    text-transform:capitalize;
+    margin:8px 0 15px;
+}
+
+.detail-types{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
     margin-bottom:25px;
+}
+
+.detail-types .type{
+    font-size:12px;
+    padding:7px 12px;
 }
 
 .info-grid{
@@ -743,171 +1459,177 @@ main{
 }
 
 .info-box{
-    padding:15px;
-    border-radius:14px;
-    background:rgba(255,255,255,.045);
+    background:rgba(255,255,255,.035);
+    border-radius:12px;
+    padding:13px;
 }
 
-.info-box span{
+.info-box small{
     display:block;
-    color:#718097;
-    font-size:11px;
-    text-transform:uppercase;
-    margin-bottom:5px;
+    color:#657187;
+    margin-bottom:4px;
 }
 
 .info-box strong{
-    text-transform:capitalize;
+    color:#e8edf5;
 }
 
-/* TABS */
-.detail-tabs{
-    display:flex;
-    gap:8px;
-    padding:15px;
-    border-top:1px solid rgba(255,255,255,.07);
-    border-bottom:1px solid rgba(255,255,255,.07);
-    overflow-x:auto;
-}
-
-.detail-tab{
-    flex:0 0 auto;
-    border:0;
-    background:transparent;
-    color:#7e8aa0;
-    padding:11px 18px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-.detail-tab.active{
-    color:#111;
-    background:#ffcb05;
-}
-
-/* SEÇÕES DETALHE */
 .detail-section{
     padding:30px;
+    border-top:1px solid rgba(255,255,255,.07);
 }
 
 .detail-section h2{
+    font-size:22px;
     margin-bottom:18px;
 }
 
 .description{
-    color:#a7b0bf;
-    line-height:1.7;
-    background:rgba(255,255,255,.035);
-    padding:20px;
-    border-radius:15px;
+    color:#aeb8c7;
+    line-height:1.8;
 }
 
-/* HABILIDADES */
 .abilities{
     display:flex;
+    gap:10px;
     flex-wrap:wrap;
-    gap:8px;
 }
 
 .ability{
-    background:#202a3e;
-    border:1px solid rgba(255,255,255,.07);
-    padding:8px 13px;
-    border-radius:9px;
+    padding:9px 13px;
+    border-radius:10px;
+    background:#151e2b;
+    color:#cbd5e1;
     text-transform:capitalize;
 }
 
-/* STATS */
-.stat{
-    margin-bottom:15px;
+/* =========================
+   STATS
+========================= */
+
+.stats{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
 }
 
-.stat-head{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:6px;
+.stat-row{
+    display:grid;
+    grid-template-columns:140px 50px 1fr;
+    align-items:center;
+    gap:10px;
+}
+
+.stat-name{
+    color:#9aa6b8;
+    text-transform:capitalize;
     font-size:13px;
 }
 
-.stat-head span:first-child{
-    color:#aab4c4;
-    text-transform:capitalize;
+.stat-value{
+    font-weight:800;
 }
 
 .stat-bar{
     height:9px;
-    border-radius:10px;
-    background:#1b2230;
+    background:#1c2635;
+    border-radius:999px;
     overflow:hidden;
 }
 
 .stat-fill{
     height:100%;
-    border-radius:10px;
-    background:linear-gradient(90deg,#536dfe,#ffcb05);
+    background:linear-gradient(90deg,#ffcb05,#ff8a00);
+    border-radius:999px;
 }
 
-/* EVOLUÇÕES */
+/* =========================
+   EVOLUÇÕES
+========================= */
+
 .evolution-chain{
     display:flex;
     align-items:center;
     justify-content:center;
     flex-wrap:wrap;
-    gap:12px;
+    gap:14px;
 }
 
-.evolution-card{
-    width:145px;
+.evolution-item{
     text-align:center;
-    padding:15px;
-    border-radius:17px;
-    background:rgba(255,255,255,.04);
-    border:1px solid rgba(255,255,255,.07);
+    min-width:140px;
 }
 
-.evolution-card img{
-    width:100px;
-    height:100px;
+.evolution-item img{
+    width:120px;
+    height:120px;
     object-fit:contain;
 }
 
-.evolution-card strong{
+.evolution-item strong{
     display:block;
     text-transform:capitalize;
-    margin-top:5px;
 }
 
-.evolution-condition{
-    color:#ffcb05;
+.evolution-method{
+    color:#758197;
     font-size:11px;
-    font-weight:bold;
-    text-align:center;
-    max-width:100px;
+    max-width:130px;
+    margin:4px auto 0;
+    line-height:1.4;
 }
 
 .evolution-arrow{
-    color:#78869d;
     font-size:25px;
+    color:#ffcb05;
 }
 
-/* MEGA */
-.mega-grid{
+/* =========================
+   MEGA
+========================= */
+
+.mega-tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:22px;
+}
+
+.mega-tab{
+    border:1px solid rgba(255,255,255,.08);
+    background:#111722;
+    color:#9da8ba;
+    padding:10px 14px;
+    border-radius:10px;
+}
+
+.mega-tab.active{
+    background:#ffcb05;
+    color:#111;
+}
+
+.mega-content{
+    display:none;
+}
+
+.mega-content.active{
+    display:block;
+}
+
+.mega-forms{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    grid-template-columns:repeat(2,1fr);
     gap:20px;
 }
 
-.mega-card{
-    background:rgba(255,255,255,.04);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:20px;
+.mega-form{
+    background:#121a26;
+    border-radius:18px;
     padding:20px;
+    text-align:center;
 }
 
-.mega-card h3{
+.mega-form h3{
     text-transform:capitalize;
-    text-align:center;
     margin-bottom:15px;
 }
 
@@ -918,49 +1640,78 @@ main{
 }
 
 .mega-images div{
-    text-align:center;
-    color:#78869d;
-    font-size:11px;
+    background:#0b1018;
+    border-radius:15px;
+    padding:10px;
+}
+
+.mega-images small{
+    color:#6f7b8e;
 }
 
 .mega-images img{
     width:100%;
-    height:170px;
+    max-height:220px;
     object-fit:contain;
 }
 
-.loading{
-    text-align:center;
-    color:#758197;
-    padding:30px;
+/* =========================
+   CORES DOS TIPOS
+========================= */
+
+.type.normal{background:#8b95a5;color:#111;}
+.type.fogo{background:#f97316;color:#fff;}
+.type.agua{background:#3b82f6;color:#fff;}
+.type.eletrico{background:#facc15;color:#111;}
+.type.planta{background:#22c55e;color:#fff;}
+.type.gelo{background:#67e8f9;color:#083344;}
+.type.lutador{background:#dc2626;color:#fff;}
+.type.veneno{background:#a855f7;color:#fff;}
+.type.terra{background:#a16207;color:#fff;}
+.type.voador{background:#818cf8;color:#fff;}
+.type.psiquico{background:#ec4899;color:#fff;}
+.type.inseto{background:#84cc16;color:#172000;}
+.type.pedra{background:#78716c;color:#fff;}
+.type.fantasma{background:#7c3aed;color:#fff;}
+.type.dragao{background:#4f46e5;color:#fff;}
+.type.sombrio{background:#374151;color:#fff;}
+.type.aco{background:#94a3b8;color:#111;}
+.type.fada{background:#f472b6;color:#fff;}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media(max-width:1000px){
+    .pokedex{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .types-grid,
+    .generations-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
 }
 
-/* FOOTER */
-footer{
-    border-top:1px solid rgba(255,255,255,.07);
-    text-align:center;
-    padding:30px 20px;
-    color:#5e6a7d;
-    font-size:12px;
-}
-
-/* MOBILE */
 @media(max-width:700px){
-
-    header{
-        height:65px;
+    .header{
+        height:64px;
     }
 
     .logo{
-        font-size:19px;
+        font-size:21px;
     }
 
     .hero{
-        padding-top:50px;
+        min-height:390px;
     }
 
     .hero h1{
         letter-spacing:-2px;
+    }
+
+    .hero p{
+        font-size:14px;
     }
 
     .pokedex{
@@ -969,23 +1720,20 @@ footer{
     }
 
     .pokemon-card{
-        min-height:215px;
-        padding:10px;
-        border-radius:17px;
+        padding:12px;
     }
 
     .pokemon-image{
-        width:115px;
-        height:115px;
+        max-width:120px;
     }
 
-    .pokemon-name{
-        font-size:15px;
+    .types-grid,
+    .generations-grid{
+        grid-template-columns:1fr;
     }
 
-    .type{
-        font-size:8px;
-        padding:4px 6px;
+    .generation-card{
+        min-height:220px;
     }
 
     .detail-top{
@@ -993,29 +1741,39 @@ footer{
         padding:20px;
     }
 
-    .detail-image-area{
-        min-height:250px;
+    .detail-art{
+        min-height:280px;
     }
 
-    .detail-image-area img{
-        width:280px;
-        height:280px;
-    }
-
-    .detail-info h1{
-        font-size:35px;
+    .detail-info{
+        padding:0;
     }
 
     .detail-section{
-        padding:20px;
+        padding:22px;
+    }
+
+    .stat-row{
+        grid-template-columns:95px 35px 1fr;
+    }
+
+    .mega-forms{
+        grid-template-columns:1fr;
     }
 
     .evolution-arrow{
         transform:rotate(90deg);
     }
+}
 
-    .welcome-box{
-        padding:22px 45px 22px 18px;
+@media(max-width:400px){
+    .pokemon-name{
+        font-size:14px;
+    }
+
+    .type{
+        font-size:9px;
+        padding:4px 7px;
     }
 }
 </style>
@@ -1023,389 +1781,263 @@ footer{
 
 <body>
 
-<header>
-    <button class="menu-button" onclick="toggleMenu()" aria-label="Abrir menu">
+<!-- =========================
+     HEADER
+========================= -->
+
+<header class="header">
+    <button class="menu-button" onclick="openMenu()" aria-label="Abrir menu">
         <span></span>
         <span></span>
         <span></span>
     </button>
 
-    <div class="logo">Pokédex <span>Online</span></div>
+    <div class="logo">Pokédex Online</div>
 </header>
 
-<!-- MENU -->
-<div class="menu-overlay" id="menuOverlay" onclick="closeMenu(event)">
+<!-- =========================
+     MENU
+========================= -->
+
+<div id="menuOverlay" class="menu-overlay" onclick="closeMenu(event)">
     <aside class="side-menu">
+
         <button class="close-menu" onclick="closeMenu()">×</button>
 
         <div class="menu-title">Navegação</div>
 
-        <button class="menu-link" onclick="showPage('pokedexPage')">
-            <span class="menu-icon">🔎</span>
-            Buscar
+        <button class="menu-link" onclick="showPage('searchPage')">
+            🔎 &nbsp; Buscar
         </button>
 
         <button class="menu-link" onclick="showPage('homePage')">
-            <span class="menu-icon">⌂</span>
-            Home
+            🏠 &nbsp; Home
         </button>
 
         <button class="menu-link" onclick="showPage('generationsPage')">
-            <span class="menu-icon">🌎</span>
-            Gerações
+            🌎 &nbsp; Gerações
         </button>
 
         <button class="menu-link" onclick="showPage('typesPage')">
-            <span class="menu-icon">🔥</span>
-            Tipos
+            🔥 &nbsp; Tipos
         </button>
+
     </aside>
 </div>
 
-<main>
+<!-- =========================
+     HOME
+========================= -->
 
-<!-- HOME -->
-<section id="homePage" class="page active">
+<main id="homePage" class="page active">
 
-    <div class="hero">
-        <div class="hero-badge">Pokédex Online</div>
-        <h1>Explore o mundo Pokémon</h1>
-        <p>Descubra Pokémon, tipos, gerações, evoluções e muito mais.</p>
-    </div>
+    <section class="hero">
 
-    <div class="welcome-box" id="welcomeBox">
-        <button class="welcome-close" onclick="closeWelcome()">×</button>
+        <div class="hero-animation">
+            <div class="energy"></div>
+            <div class="energy"></div>
+            <div class="energy"></div>
+            <div class="energy"></div>
+            <div class="energy"></div>
+        </div>
+
+        <div class="hero-content">
+            <h1>Explore o mundo Pokémon</h1>
+            <p>
+                Descubra Pokémon, regiões, tipos, evoluções,
+                habilidades e muito mais.
+            </p>
+        </div>
+
+    </section>
+
+    <section class="welcome" id="welcomeBox">
+        <button
+            class="welcome-close"
+            onclick="document.getElementById('welcomeBox').style.display='none'"
+        >
+            ×
+        </button>
+
         <h2>Bem-vindo à Pokédex Online!</h2>
+
         <p>
-            Explore informações sobre os Pokémon, descubra seus tipos,
-            evoluções, habilidades, estatísticas, formas Shiny e Mega Evoluções.
-            Use o menu para navegar pelo site.
+            Explore os Pokémon disponíveis, pesquise por nome ou número
+            e descubra todas as informações de cada Pokémon.
         </p>
+    </section>
+
+    <div class="home-search">
+        <span>🔎</span>
+        <input
+            type="text"
+            id="homeSearchInput"
+            placeholder="Buscar Pokémon por nome ou número..."
+            autocomplete="off"
+            oninput="searchPokemon()"
+        >
     </div>
 
-    <div class="search-area">
-        <div class="search-box">
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="🔎 Buscar Pokémon por nome ou número..."
-                oninput="searchPokemon()"
-            >
+    <div class="generation-filters">
+
+        <button class="generation-pill active" onclick="filterGeneration(0,this)">
+            Todos
+        </button>
+
+        <button class="generation-pill" onclick="filterGeneration(1,this)">
+            I
+        </button>
+
+        <button class="generation-pill" onclick="filterGeneration(2,this)">
+            II
+        </button>
+
+        <button class="generation-pill" onclick="filterGeneration(3,this)">
+            III
+        </button>
+
+        <button class="generation-pill" onclick="filterGeneration(4,this)">
+            IV
+        </button>
+
+        <button class="generation-pill" onclick="filterGeneration(5,this)">
+            V
+        </button>
+
+        <button class="generation-pill" onclick="filterGeneration(6,this)">
+            VI
+        </button>
+
+        <button class="generation-pill" onclick="filterGeneration(7,this)">
+            VII
+        </button>
+
+        <button class="generation-pill" onclick="filterGeneration(8,this)">
+            VIII
+        </button>
+
+        <button class="generation-pill" onclick="filterGeneration(9,this)">
+            IX
+        </button>
+
+    </div>
+
+    <div id="pokedex" class="pokedex">
+        <div class="loading">
+            Carregando Pokémon...
         </div>
     </div>
 
-    <div class="filters">
-        <button class="filter-btn active" onclick="filterGeneration(0,this)">Todos</button>
-        <button class="filter-btn" onclick="filterGeneration(1,this)">I</button>
-        <button class="filter-btn" onclick="filterGeneration(2,this)">II</button>
-        <button class="filter-btn" onclick="filterGeneration(3,this)">III</button>
-        <button class="filter-btn" onclick="filterGeneration(4,this)">IV</button>
-        <button class="filter-btn" onclick="filterGeneration(5,this)">V</button>
-        <button class="filter-btn" onclick="filterGeneration(6,this)">VI</button>
-        <button class="filter-btn" onclick="filterGeneration(7,this)">VII</button>
-        <button class="filter-btn" onclick="filterGeneration(8,this)">VIII</button>
-        <button class="filter-btn" onclick="filterGeneration(9,this)">IX</button>
+    <button
+        id="loadMoreButton"
+        class="load-more"
+        onclick="loadMore()"
+    >
+        Carregar mais
+    </button>
+
+</main>
+
+<!-- =========================
+     BUSCAR
+========================= -->
+
+<section id="searchPage" class="page">
+
+    <div class="section-header">
+        <h2>Buscar Pokémon</h2>
+        <p>
+            Pesquise pelo nome ou número do Pokémon.
+        </p>
     </div>
 
-    <div id="pokedex" class="pokedex"></div>
+    <div class="search-page-box">
 
-    <div class="load-area">
-        <button class="load-btn" id="loadMoreBtn" onclick="loadMore()">
-            Carregar mais
-        </button>
+        <div class="big-search">
+            <span>🔎</span>
+
+            <input
+                type="text"
+                id="searchPageInput"
+                placeholder="Digite o nome ou número..."
+                autocomplete="off"
+                oninput="searchFromPage()"
+            >
+
+        </div>
+
+    </div>
+
+    <div id="searchResults" class="pokedex search-results">
+
+        <div class="loading">
+            Digite o nome ou número de um Pokémon para começar.
+        </div>
+
     </div>
 
 </section>
 
+<!-- =========================
+     TIPOS
+========================= -->
 
-<!-- TIPOS -->
 <section id="typesPage" class="page">
 
     <div class="section-header">
         <h2>Tipos Pokémon</h2>
-        <p>Escolha um tipo para encontrar os Pokémon relacionados.</p>
+        <p>
+            Explore os 18 tipos existentes no mundo Pokémon.
+        </p>
     </div>
 
-    <div class="types-grid">
-
-        <div class="type-card type-normal-card" onclick="filterByType('normal')">
-            <span class="type-symbol">◉</span>
-            <h3>Normal</h3>
-            <p>Pokémon de natureza comum e equilibrada.</p>
-        </div>
-
-        <div class="type-card type-fire-card" onclick="filterByType('fire')">
-            <span class="type-symbol">🔥</span>
-            <h3>Fogo</h3>
-            <p>Calor, chamas e ataques explosivos.</p>
-        </div>
-
-        <div class="type-card type-water-card" onclick="filterByType('water')">
-            <span class="type-symbol">💧</span>
-            <h3>Água</h3>
-            <p>O poder dos mares, rios e oceanos.</p>
-        </div>
-
-        <div class="type-card type-electric-card" onclick="filterByType('electric')">
-            <span class="type-symbol">⚡</span>
-            <h3>Elétrico</h3>
-            <p>Energia e eletricidade.</p>
-        </div>
-
-        <div class="type-card type-grass-card" onclick="filterByType('grass')">
-            <span class="type-symbol">🌿</span>
-            <h3>Planta</h3>
-            <p>Natureza, florestas e energia vegetal.</p>
-        </div>
-
-        <div class="type-card type-ice-card" onclick="filterByType('ice')">
-            <span class="type-symbol">❄️</span>
-            <h3>Gelo</h3>
-            <p>Frio extremo e poder congelante.</p>
-        </div>
-
-        <div class="type-card type-fighting-card" onclick="filterByType('fighting')">
-            <span class="type-symbol">🥊</span>
-            <h3>Lutador</h3>
-            <p>Força física e técnicas de combate.</p>
-        </div>
-
-        <div class="type-card type-poison-card" onclick="filterByType('poison')">
-            <span class="type-symbol">☠️</span>
-            <h3>Veneno</h3>
-            <p>Toxinas e efeitos perigosos.</p>
-        </div>
-
-        <div class="type-card type-ground-card" onclick="filterByType('ground')">
-            <span class="type-symbol">🏜️</span>
-            <h3>Terra</h3>
-            <p>Solo, areia e forças subterrâneas.</p>
-        </div>
-
-        <div class="type-card type-flying-card" onclick="filterByType('flying')">
-            <span class="type-symbol">🪽</span>
-            <h3>Voador</h3>
-            <p>Céus, vento e velocidade.</p>
-        </div>
-
-        <div class="type-card type-psychic-card" onclick="filterByType('psychic')">
-            <span class="type-symbol">🔮</span>
-            <h3>Psíquico</h3>
-            <p>Poderes mentais e energia psíquica.</p>
-        </div>
-
-        <div class="type-card type-bug-card" onclick="filterByType('bug')">
-            <span class="type-symbol">🪲</span>
-            <h3>Inseto</h3>
-            <p>Pequenos Pokémon da natureza.</p>
-        </div>
-
-        <div class="type-card type-rock-card" onclick="filterByType('rock')">
-            <span class="type-symbol">🪨</span>
-            <h3>Pedra</h3>
-            <p>Resistência e poder mineral.</p>
-        </div>
-
-        <div class="type-card type-ghost-card" onclick="filterByType('ghost')">
-            <span class="type-symbol">👻</span>
-            <h3>Fantasma</h3>
-            <p>Mistério, espíritos e dimensões ocultas.</p>
-        </div>
-
-        <div class="type-card type-dragon-card" onclick="filterByType('dragon')">
-            <span class="type-symbol">🐉</span>
-            <h3>Dragão</h3>
-            <p>Força ancestral e lendária.</p>
-        </div>
-
-        <div class="type-card type-dark-card" onclick="filterByType('dark')">
-            <span class="type-symbol">🌑</span>
-            <h3>Sombrio</h3>
-            <p>Trevas, estratégia e ataques furtivos.</p>
-        </div>
-
-        <div class="type-card type-steel-card" onclick="filterByType('steel')">
-            <span class="type-symbol">⚙️</span>
-            <h3>Aço</h3>
-            <p>Metal, defesa e resistência.</p>
-        </div>
-
-        <div class="type-card type-fairy-card" onclick="filterByType('fairy')">
-            <span class="type-symbol">✨</span>
-            <h3>Fada</h3>
-            <p>Magia, encanto e energia mística.</p>
-        </div>
-
-    </div>
+    <div id="typesGrid" class="types-grid"></div>
 
 </section>
 
+<!-- =========================
+     GERAÇÕES
+========================= -->
 
-<!-- GERAÇÕES -->
 <section id="generationsPage" class="page">
 
     <div class="section-header">
         <h2>Gerações</h2>
-        <p>Explore cada região do mundo Pokémon.</p>
+        <p>
+            Explore as regiões e gerações do mundo Pokémon.
+        </p>
     </div>
 
-    <div class="generations-grid">
-
-        <div class="generation-card gen1" onclick="filterGenerationFromPage(1)">
-            <div class="generation-number">I</div>
-            <div class="generation-region">KANTO</div>
-            <div class="generation-desc">A região onde tudo começou.</div>
-        </div>
-
-        <div class="generation-card gen2" onclick="filterGenerationFromPage(2)">
-            <div class="generation-number">II</div>
-            <div class="generation-region">JOHTO</div>
-            <div class="generation-desc">Tradição, história e novas descobertas.</div>
-        </div>
-
-        <div class="generation-card gen3" onclick="filterGenerationFromPage(3)">
-            <div class="generation-number">III</div>
-            <div class="generation-region">HOENN</div>
-            <div class="generation-desc">Uma região cercada pelo oceano.</div>
-        </div>
-
-        <div class="generation-card gen4" onclick="filterGenerationFromPage(4)">
-            <div class="generation-number">IV</div>
-            <div class="generation-region">SINNOH</div>
-            <div class="generation-desc">Montanhas, neve e antigas lendas.</div>
-        </div>
-
-        <div class="generation-card gen5" onclick="filterGenerationFromPage(5)">
-            <div class="generation-number">V</div>
-            <div class="generation-region">UNOVA</div>
-            <div class="generation-desc">Grandes cidades e modernidade.</div>
-        </div>
-
-        <div class="generation-card gen6" onclick="filterGenerationFromPage(6)">
-            <div class="generation-number">VI</div>
-            <div class="generation-region">KALOS</div>
-            <div class="generation-desc">Elegância, arquitetura e beleza.</div>
-        </div>
-
-        <div class="generation-card gen7" onclick="filterGenerationFromPage(7)">
-            <div class="generation-number">VII</div>
-            <div class="generation-region">ALOLA</div>
-            <div class="generation-desc">Ilhas tropicais e cultura regional.</div>
-        </div>
-
-        <div class="generation-card gen8" onclick="filterGenerationFromPage(8)">
-            <div class="generation-number">VIII</div>
-            <div class="generation-region">GALAR</div>
-            <div class="generation-desc">Grandes estádios e batalhas intensas.</div>
-        </div>
-
-        <div class="generation-card gen9" onclick="filterGenerationFromPage(9)">
-            <div class="generation-number">IX</div>
-            <div class="generation-region">PALDEA</div>
-            <div class="generation-desc">Natureza, aventura e novos horizontes.</div>
-        </div>
-
-    </div>
+    <div id="generationsGrid" class="generations-grid"></div>
 
 </section>
 
+<!-- =========================
+     DETALHES
+========================= -->
 
-<!-- FICHA -->
-<section id="pokemonDetails"></section>
+<section id="pokemonDetails">
 
-</main>
+    <button class="back-button" onclick="closePokemon()">
+        ← Voltar
+    </button>
 
-<footer>
-    Pokédex Online • Dados fornecidos pela PokéAPI
-</footer>
+    <div id="detailContent"></div>
 
+</section>
 
 <script>
+
+/* =========================
+   CONFIGURAÇÕES
+========================= */
 
 const API = "https://pokeapi.co/api/v2";
 
 let allPokemon = [];
-let displayedPokemon = [];
-let visibleAmount = 40;
-let currentGeneration = 0;
-let currentType = null;
-
-
-/* =========================
-   MENU
-========================= */
-
-function toggleMenu(){
-    document.getElementById("menuOverlay").classList.toggle("active");
-}
-
-function closeMenu(event){
-    if(event && event.target !== document.getElementById("menuOverlay")){
-        return;
-    }
-
-    document.getElementById("menuOverlay").classList.remove("active");
-}
-
-
-/* =========================
-   PÁGINAS
-========================= */
-
-function showPage(pageId){
-
-    document.querySelectorAll(".page").forEach(page=>{
-        page.classList.remove("active");
-    });
-
-    const page = document.getElementById(pageId);
-
-    if(page){
-        page.classList.add("active");
-    }
-
-    document.getElementById("pokemonDetails").style.display = "none";
-
-    document.getElementById("menuOverlay").classList.remove("active");
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-}
-
-
-/* =========================
-   MENSAGEM
-========================= */
-
-function closeWelcome(){
-    document.getElementById("welcomeBox").style.display = "none";
-}
-
-
-/* =========================
-   GERAÇÃO
-========================= */
-
-function getGeneration(id){
-
-    if(id <= 151) return 1;
-    if(id <= 251) return 2;
-    if(id <= 386) return 3;
-    if(id <= 493) return 4;
-    if(id <= 649) return 5;
-    if(id <= 721) return 6;
-    if(id <= 809) return 7;
-    if(id <= 905) return 8;
-
-    return 9;
-}
-
-
-/* =========================
-   TIPOS
-========================= */
+let filteredPokemon = [];
+let visibleCount = 50;
+let currentPokemon = null;
 
 const typeNames = {
     normal:"Normal",
@@ -1450,7 +2082,7 @@ const typeClasses = {
 };
 
 const typeIcons = {
-    normal:"◉",
+    normal:"⚪",
     fire:"🔥",
     water:"💧",
     electric:"⚡",
@@ -1458,10 +2090,10 @@ const typeIcons = {
     ice:"❄️",
     fighting:"🥊",
     poison:"☠️",
-    ground:"🏜️",
+    ground:"🌍",
     flying:"🪽",
     psychic:"🔮",
-    bug:"🪲",
+    bug:"🦋",
     rock:"🪨",
     ghost:"👻",
     dragon:"🐉",
@@ -1470,9 +2102,180 @@ const typeIcons = {
     fairy:"✨"
 };
 
+const typeDescriptions = {
+    normal:"Equilíbrio e versatilidade.",
+    fire:"Chamas, calor e energia.",
+    water:"O poder dos oceanos e rios.",
+    electric:"Energia e eletricidade.",
+    grass:"Natureza, plantas e vida.",
+    ice:"Frio, neve e gelo.",
+    fighting:"Força, disciplina e combate.",
+    poison:"Toxinas e efeitos venenosos.",
+    ground:"Terra, areia e movimentos sísmicos.",
+    flying:"Céus, vento e liberdade.",
+    psychic:"Poderes mentais e energia psíquica.",
+    bug:"Insetos e criaturas da natureza.",
+    rock:"Pedras, montanhas e resistência.",
+    ghost:"Mistério, espíritos e sombras.",
+    dragon:"Dragões e poder ancestral.",
+    dark:"Trevas, astúcia e mistério.",
+    steel:"Metal, armadura e resistência.",
+    fairy:"Magia, encanto e energia feérica."
+};
+
+const generations = [
+    {
+        id:1,
+        roman:"I",
+        region:"KANTO",
+        description:"A região onde tudo começou.",
+        css:"region-kanto"
+    },
+    {
+        id:2,
+        roman:"II",
+        region:"JOHTO",
+        description:"Uma região repleta de tradição.",
+        css:"region-johto"
+    },
+    {
+        id:3,
+        roman:"III",
+        region:"HOENN",
+        description:"Uma região cercada por água e natureza.",
+        css:"region-hoenn"
+    },
+    {
+        id:4,
+        roman:"IV",
+        region:"SINNOH",
+        description:"Uma terra fria e cheia de montanhas.",
+        css:"region-sinnoh"
+    },
+    {
+        id:5,
+        roman:"V",
+        region:"UNOVA",
+        description:"Uma região marcada por grandes cidades.",
+        css:"region-unova"
+    },
+    {
+        id:6,
+        roman:"VI",
+        region:"KALOS",
+        description:"Elegância, beleza e grandes aventuras.",
+        css:"region-kalos"
+    },
+    {
+        id:7,
+        roman:"VII",
+        region:"ALOLA",
+        description:"Ilhas tropicais e cultura única.",
+        css:"region-alola"
+    },
+    {
+        id:8,
+        roman:"VIII",
+        region:"GALAR",
+        description:"Grandes estádios e fenômenos gigantes.",
+        css:"region-galar"
+    },
+    {
+        id:9,
+        roman:"IX",
+        region:"PALDEA",
+        description:"Uma região aberta para explorar.",
+        css:"region-paldea"
+    }
+];
+
 
 /* =========================
-   CARREGAR POKÉMON
+   MENU
+========================= */
+
+function openMenu(){
+    document
+        .getElementById("menuOverlay")
+        .classList.add("active");
+}
+
+function closeMenu(event){
+
+    if(event && event.target !== event.currentTarget){
+        return;
+    }
+
+    document
+        .getElementById("menuOverlay")
+        .classList.remove("active");
+}
+
+
+/* =========================
+   NAVEGAÇÃO
+========================= */
+
+function showPage(pageId){
+
+    document.querySelectorAll(".page").forEach(page=>{
+        page.classList.remove("active");
+    });
+
+    const page = document.getElementById(pageId);
+
+    if(page){
+        page.classList.add("active");
+    }
+
+    document.getElementById("pokemonDetails").style.display = "none";
+
+    document
+        .getElementById("menuOverlay")
+        .classList.remove("active");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+    if(pageId === "searchPage"){
+
+        setTimeout(()=>{
+
+            const input =
+                document.getElementById("searchPageInput");
+
+            if(input){
+                input.focus();
+            }
+
+        },300);
+    }
+}
+
+
+/* =========================
+   GERAÇÃO PELO ID
+========================= */
+
+function getGeneration(id){
+
+    if(id <= 151) return 1;
+    if(id <= 251) return 2;
+    if(id <= 386) return 3;
+    if(id <= 493) return 4;
+    if(id <= 649) return 5;
+    if(id <= 721) return 6;
+    if(id <= 809) return 7;
+    if(id <= 905) return 8;
+
+    return 9;
+}
+
+
+/* =========================
+   POKÉMON INICIAL
 ========================= */
 
 async function loadPokemon(){
@@ -1485,57 +2288,63 @@ async function loadPokemon(){
 
         const data = await response.json();
 
-        allPokemon = data.results.map((pokemon,index)=>{
+        allPokemon = data.results.map((pokemon,index)=>({
 
-            const id = index + 1;
+            id:index+1,
 
-            return {
-                id,
-                name:pokemon.name,
-                generation:getGeneration(id)
-            };
+            name:pokemon.name
 
-        });
+        }));
 
-        displayedPokemon = [...allPokemon];
+        filteredPokemon = [...allPokemon];
 
         renderPokemon();
 
     }catch(error){
 
-        document.getElementById("pokedex").innerHTML =
-            `<div class="loading">Erro ao carregar os Pokémon.</div>`;
-
-        console.error(error);
+        document.getElementById("pokedex").innerHTML = `
+            <div class="loading">
+                Não foi possível carregar os Pokémon.
+                <br><br>
+                Verifique sua conexão e tente novamente.
+            </div>
+        `;
     }
 }
 
 
 /* =========================
-   RENDER
+   RENDER POKÉMON
 ========================= */
 
 function renderPokemon(){
 
-    const container = document.getElementById("pokedex");
+    const container =
+        document.getElementById("pokedex");
 
     container.innerHTML = "";
 
-    const list = displayedPokemon.slice(0,visibleAmount);
+    const visible =
+        filteredPokemon.slice(0,visibleCount);
 
-    if(!list.length){
+    if(!visible.length){
 
-        container.innerHTML =
-            `<div class="loading">Nenhum Pokémon encontrado.</div>`;
+        container.innerHTML = `
+            <div class="loading">
+                Nenhum Pokémon encontrado.
+            </div>
+        `;
 
-        document.getElementById("loadMoreBtn").style.display = "none";
+        document.getElementById("loadMoreButton")
+            .style.display = "none";
 
         return;
     }
 
-    list.forEach(pokemon=>{
+    visible.forEach(pokemon=>{
 
-        const card = document.createElement("div");
+        const card =
+            document.createElement("div");
 
         card.className = "pokemon-card";
 
@@ -1544,6 +2353,7 @@ function renderPokemon(){
         };
 
         card.innerHTML = `
+
             <div class="pokemon-number">
                 #${String(pokemon.id).padStart(4,"0")}
             </div>
@@ -1560,46 +2370,55 @@ function renderPokemon(){
             </div>
 
             <div class="types">
-                <span class="type normal">...</span>
+                <span class="type">
+                    ...
+                </span>
             </div>
         `;
 
         container.appendChild(card);
 
-        loadCardTypes(pokemon.id,card);
+        loadCardTypes(
+            pokemon.id,
+            card
+        );
     });
 
-    const loadButton = document.getElementById("loadMoreBtn");
-
-    if(visibleAmount >= displayedPokemon.length){
-        loadButton.style.display = "none";
-    }else{
-        loadButton.style.display = "inline-block";
-    }
+    document.getElementById("loadMoreButton")
+        .style.display =
+            visibleCount < filteredPokemon.length
+            ? "block"
+            : "none";
 }
 
+
+/* =========================
+   TIPOS DO CARD
+========================= */
 
 async function loadCardTypes(id,card){
 
     try{
 
-        const response = await fetch(`${API}/pokemon/${id}`);
+        const response =
+            await fetch(`${API}/pokemon/${id}`);
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
-        const types = card.querySelector(".types");
+        const types =
+            data.types.map(item=>item.type.name);
 
-        types.innerHTML = data.types.map(item=>{
+        const container =
+            card.querySelector(".types");
 
-            const name = item.type.name;
+        container.innerHTML = types.map(type=>`
 
-            return `
-                <span class="type ${typeClasses[name]}">
-                    ${typeNames[name]}
-                </span>
-            `;
+            <span class="type ${typeClasses[type]}">
+                ${typeNames[type] || type}
+            </span>
 
-        }).join("");
+        `).join("");
 
     }catch(error){}
 }
@@ -1611,233 +2430,680 @@ async function loadCardTypes(id,card){
 
 function loadMore(){
 
-    visibleAmount += 40;
+    visibleCount += 50;
 
     renderPokemon();
 }
 
 
 /* =========================
-   BUSCA
+   BUSCA HOME
 ========================= */
 
 function searchPokemon(){
 
-    const query =
-        document.getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
+    const input =
+        document.getElementById("homeSearchInput");
 
-    currentGeneration = 0;
-    currentType = null;
+    const query =
+        input.value.toLowerCase().trim();
+
+    visibleCount = 50;
 
     if(!query){
 
-        displayedPokemon = [...allPokemon];
+        filteredPokemon =
+            [...allPokemon];
 
     }else{
 
-        displayedPokemon = allPokemon.filter(pokemon=>
+        filteredPokemon =
+            allPokemon.filter(pokemon=>
 
-            pokemon.name.toLowerCase().includes(query) ||
+                pokemon.name
+                    .toLowerCase()
+                    .includes(query)
 
-            String(pokemon.id) === query
+                ||
 
-        );
-
+                String(pokemon.id) === query
+            );
     }
-
-    visibleAmount = 40;
 
     renderPokemon();
 }
 
 
 /* =========================
-   FILTRO GERAÇÃO
+   BUSCA PÁGINA EXCLUSIVA
+========================= */
+
+function searchFromPage(){
+
+    const input =
+        document.getElementById("searchPageInput");
+
+    const results =
+        document.getElementById("searchResults");
+
+    const query =
+        input.value.toLowerCase().trim();
+
+    if(!query){
+
+        results.innerHTML = `
+            <div class="loading">
+                Digite o nome ou número de um Pokémon
+                para começar.
+            </div>
+        `;
+
+        return;
+    }
+
+    const matches =
+        allPokemon.filter(pokemon=>
+
+            pokemon.name
+                .toLowerCase()
+                .includes(query)
+
+            ||
+
+            String(pokemon.id) === query
+        );
+
+    if(!matches.length){
+
+        results.innerHTML = `
+            <div class="loading">
+                Nenhum Pokémon encontrado para
+                "<strong>${escapeHtml(query)}</strong>".
+            </div>
+        `;
+
+        return;
+    }
+
+    results.innerHTML = "";
+
+    matches
+        .slice(0,40)
+        .forEach(pokemon=>{
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "pokemon-card";
+
+            card.onclick = ()=>{
+                openPokemon(pokemon.name);
+            };
+
+            card.innerHTML = `
+
+                <div class="pokemon-number">
+                    #${String(pokemon.id).padStart(4,"0")}
+                </div>
+
+                <img
+                    class="pokemon-image"
+                    loading="lazy"
+                    src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png"
+                    alt="${pokemon.name}"
+                >
+
+                <div class="pokemon-name">
+                    ${pokemon.name}
+                </div>
+
+                <div class="types">
+                    <span class="type">...</span>
+                </div>
+
+            `;
+
+            results.appendChild(card);
+
+            loadCardTypes(
+                pokemon.id,
+                card
+            );
+        });
+}
+
+
+/* =========================
+   FILTRO GERAÇÃO HOME
 ========================= */
 
 function filterGeneration(generation,button){
 
-    currentGeneration = generation;
-    currentType = null;
-
-    if(generation === 0){
-
-        displayedPokemon = [...allPokemon];
-
-    }else{
-
-        displayedPokemon =
-            allPokemon.filter(pokemon=>
-                pokemon.generation === generation
-            );
-
-    }
-
-    visibleAmount = 40;
-
-    document.querySelectorAll(".filter-btn").forEach(btn=>{
-        btn.classList.remove("active");
-    });
+    document
+        .querySelectorAll(".generation-pill")
+        .forEach(item=>{
+            item.classList.remove("active");
+        });
 
     if(button){
         button.classList.add("active");
     }
 
-    showPage("homePage");
+    visibleCount = 50;
+
+    if(generation === 0){
+
+        filteredPokemon =
+            [...allPokemon];
+
+    }else{
+
+        filteredPokemon =
+            allPokemon.filter(pokemon=>
+                getGeneration(pokemon.id) === generation
+            );
+    }
 
     renderPokemon();
 
-    document.getElementById("pokedex")
-        .scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-        });
+    window.scrollTo({
+        top:400,
+        behavior:"smooth"
+    });
 }
 
+
+/* =========================
+   TIPOS
+========================= */
+
+function buildTypesPage(){
+
+    const grid =
+        document.getElementById("typesGrid");
+
+    grid.innerHTML = "";
+
+    Object.keys(typeNames).forEach(type=>{
+
+        const card =
+            document.createElement("div");
+
+        card.className = "type-card";
+
+        card.onclick = ()=>{
+            filterByType(type);
+        };
+
+        card.innerHTML = `
+
+            <div class="type-animation anim-${typeClasses[type]}">
+            </div>
+
+            <div class="type-card-content">
+
+                <div class="type-icon">
+                    ${typeIcons[type]}
+                </div>
+
+                <h3>
+                    ${typeNames[type]}
+                </h3>
+
+                <p>
+                    ${typeDescriptions[type]}
+                </p>
+
+            </div>
+        `;
+
+        grid.appendChild(card);
+    });
+}
+
+
+/* =========================
+   FILTRAR POR TIPO
+========================= */
+
+async function filterByType(type){
+
+    try{
+
+        showPage("homePage");
+
+        const response =
+            await fetch(`${API}/type/${type}`);
+
+        const data =
+            await response.json();
+
+        const ids =
+            data.pokemon.map(item=>
+                Number(
+                    item.pokemon.url
+                        .split("/")
+                        .filter(Boolean)
+                        .pop()
+                )
+            );
+
+        filteredPokemon =
+            allPokemon.filter(pokemon=>
+                ids.includes(pokemon.id)
+            );
+
+        visibleCount = 50;
+
+        document
+            .querySelectorAll(".generation-pill")
+            .forEach(item=>{
+                item.classList.remove("active");
+            });
+
+        renderPokemon();
+
+        window.scrollTo({
+            top:400,
+            behavior:"smooth"
+        });
+
+    }catch(error){}
+}
+
+
+/* =========================
+   GERAÇÕES
+========================= */
+
+function buildGenerations(){
+
+    const grid =
+        document.getElementById("generationsGrid");
+
+    grid.innerHTML = "";
+
+    generations.forEach(gen=>{
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "generation-card";
+
+        card.onclick = ()=>{
+            filterGenerationFromPage(gen.id);
+        };
+
+        card.innerHTML = `
+
+            <div class="region-animation ${gen.css}">
+            </div>
+
+            <div class="generation-content">
+
+                <span>
+                    GERAÇÃO ${gen.roman}
+                </span>
+
+                <h3>
+                    ${gen.region}
+                </h3>
+
+                <p>
+                    ${gen.description}
+                </p>
+
+            </div>
+        `;
+
+        grid.appendChild(card);
+    });
+}
+
+
+/* =========================
+   FILTRO GERAÇÃO PÁGINA
+========================= */
 
 function filterGenerationFromPage(generation){
 
     showPage("homePage");
 
-    setTimeout(()=>{
+    document
+        .querySelectorAll(".generation-pill")
+        .forEach(item=>{
+            item.classList.remove("active");
+        });
 
-        const buttons =
-            document.querySelectorAll(".filter-btn");
+    const pills =
+        document.querySelectorAll(".generation-pill");
 
-        filterGeneration(
-            generation,
-            buttons[generation]
+    if(pills[generation]){
+        pills[generation].classList.add("active");
+    }
+
+    filteredPokemon =
+        allPokemon.filter(pokemon=>
+            getGeneration(pokemon.id) === generation
         );
 
-    },100);
+    visibleCount = 50;
+
+    renderPokemon();
+
+    setTimeout(()=>{
+
+        window.scrollTo({
+            top:400,
+            behavior:"smooth"
+        });
+
+    },200);
 }
 
 
 /* =========================
-   FILTRO POR TIPO
-========================= */
-
-async function filterByType(type){
-
-    showPage("homePage");
-
-    const container =
-        document.getElementById("pokedex");
-
-    container.innerHTML =
-        `<div class="loading">Carregando Pokémon do tipo ${typeNames[type]}...</div>`;
-
-    try{
-
-        const response =
-            await fetch(`${API}/type/${type}`);
-
-        const data = await response.json();
-
-        const ids = data.pokemon
-            .map(item=>{
-                const match =
-                    item.pokemon.url.match(/\/pokemon\/(\d+)\/$/);
-
-                return match ? Number(match[1]) : null;
-            })
-            .filter(id=>id && id <= 1025);
-
-        displayedPokemon =
-            allPokemon.filter(pokemon=>
-                ids.includes(pokemon.id)
-            );
-
-        currentType = type;
-        currentGeneration = 0;
-        visibleAmount = 40;
-
-        renderPokemon();
-
-        document.getElementById("pokedex")
-            .scrollIntoView({
-                behavior:"smooth",
-                block:"start"
-            });
-
-    }catch(error){
-
-        container.innerHTML =
-            `<div class="loading">Não foi possível carregar este tipo.</div>`;
-
-        console.error(error);
-    }
-}
-
-
-/* =========================
-   POKÉMON DETALHES
+   ABRIR POKÉMON
 ========================= */
 
 async function openPokemon(name){
 
-    const details =
-        document.getElementById("pokemonDetails");
-
-    document.querySelectorAll(".page").forEach(page=>{
-        page.classList.remove("active");
-    });
-
-    details.style.display = "block";
-
-    details.innerHTML =
-        `<div class="loading">Carregando ficha do Pokémon...</div>`;
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
     try{
 
-        const [pokemonResponse,speciesResponse] =
-            await Promise.all([
-                fetch(`${API}/pokemon/${name}`),
-                fetch(`${API}/pokemon-species/${name}`)
-            ]);
+        document
+            .querySelectorAll(".page")
+            .forEach(page=>{
+                page.classList.remove("active");
+            });
 
-        const pokemon = await pokemonResponse.json();
-        const species = await speciesResponse.json();
+        const details =
+            document.getElementById("pokemonDetails");
 
-        renderPokemonDetails(pokemon,species);
+        details.style.display = "block";
+
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
+
+        document.getElementById("detailContent").innerHTML = `
+            <div class="loading">
+                Carregando informações do Pokémon...
+            </div>
+        `;
+
+        const pokemonResponse =
+            await fetch(`${API}/pokemon/${name}`);
+
+        const pokemon =
+            await pokemonResponse.json();
+
+        currentPokemon = pokemon;
+
+        const speciesResponse =
+            await fetch(pokemon.species.url);
+
+        const species =
+            await speciesResponse.json();
+
+        const types =
+            pokemon.types
+                .map(item=>item.type.name);
+
+        const abilities =
+            pokemon.abilities
+                .map(item=>item.ability.name);
+
+        const description =
+            getDescription(species);
+
+        const generation =
+            getGeneration(pokemon.id);
+
+        const weaknesses =
+            await getWeaknesses(types);
+
+        const artwork =
+            pokemon.sprites.other["official-artwork"].front_default;
+
+        const shiny =
+            pokemon.sprites.other["official-artwork"].front_shiny;
+
+        document.getElementById("detailContent").innerHTML = `
+
+            <div class="detail-card">
+
+                <div class="detail-top">
+
+                    <div class="detail-art">
+
+                        <img
+                            src="${artwork}"
+                            alt="${pokemon.name}"
+                        >
+
+                    </div>
+
+                    <div class="detail-info">
+
+                        <div class="detail-number">
+                            #${String(pokemon.id).padStart(4,"0")}
+                        </div>
+
+                        <div class="detail-name">
+                            ${getPortugueseName(species,pokemon.name)}
+                        </div>
+
+                        <div class="detail-types">
+
+                            ${types.map(type=>`
+
+                                <span class="type ${typeClasses[type]}">
+                                    ${typeNames[type]}
+                                </span>
+
+                            `).join("")}
+
+                        </div>
+
+                        <div class="info-grid">
+
+                            <div class="info-box">
+                                <small>Altura</small>
+                                <strong>
+                                    ${(pokemon.height / 10).toFixed(1)} m
+                                </strong>
+                            </div>
+
+                            <div class="info-box">
+                                <small>Peso</small>
+                                <strong>
+                                    ${(pokemon.weight / 10).toFixed(1)} kg
+                                </strong>
+                            </div>
+
+                            <div class="info-box">
+                                <small>Experiência base</small>
+                                <strong>
+                                    ${pokemon.base_experience || "—"}
+                                </strong>
+                            </div>
+
+                            <div class="info-box">
+                                <small>Geração</small>
+                                <strong>
+                                    ${generation}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-section">
+
+                    <h2>Descrição</h2>
+
+                    <p class="description">
+                        ${description}
+                    </p>
+
+                </div>
+
+
+                <div class="detail-section">
+
+                    <h2>Habilidades</h2>
+
+                    <div class="abilities">
+
+                        ${abilities.map(ability=>`
+
+                            <span class="ability">
+                                ${ability.replaceAll("-", " ")}
+                            </span>
+
+                        `).join("")}
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-section">
+
+                    <h2>Fraquezas</h2>
+
+                    <div class="abilities">
+
+                        ${weaknesses.map(type=>`
+
+                            <span class="type ${typeClasses[type]}">
+                                ${typeNames[type]}
+                            </span>
+
+                        `).join("")}
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-section">
+
+                    <h2>Status base</h2>
+
+                    <div class="stats">
+
+                        ${pokemon.stats.map(stat=>`
+
+                            <div class="stat-row">
+
+                                <div class="stat-name">
+                                    ${translateStat(stat.stat.name)}
+                                </div>
+
+                                <div class="stat-value">
+                                    ${stat.base_stat}
+                                </div>
+
+                                <div class="stat-bar">
+                                    <div
+                                        class="stat-fill"
+                                        style="width:${Math.min(stat.base_stat / 255 * 100,100)}%"
+                                    ></div>
+                                </div>
+
+                            </div>
+
+                        `).join("")}
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-section">
+
+                    <h2>Evoluções</h2>
+
+                    <div id="evolutionContainer">
+
+                        <div class="loading">
+                            Carregando evoluções...
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-section">
+
+                    <h2>✨ Mega Evoluções</h2>
+
+                    <div id="megaContainer">
+
+                        <div class="loading">
+                            Verificando Mega Evoluções...
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-section">
+
+                    <h2>✨ Pokémon Shiny</h2>
+
+                    <div style="
+                        display:flex;
+                        justify-content:center;
+                    ">
+
+                        <div class="mega-form">
+
+                            <h3>
+                                ${pokemon.name} Shiny
+                            </h3>
+
+                            <img
+                                src="${shiny}"
+                                style="
+                                    width:260px;
+                                    max-width:100%;
+                                    object-fit:contain;
+                                "
+                                alt="${pokemon.name} Shiny"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+        loadEvolutionChain(species.evolution_chain.url);
+
+        loadMegaTab(pokemon.name);
 
     }catch(error){
 
-        details.innerHTML =
-            `<div class="loading">Erro ao carregar a ficha.</div>`;
-
-        console.error(error);
+        document.getElementById("detailContent").innerHTML = `
+            <div class="loading">
+                Não foi possível carregar as informações.
+            </div>
+        `;
     }
-}
-
-
-/* =========================
-   DESCRIÇÃO
-========================= */
-
-function getEnglishDescription(species){
-
-    const entries =
-        species.flavor_text_entries.filter(
-            item=>item.language.name === "en"
-        );
-
-    if(!entries.length){
-        return "Description not available.";
-    }
-
-    return entries[0].flavor_text
-        .replace(/\f/g," ")
-        .replace(/\n/g," ")
-        .replace(/\r/g," ");
 }
 
 
@@ -1845,17 +3111,43 @@ function getEnglishDescription(species){
    NOME PORTUGUÊS
 ========================= */
 
-function getPortugueseName(species,fallback){
+function getPortugueseName(species, fallback){
 
-    const entry =
-        species.names.find(
-            item=>item.language.name === "pt-BR"
-        ) ||
-        species.names.find(
-            item=>item.language.name === "pt"
+    const name =
+        species.names.find(item=>
+            item.language.name === "pt-br"
         );
 
-    return entry ? entry.name : fallback;
+    return name
+        ? name.name
+        : fallback;
+}
+
+
+/* =========================
+   DESCRIÇÃO
+========================= */
+
+function getDescription(species){
+
+    const english =
+        species.flavor_text_entries.find(item=>
+            item.language.name === "en"
+        );
+
+    const portuguese =
+        species.flavor_text_entries.find(item=>
+            item.language.name === "pt-br"
+        );
+
+    const text =
+        english?.flavor_text ||
+        portuguese?.flavor_text ||
+        "Descrição não disponível.";
+
+    return text
+        .replace(/\f/g," ")
+        .replace(/\n/g," ");
 }
 
 
@@ -1863,306 +3155,78 @@ function getPortugueseName(species,fallback){
    FRAQUEZAS
 ========================= */
 
-const damageRelations = {};
-
 async function getWeaknesses(types){
 
-    let weaknesses = new Set();
+    const multiplier = {};
+
+    types.forEach(type=>{
+        multiplier[type] = 1;
+    });
 
     for(const type of types){
 
-        const response =
-            await fetch(type.type.url);
+        try{
 
-        const data = await response.json();
+            const response =
+                await fetch(`${API}/type/${type}`);
 
-        data.damage_relations.double_damage_from.forEach(item=>{
-            weaknesses.add(item.name);
-        });
+            const data =
+                await response.json();
+
+            data.damage_relations.double_damage_from
+                .forEach(item=>{
+
+                    multiplier[item.name] =
+                        (multiplier[item.name] || 1) * 2;
+
+                });
+
+            data.damage_relations.half_damage_from
+                .forEach(item=>{
+
+                    multiplier[item.name] =
+                        (multiplier[item.name] || 1) * .5;
+
+                });
+
+            data.damage_relations.no_damage_from
+                .forEach(item=>{
+
+                    multiplier[item.name] = 0;
+
+                });
+
+        }catch(error){}
     }
 
-    return [...weaknesses];
+    return Object.keys(multiplier)
+        .filter(type=>
+            multiplier[type] >= 2
+        );
 }
 
 
 /* =========================
-   RENDER FICHA
+   STATUS
 ========================= */
 
-async function renderPokemonDetails(pokemon,species){
-
-    const details =
-        document.getElementById("pokemonDetails");
-
-    const portugueseName =
-        getPortugueseName(species,pokemon.name);
-
-    const description =
-        getEnglishDescription(species);
-
-    const weaknesses =
-        await getWeaknesses(pokemon.types);
-
-    const normalImage =
-        pokemon.sprites.other["official-artwork"].front_default;
-
-    const shinyImage =
-        pokemon.sprites.other["official-artwork"].front_shiny;
-
-    const generation =
-        getGeneration(pokemon.id);
-
-    const abilities =
-        pokemon.abilities.map(
-            item=>`
-                <span class="ability">
-                    ${item.ability.name.replace(/-/g," ")}
-                </span>
-            `
-        ).join("");
-
-    const types =
-        pokemon.types.map(item=>{
-
-            const name = item.type.name;
-
-            return `
-                <span class="type ${typeClasses[name]}">
-                    ${typeNames[name]}
-                </span>
-            `;
-
-        }).join("");
-
-    const weaknessHTML =
-        weaknesses.map(name=>`
-            <span class="type ${typeClasses[name]}">
-                ${typeNames[name]}
-            </span>
-        `).join("");
-
-    const stats =
-        pokemon.stats.map(stat=>{
-
-            const value = stat.base_stat;
-
-            const percentage =
-                Math.min(value / 2.55,100);
-
-            return `
-                <div class="stat">
-
-                    <div class="stat-head">
-                        <span>${stat.stat.name.replace("special-","sp. ")}</span>
-                        <strong>${value}</strong>
-                    </div>
-
-                    <div class="stat-bar">
-                        <div
-                            class="stat-fill"
-                            style="width:${percentage}%"
-                        ></div>
-                    </div>
-
-                </div>
-            `;
-
-        }).join("");
-
-    details.innerHTML = `
-
-        <button class="back-btn" onclick="backToPokedex()">
-            ← Voltar para a Pokédex
-        </button>
-
-        <div class="detail-card">
-
-            <div class="detail-top">
-
-                <div class="detail-image-area">
-                    <img
-                        src="${normalImage}"
-                        alt="${portugueseName}"
-                    >
-                </div>
-
-                <div class="detail-info">
-
-                    <div class="detail-number">
-                        #${String(pokemon.id).padStart(4,"0")}
-                    </div>
-
-                    <h1>${portugueseName}</h1>
-
-                    <div class="types">
-                        ${types}
-                    </div>
-
-                    <div class="info-grid">
-
-                        <div class="info-box">
-                            <span>Altura</span>
-                            <strong>${(pokemon.height/10).toFixed(1)} m</strong>
-                        </div>
-
-                        <div class="info-box">
-                            <span>Peso</span>
-                            <strong>${(pokemon.weight/10).toFixed(1)} kg</strong>
-                        </div>
-
-                        <div class="info-box">
-                            <span>Experiência base</span>
-                            <strong>${pokemon.base_experience || "—"}</strong>
-                        </div>
-
-                        <div class="info-box">
-                            <span>Geração</span>
-                            <strong>${generation}</strong>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="detail-tabs">
-
-                <button
-                    class="detail-tab active"
-                    onclick="switchDetailTab('normalTab',this)"
-                >
-                    Informações
-                </button>
-
-                <button
-                    class="detail-tab"
-                    onclick="switchDetailTab('megaTab',this)"
-                >
-                    ✨ Mega Evoluções
-                </button>
-
-            </div>
-
-            <div id="normalTab">
-
-                <div class="detail-section">
-
-                    <h2>Descrição</h2>
-
-                    <div class="description">
-                        ${description}
-                    </div>
-
-                </div>
-
-                <div class="detail-section">
-
-                    <h2>Habilidades</h2>
-
-                    <div class="abilities">
-                        ${abilities}
-                    </div>
-
-                </div>
-
-                <div class="detail-section">
-
-                    <h2>Fraquezas</h2>
-
-                    <div class="types" style="justify-content:flex-start">
-                        ${weaknessHTML || "<span>—</span>"}
-                    </div>
-
-                </div>
-
-                <div class="detail-section">
-
-                    <h2>Estatísticas Base</h2>
-
-                    ${stats}
-
-                </div>
-
-                <div class="detail-section">
-
-                    <h2>Evoluções</h2>
-
-                    <div id="evolutionContainer">
-                        <div class="loading">
-                            Carregando evoluções...
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div id="megaTab" style="display:none">
-
-                <div class="detail-section">
-
-                    <div id="megaContainer">
-                        <div class="loading">
-                            Carregando Mega Evoluções...
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-    `;
-
-    loadEvolutionChain(species.evolution_chain.url);
-
-    loadMegaTab(
-        pokemon.name,
-        document.getElementById("megaContainer")
-    );
+function translateStat(stat){
+
+    const names = {
+        hp:"HP",
+        attack:"Ataque",
+        defense:"Defesa",
+        "special-attack":"Ataque Especial",
+        "special-defense":"Defesa Especial",
+        speed:"Velocidade"
+    };
+
+    return names[stat] || stat;
 }
 
 
 /* =========================
-   TABS
-========================= */
-
-function switchDetailTab(tabId,button){
-
-    document.getElementById("normalTab").style.display =
-        tabId === "normalTab" ? "block" : "none";
-
-    document.getElementById("megaTab").style.display =
-        tabId === "megaTab" ? "block" : "none";
-
-    document.querySelectorAll(".detail-tab").forEach(tab=>{
-        tab.classList.remove("active");
-    });
-
-    button.classList.add("active");
-}
-
-
-/* =========================
-   VOLTAR
-========================= */
-
-function backToPokedex(){
-
-    document.getElementById("pokemonDetails").style.display = "none";
-
-    showPage("homePage");
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-}
-
-
-/* =========================
-   EVOLUÇÕES
+   EVOLUÇÃO
 ========================= */
 
 async function loadEvolutionChain(url){
@@ -2172,61 +3236,117 @@ async function loadEvolutionChain(url){
 
     try{
 
-        const response = await fetch(url);
-        const data = await response.json();
+        const response =
+            await fetch(url);
+
+        const data =
+            await response.json();
 
         const chain = [];
 
-        function parseChain(node){
-
-            if(!node) return;
+        function walk(node){
 
             chain.push({
                 species:node.species.name,
-                details:node.evolution_details || []
+                details:node.evolution_details?.[0] || null
             });
 
             node.evolves_to.forEach(child=>{
-                parseChain(child);
+                walk(child);
             });
         }
 
-        parseChain(data.chain);
+        walk(data.chain);
 
-        renderEvolutionChain(data.chain,container);
+        const html = [];
+
+        for(let i=0;i<chain.length;i++){
+
+            const item =
+                chain[i];
+
+            const pokemonResponse =
+                await fetch(`${API}/pokemon/${item.species}`);
+
+            const pokemon =
+                await pokemonResponse.json();
+
+            const image =
+                pokemon.sprites.other["official-artwork"].front_default;
+
+            if(i > 0){
+
+                html.push(`
+                    <div class="evolution-arrow">
+                        →
+                    </div>
+                `);
+            }
+
+            html.push(`
+
+                <div class="evolution-item">
+
+                    <img
+                        src="${image}"
+                        alt="${item.species}"
+                    >
+
+                    <strong>
+                        ${item.species}
+                    </strong>
+
+                    <div class="evolution-method">
+                        ${formatEvolutionDetails(item.details)}
+                    </div>
+
+                </div>
+            `);
+        }
+
+        container.innerHTML = `
+            <div class="evolution-chain">
+                ${html.join("")}
+            </div>
+        `;
 
     }catch(error){
 
-        container.innerHTML =
-            `<div class="loading">Não foi possível carregar as evoluções.</div>`;
-
-        console.error(error);
+        container.innerHTML = `
+            <div class="loading">
+                Não foi possível carregar as evoluções.
+            </div>
+        `;
     }
 }
 
 
-function getEvolutionCondition(details){
+/* =========================
+   MÉTODO EVOLUÇÃO
+========================= */
+
+function formatEvolutionDetails(details){
 
     if(!details){
-        return "";
+        return "Forma inicial";
     }
 
     const conditions = [];
 
     if(details.min_level){
-        conditions.push(`Level ${details.min_level}`);
+        conditions.push(
+            `Nível ${details.min_level}`
+        );
     }
 
     if(details.item){
         conditions.push(
-            details.item.name
-                .replace(/-/g," ")
-                .replace(/\b\w/g,l=>l.toUpperCase())
+            `Item: ${details.item.name.replaceAll("-"," ")}`
         );
     }
 
     if(details.trigger?.name === "trade"){
-        conditions.push("Trade");
+        conditions.push("Troca");
     }
 
     if(details.trade_species){
@@ -2236,51 +3356,55 @@ function getEvolutionCondition(details){
     }
 
     if(details.min_happiness){
-        conditions.push(`Felicidade ${details.min_happiness}+`);
+        conditions.push(
+            `Felicidade ${details.min_happiness}+`
+        );
     }
 
     if(details.min_affection){
-        conditions.push(`Afeto ${details.min_affection}+`);
+        conditions.push(
+            `Afeição ${details.min_affection}+`
+        );
     }
 
     if(details.min_beauty){
-        conditions.push(`Beleza ${details.min_beauty}+`);
+        conditions.push(
+            `Beleza ${details.min_beauty}+`
+        );
     }
 
     if(details.time_of_day){
         conditions.push(
-            details.time_of_day === "day"
-                ? "Durante o dia"
-                : "Durante a noite"
+            `Durante ${details.time_of_day}`
         );
     }
 
     if(details.held_item){
         conditions.push(
-            `Segurando ${details.held_item.name.replace(/-/g," ")}`
+            `Segurando ${details.held_item.name.replaceAll("-"," ")}`
         );
     }
 
     if(details.known_move){
         conditions.push(
-            `Com ${details.known_move.name.replace(/-/g," ")}`
+            `Conhecer ${details.known_move.name.replaceAll("-"," ")}`
         );
     }
 
     if(details.known_move_type){
         conditions.push(
-            `Movimento tipo ${details.known_move_type.name}`
+            `Movimento tipo ${typeNames[details.known_move_type.name] || details.known_move_type.name}`
         );
     }
 
     if(details.location){
         conditions.push(
-            `Local: ${details.location.name.replace(/-/g," ")}`
+            `Local: ${details.location.name.replaceAll("-"," ")}`
         );
     }
 
     if(details.needs_overworld_rain){
-        conditions.push("Chuva no mundo");
+        conditions.push("Durante chuva");
     }
 
     if(details.turn_upside_down){
@@ -2289,13 +3413,13 @@ function getEvolutionCondition(details){
 
     if(details.party_species){
         conditions.push(
-            `Com ${details.party_species.name.replace(/-/g," ")} na equipe`
+            `Com ${details.party_species.name}`
         );
     }
 
     if(details.party_type){
         conditions.push(
-            `Com Pokémon tipo ${details.party_type.name}`
+            `Com Pokémon tipo ${typeNames[details.party_type.name] || details.party_type.name}`
         );
     }
 
@@ -2304,172 +3428,38 @@ function getEvolutionCondition(details){
 
         if(details.relative_physical_stats === 1){
             conditions.push("Ataque > Defesa");
-        }else if(details.relative_physical_stats === -1){
+        }
+
+        if(details.relative_physical_stats === -1){
             conditions.push("Defesa > Ataque");
-        }else{
+        }
+
+        if(details.relative_physical_stats === 0){
             conditions.push("Ataque = Defesa");
         }
     }
 
     if(details.used_move){
         conditions.push(
-            `Usar ${details.used_move.name.replace(/-/g," ")}`
+            `Usar ${details.used_move.name.replaceAll("-"," ")}`
         );
     }
 
     if(details.min_steps){
-        conditions.push(`${details.min_steps} passos`);
+        conditions.push(
+            `${details.min_steps} passos`
+        );
     }
 
     if(details.min_damage_taken){
         conditions.push(
-            `${details.min_damage_taken} de dano recebido`
+            `Receber ${details.min_damage_taken} de dano`
         );
     }
 
-    return conditions.join(" • ");
-}
-
-
-function renderEvolutionChain(chain,container){
-
-    container.innerHTML = "";
-
-    const wrapper =
-        document.createElement("div");
-
-    wrapper.className = "evolution-chain";
-
-    function createNode(node){
-
-        const card =
-            document.createElement("div");
-
-        card.className = "evolution-card";
-
-        const id =
-            allPokemon.find(
-                p=>p.name === node.species.name
-            )?.id;
-
-        if(!id){
-
-            card.innerHTML =
-                `<strong>${node.species.name}</strong>`;
-
-            return card;
-        }
-
-        card.innerHTML = `
-            <img
-                src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png"
-                alt="${node.species.name}"
-            >
-            <strong>${node.species.name}</strong>
-        `;
-
-        card.onclick = ()=>{
-            openPokemon(node.species.name);
-        };
-
-        card.style.cursor = "pointer";
-
-        return card;
-    }
-
-    function renderBranch(node){
-
-        const row =
-            document.createElement("div");
-
-        row.style.display = "flex";
-        row.style.alignItems = "center";
-        row.style.justifyContent = "center";
-        row.style.flexWrap = "wrap";
-        row.style.gap = "12px";
-        row.style.width = "100%";
-
-        row.appendChild(createNode(node));
-
-        node.evolves_to.forEach(child=>{
-
-            const details =
-                child.evolution_details?.[0];
-
-            const condition =
-                getEvolutionCondition(details);
-
-            const arrow =
-                document.createElement("div");
-
-            arrow.innerHTML = `
-                <div class="evolution-arrow">→</div>
-                <div class="evolution-condition">
-                    ${condition || "Evolução"}
-                </div>
-            `;
-
-            row.appendChild(arrow);
-
-            if(child.evolves_to.length > 1){
-
-                const branch =
-                    document.createElement("div");
-
-                branch.style.width = "100%";
-                branch.style.display = "flex";
-                branch.style.flexWrap = "wrap";
-                branch.style.justifyContent = "center";
-                branch.style.gap = "12px";
-
-                child.evolves_to.forEach(branchChild=>{
-
-                    const branchRow =
-                        renderBranch(branchChild);
-
-                    branch.appendChild(branchRow);
-                });
-
-                row.appendChild(branch);
-
-            }else{
-
-                row.appendChild(createNode(child));
-
-                if(child.evolves_to.length){
-
-                    child.evolves_to.forEach(grandChild=>{
-
-                        const grandDetails =
-                            grandChild.evolution_details?.[0];
-
-                        const grandCondition =
-                            getEvolutionCondition(grandDetails);
-
-                        const arrow2 =
-                            document.createElement("div");
-
-                        arrow2.innerHTML = `
-                            <div class="evolution-arrow">→</div>
-                            <div class="evolution-condition">
-                                ${grandCondition || "Evolução"}
-                            </div>
-                        `;
-
-                        row.appendChild(arrow2);
-                        row.appendChild(createNode(grandChild));
-                    });
-                }
-            }
-
-        });
-
-        return row;
-    }
-
-    wrapper.appendChild(renderBranch(chain));
-
-    container.appendChild(wrapper);
+    return conditions.length
+        ? conditions.join(" • ")
+        : "Condição especial";
 }
 
 
@@ -2477,7 +3467,12 @@ function renderEvolutionChain(chain,container){
    MEGA EVOLUÇÕES
 ========================= */
 
-async function getMegaEvolutions(pokemonName){
+async function loadMegaTab(pokemonName){
+
+    const container =
+        document.getElementById("megaContainer");
+
+    if(!container) return;
 
     const possibleForms = [
         `${pokemonName}-mega`,
@@ -2485,155 +3480,138 @@ async function getMegaEvolutions(pokemonName){
         `${pokemonName}-mega-y`
     ];
 
-    const results = [];
+    const megaForms = [];
 
-    const responses =
-        await Promise.allSettled(
-            possibleForms.map(formName=>
-                fetch(`${API}/pokemon-form/${formName}`)
-                    .then(response=>{
-                        if(!response.ok){
-                            throw new Error("Form not found");
-                        }
-                        return response.json();
-                    })
-            )
-        );
-
-    for(const result of responses){
-
-        if(result.status !== "fulfilled"){
-            continue;
-        }
-
-        const form = result.value;
-
-        if(!form.is_mega){
-            continue;
-        }
+    for(const formName of possibleForms){
 
         try{
 
-            const pokemonResponse =
-                await fetch(form.pokemon.url);
+            const response =
+                await fetch(
+                    `${API}/pokemon-form/${formName}`
+                );
 
-            const megaPokemon =
-                await pokemonResponse.json();
+            if(!response.ok) continue;
+
+            const form =
+                await response.json();
+
+            if(!form.is_mega) continue;
 
             const artwork =
-                megaPokemon.sprites.other["official-artwork"];
+                form.sprites?.front_default;
 
-            results.push({
-                name:megaPokemon.name,
-                image:artwork.front_default,
-                shiny:artwork.front_shiny,
-                types:megaPokemon.types
+            const shiny =
+                form.sprites?.front_shiny;
+
+            if(!artwork) continue;
+
+            megaForms.push({
+                name:form.name,
+                artwork,
+                shiny
             });
 
         }catch(error){}
     }
 
-    return results;
-}
-
-
-async function loadMegaTab(pokemonName,container){
-
-    if(!container){
-        return;
-    }
-
-    try{
-
-        const megas =
-            await getMegaEvolutions(pokemonName);
-
-        if(!megas.length){
-
-            container.innerHTML = `
-                <div class="loading">
-                    Este Pokémon não possui Mega Evolução.
-                </div>
-            `;
-
-            return;
-        }
-
-        container.innerHTML = `
-            <h2>✨ Mega Evoluções</h2>
-
-            <div class="mega-grid">
-                ${megas.map(mega=>{
-
-                    const types =
-                        mega.types.map(item=>{
-
-                            const name =
-                                item.type.name;
-
-                            return `
-                                <span class="type ${typeClasses[name]}">
-                                    ${typeNames[name]}
-                                </span>
-                            `;
-
-                        }).join("");
-
-                    return `
-                        <div class="mega-card">
-
-                            <h3>${mega.name.replace(/-/g," ")}</h3>
-
-                            <div class="mega-images">
-
-                                <div>
-                                    <img
-                                        src="${mega.image}"
-                                        alt="${mega.name}"
-                                    >
-                                    Normal
-                                </div>
-
-                                <div>
-                                    <img
-                                        src="${mega.shiny}"
-                                        alt="${mega.name} Shiny"
-                                    >
-                                    ✨ Shiny
-                                </div>
-
-                            </div>
-
-                            <div
-                                class="types"
-                                style="margin-top:15px"
-                            >
-                                ${types}
-                            </div>
-
-                        </div>
-                    `;
-
-                }).join("")}
-            </div>
-        `;
-
-    }catch(error){
+    if(!megaForms.length){
 
         container.innerHTML = `
             <div class="loading">
-                Não foi possível carregar as Mega Evoluções.
+                Este Pokémon não possui Mega Evolução.
             </div>
         `;
 
-        console.error(error);
+        return;
     }
+
+    container.innerHTML = `
+
+        <div class="mega-forms">
+
+            ${megaForms.map(form=>`
+
+                <div class="mega-form">
+
+                    <h3>
+                        ${form.name.replaceAll("-"," ")}
+                    </h3>
+
+                    <div class="mega-images">
+
+                        <div>
+
+                            <small>
+                                Normal
+                            </small>
+
+                            <img
+                                src="${form.artwork}"
+                                alt="${form.name}"
+                            >
+
+                        </div>
+
+                        <div>
+
+                            <small>
+                                Shiny
+                            </small>
+
+                            <img
+                                src="${form.shiny || form.artwork}"
+                                alt="${form.name} Shiny"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `).join("")}
+
+        </div>
+    `;
+}
+
+
+/* =========================
+   VOLTAR DO POKÉMON
+========================= */
+
+function closePokemon(){
+
+    document.getElementById("pokemonDetails")
+        .style.display = "none";
+
+    showPage("homePage");
+}
+
+
+/* =========================
+   SEGURANÇA
+========================= */
+
+function escapeHtml(text){
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
 }
 
 
 /* =========================
    INICIALIZAÇÃO
 ========================= */
+
+buildTypesPage();
+
+buildGenerations();
 
 loadPokemon();
 
