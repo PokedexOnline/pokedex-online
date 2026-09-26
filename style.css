@@ -441,6 +441,35 @@ body::before{
     font-size:25px;
 }
 
+/* CAMPO DA PESQUISA ATUAL */
+
+#searchPageInput{
+    width:100%;
+    height:70px;
+    padding:0 24px;
+    border-radius:20px;
+    outline:none;
+    border:1px solid rgba(255,255,255,.1);
+    background:#0f141f;
+    color:#fff;
+    font-size:17px;
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.25),
+        inset 0 1px rgba(255,255,255,.03);
+    transition:.2s ease;
+}
+
+#searchPageInput::placeholder{
+    color:#69758a;
+}
+
+#searchPageInput:focus{
+    border-color:#ffcb05;
+    box-shadow:
+        0 0 0 4px rgba(255,203,5,.08),
+        0 15px 40px rgba(0,0,0,.25);
+}
+
 /* =========================================================
    SEÇÕES / GERAÇÕES
 ========================================================= */
@@ -489,7 +518,7 @@ body::before{
 }
 
 /* =========================================================
-   POKÉDEX — CARDS MAIS COMPACTOS
+   POKÉDEX — CARDS
 ========================================================= */
 
 .pokedex,
@@ -529,15 +558,18 @@ body::before{
     box-shadow:0 15px 35px rgba(0,0,0,.25);
 }
 
-.pokemon-number{
+.pokemon-number,
+.pokemon-card-number{
     color:#56647a;
     font-size:11px;
     text-align:left;
     position:relative;
     z-index:2;
+    margin-bottom:2px;
 }
 
-.pokemon-image-container{
+.pokemon-image-container,
+.pokemon-card-image{
     width:100%;
     height:125px;
     min-height:125px;
@@ -548,7 +580,8 @@ body::before{
     overflow:visible;
 }
 
-.pokemon-image{
+.pokemon-image,
+.pokemon-card-img{
     width:98px;
     height:98px;
     max-width:98px;
@@ -558,14 +591,16 @@ body::before{
     display:block;
     margin:auto;
     filter:drop-shadow(0 10px 10px rgba(0,0,0,.35));
-    transition:.25s;
+    transition:.25s ease;
 }
 
-.pokemon-card:hover .pokemon-image{
+.pokemon-card:hover .pokemon-image,
+.pokemon-card:hover .pokemon-card-img{
     transform:translateY(-3px) scale(1.04);
 }
 
-.pokemon-name{
+.pokemon-name,
+.pokemon-card-info h3{
     text-transform:capitalize;
     font-weight:800;
     font-size:16px;
@@ -579,7 +614,8 @@ body::before{
 }
 
 .types,
-.card-types{
+.card-types,
+.pokemon-card-types{
     display:flex;
     justify-content:center;
     gap:5px;
@@ -625,6 +661,66 @@ body::before{
 .type-badge.type-fairy{background:#f472b6}
 
 /* =========================================================
+   ESTADOS DOS CARDS
+========================================================= */
+
+.type-loading{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:125px;
+    color:#69758a;
+    font-size:11px;
+}
+
+.card-loading{
+    min-height:220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.card-loading .loading-spinner{
+    display:block;
+    padding:20px;
+}
+
+.card-error{
+    min-height:220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#ff8b8b;
+    font-size:12px;
+    padding:20px;
+}
+
+.search-results{
+    width:min(1200px,calc(100% - 30px));
+    margin:0 auto 60px;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:14px;
+}
+
+.search-results:empty{
+    display:none;
+}
+
+.search-results .pokemon-card{
+    width:100%;
+}
+
+.search-empty{
+    grid-column:1/-1;
+    width:100%;
+    background:rgba(15,21,31,.75);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:18px;
+    padding:50px 20px;
+}
+
+/* =========================================================
    LOADING
 ========================================================= */
 
@@ -655,14 +751,15 @@ body::before{
 
 .error-message,
 .empty-message,
-.search-empty,
 .no-data{
     padding:45px 20px;
     text-align:center;
     color:#7f8ca3;
 }
 
-.error-message{color:#ff8b8b}
+.error-message{
+    color:#ff8b8b;
+}
 
 .load-more{
     display:block;
@@ -683,7 +780,6 @@ body::before{
 
 /* =========================================================
    TIPOS
-   MANTIDO
 ========================================================= */
 
 .types-grid{
@@ -773,7 +869,7 @@ body::before{
 }
 
 /* =========================================================
-   ANIMAÇÕES DOS TIPOS
+   ANIMAÇÕES DOS TIPOS — NÃO ALTERADAS
 ========================================================= */
 
 .anim-normal{
@@ -810,8 +906,6 @@ body::before{
     25%{opacity:.8}
     100%{transform:translate(-50%,-50%) scale(1.4);opacity:0}
 }
-
-/* FOGO */
 
 .anim-fire{
     background:
@@ -857,8 +951,6 @@ body::before{
     100%{transform:translateY(-80px);opacity:0}
 }
 
-/* ÁGUA */
-
 .anim-water{
     background:
         radial-gradient(circle at 50% 100%,rgba(125,211,252,.55),transparent 35%),
@@ -879,6 +971,7 @@ body::before{
 }
 
 .anim-water::before{bottom:15%}
+
 .anim-water::after{
     bottom:35%;
     animation-duration:4s;
@@ -889,8 +982,6 @@ body::before{
     0%,100%{transform:translateX(-4%) rotate(2deg)}
     50%{transform:translateX(4%) rotate(-2deg)}
 }
-
-/* ELÉTRICO */
 
 .anim-electric{
     background:
@@ -931,8 +1022,6 @@ body::before{
     0%,72%,100%{opacity:0}
     76%,82%{opacity:1}
 }
-
-/* PLANTA */
 
 .anim-grass{
     background:
@@ -979,8 +1068,6 @@ body::before{
     50%{opacity:1;transform:translateY(-12px)}
 }
 
-/* GELO */
-
 .anim-ice{
     background:
         radial-gradient(circle at 50% 30%,rgba(255,255,255,.5),transparent 20%),
@@ -1021,8 +1108,6 @@ body::before{
     from{transform:translateY(-20px)}
     to{transform:translateY(230px)}
 }
-
-/* LUTADOR */
 
 .anim-fighting{
     background:
@@ -1066,8 +1151,6 @@ body::before{
     50%{opacity:1;transform:translate(-50%,-50%) rotate(-25deg) scaleX(1)}
 }
 
-/* VENENO */
-
 .anim-poison{
     background:
         radial-gradient(circle at 30% 80%,rgba(217,70,239,.4),transparent 30%),
@@ -1109,8 +1192,6 @@ body::before{
     50%{transform:translateX(5%) scale(1.1)}
 }
 
-/* TERRA */
-
 .anim-ground{
     background:
         radial-gradient(circle at 50% 100%,rgba(251,191,36,.4),transparent 35%),
@@ -1151,8 +1232,6 @@ body::before{
     0%,100%{transform:translateY(8px);opacity:.3}
     50%{transform:translateY(-15px);opacity:.8}
 }
-
-/* VOADOR */
 
 .anim-flying{
     background:
@@ -1199,8 +1278,6 @@ body::before{
     50%{transform:rotate(15deg) scale(1.2);opacity:.8}
 }
 
-/* PSÍQUICO */
-
 .anim-psychic{
     background:
         radial-gradient(circle,#fbcfe8,transparent 8%),
@@ -1241,8 +1318,6 @@ body::before{
 @keyframes psychicOrbit{
     to{transform:translate(-50%,-50%) rotate(360deg)}
 }
-
-/* INSETO */
 
 .anim-bug{
     background:
@@ -1288,8 +1363,6 @@ body::before{
     50%{opacity:1;transform:translateY(-8px)}
 }
 
-/* PEDRA */
-
 .anim-rock{
     background:
         radial-gradient(circle at 50% 100%,rgba(214,211,209,.25),transparent 35%),
@@ -1331,8 +1404,6 @@ body::before{
     20%{opacity:.7}
     to{transform:translateY(-160px) rotate(-120deg);opacity:0}
 }
-
-/* FANTASMA */
 
 .anim-ghost{
     background:
@@ -1377,8 +1448,6 @@ body::before{
     50%{transform:translate(-50%,-20px);opacity:.7}
 }
 
-/* DRAGÃO */
-
 .anim-dragon{
     background:
         radial-gradient(circle at 50% 50%,rgba(129,140,248,.45),transparent 25%),
@@ -1422,8 +1491,6 @@ body::before{
     50%{transform:translate(-50%,-50%) rotate(-15deg) scale(1.2)}
 }
 
-/* SOMBRIO */
-
 .anim-dark{
     background:
         radial-gradient(circle at 50% 50%,rgba(75,85,99,.35),transparent 25%),
@@ -1463,8 +1530,6 @@ body::before{
 @keyframes darkShadow{
     to{transform:rotate(360deg)}
 }
-
-/* AÇO */
 
 .anim-steel{
     background:
@@ -1507,8 +1572,6 @@ body::before{
     0%,100%{opacity:.2;transform:scale(.7)}
     50%{opacity:1;transform:scale(1.2)}
 }
-
-/* FADA */
 
 .anim-fairy{
     background:
@@ -1596,6 +1659,30 @@ body::before{
     box-shadow:0 20px 45px rgba(0,0,0,.35);
 }
 
+.generation-card-glow{
+    position:absolute;
+    inset:-30%;
+    z-index:1;
+    background:radial-gradient(
+        circle,
+        rgba(255,255,255,.12),
+        transparent 55%
+    );
+    animation:generationGlow 7s ease-in-out infinite;
+    pointer-events:none;
+}
+
+@keyframes generationGlow{
+    0%,100%{
+        transform:translate(-10%,-5%) scale(.9);
+        opacity:.4;
+    }
+    50%{
+        transform:translate(10%,8%) scale(1.1);
+        opacity:.8;
+    }
+}
+
 .generation-content{
     position:absolute;
     inset:0;
@@ -1629,8 +1716,6 @@ body::before{
     color:#e0e5ed;
     margin-top:5px;
 }
-
-/* BOTÃO EXPLORAR — CORRIGIDO */
 
 .generation-content button,
 .generation-content .explore-button,
@@ -1875,7 +1960,7 @@ body::before{
 }
 
 /* =========================================================
-   FICHA DO POKÉMON — COMPACTA
+   FICHA DO POKÉMON
 ========================================================= */
 
 #pokemonDetails{
@@ -1927,7 +2012,129 @@ body::before{
 }
 
 /* =========================================================
-   POKÉMON PRINCIPAL
+   COMPATIBILIDADE COM SCRIPT.JS ATUAL
+========================================================= */
+
+.pokemon-detail-header{
+    padding:24px 24px 0;
+    background:#111925;
+}
+
+.pokemon-detail-number{
+    display:block;
+    color:#68758a;
+    font-size:13px;
+    margin-bottom:5px;
+}
+
+.pokemon-detail-header h1{
+    font-size:clamp(32px,4.5vw,48px);
+    text-transform:capitalize;
+    line-height:1.05;
+    letter-spacing:-1px;
+    margin-bottom:7px;
+}
+
+.pokemon-genus{
+    color:#7e8ba0;
+    font-size:12px;
+    margin-bottom:12px;
+}
+
+.pokemon-detail-types{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    padding-bottom:20px;
+}
+
+.pokemon-main-showcase{
+    display:grid;
+    grid-template-columns:300px 1fr;
+    gap:25px;
+    padding:25px;
+    background:#0f151f;
+    border-left:1px solid rgba(255,255,255,.08);
+    border-right:1px solid rgba(255,255,255,.08);
+}
+
+.pokemon-main-image{
+    min-height:260px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(circle,rgba(255,203,5,.08),transparent 60%),
+        #111a27;
+    border-radius:18px;
+    overflow:hidden;
+}
+
+.pokemon-main-image img{
+    width:190px;
+    height:190px;
+    max-width:190px;
+    max-height:190px;
+    object-fit:contain;
+    filter:drop-shadow(0 15px 18px rgba(0,0,0,.45));
+    transition:.25s ease;
+}
+
+.pokemon-main-image img:hover{
+    transform:scale(1.04);
+}
+
+.pokemon-description{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.pokemon-description h2{
+    font-size:21px;
+    margin-bottom:12px;
+}
+
+.pokemon-description p{
+    color:#aeb8c7;
+    line-height:1.7;
+    font-size:14px;
+}
+
+.pokemon-measures{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:18px;
+}
+
+.measure-box{
+    padding:12px;
+    border-radius:11px;
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.05);
+}
+
+.measure-label{
+    display:block;
+    color:#68758a;
+    font-size:10px;
+    margin-bottom:4px;
+}
+
+.measure-box strong{
+    color:#e8edf5;
+    font-size:14px;
+}
+
+.basic-info-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:9px;
+}
+
+/* =========================================================
+   INFORMAÇÕES DA FICHA ANTIGA
 ========================================================= */
 
 .detail-art{
@@ -1960,10 +2167,6 @@ body::before{
     text-align:center;
     margin-bottom:6px;
 }
-
-/* =========================================================
-   INFORMAÇÕES DA FICHA
-========================================================= */
 
 .detail-info{
     padding:10px 0;
@@ -2088,6 +2291,12 @@ body::before{
     gap:10px;
 }
 
+.stats-container{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
 .stat-row{
     display:grid;
     grid-template-columns:130px 45px 1fr;
@@ -2129,6 +2338,55 @@ body::before{
     grid-template-columns:1fr 1fr;
     gap:14px;
     align-items:center;
+}
+
+.shiny-content{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+
+.shiny-card{
+    min-width:0;
+    min-height:250px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:15px;
+    border-radius:16px;
+    background:#111a27;
+    border:1px solid rgba(255,255,255,.05);
+    transition:.25s ease;
+}
+
+.shiny-card:hover{
+    transform:translateY(-3px);
+    border-color:rgba(255,203,5,.2);
+}
+
+.shiny-label{
+    color:#6f7b8e;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:1.5px;
+    margin-bottom:5px;
+}
+
+.shiny-card img{
+    width:150px;
+    height:150px;
+    max-width:150px;
+    max-height:150px;
+    object-fit:contain;
+    display:block;
+    filter:drop-shadow(0 12px 16px rgba(0,0,0,.4));
+    transition:.25s ease;
+}
+
+.shiny-card img:hover{
+    transform:scale(1.04);
 }
 
 .shiny-art{
@@ -2185,6 +2443,67 @@ body::before{
     gap:10px;
 }
 
+.evolution-container{
+    width:100%;
+}
+
+.evolution-card{
+    width:125px;
+    min-width:125px;
+    padding:10px;
+    border-radius:15px;
+    background:#111a27;
+    border:1px solid rgba(255,255,255,.06);
+    text-align:center;
+    cursor:pointer;
+    transition:.25s ease;
+    user-select:none;
+}
+
+.evolution-card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(255,203,5,.35);
+    background:#151f2e;
+    box-shadow:0 12px 25px rgba(0,0,0,.25);
+}
+
+.evolution-card img{
+    width:82px;
+    height:82px;
+    max-width:82px;
+    max-height:82px;
+    object-fit:contain;
+    display:block;
+    margin:0 auto 5px;
+    filter:drop-shadow(0 8px 10px rgba(0,0,0,.4));
+    transition:.25s ease;
+}
+
+.evolution-card:hover img{
+    transform:scale(1.04);
+}
+
+.evolution-card strong{
+    display:block;
+    color:#fff;
+    font-size:13px;
+    line-height:1.25;
+    text-transform:capitalize;
+}
+
+.evolution-number{
+    color:#59677b;
+    font-size:10px;
+    text-align:left;
+    margin-bottom:3px;
+}
+
+.evolution-empty{
+    padding:35px 20px;
+    text-align:center;
+    color:#758197;
+}
+
 .evolution-item{
     text-align:center;
     width:110px;
@@ -2231,6 +2550,10 @@ body::before{
 /* =========================================================
    MEGA EVOLUÇÕES
 ========================================================= */
+
+.mega-container{
+    width:100%;
+}
 
 .mega-tabs{
     display:flex;
@@ -2414,6 +2737,10 @@ body::before{
         grid-template-columns:repeat(4,1fr);
     }
 
+    .search-results{
+        grid-template-columns:repeat(4,1fr);
+    }
+
     .types-grid,
     .generations-grid{
         grid-template-columns:repeat(2,1fr);
@@ -2430,12 +2757,28 @@ body::before{
         max-width:140px;
         max-height:140px;
     }
+
+    .pokemon-main-showcase{
+        grid-template-columns:270px 1fr;
+        gap:20px;
+    }
+
+    .pokemon-main-image img{
+        width:170px;
+        height:170px;
+        max-width:170px;
+        max-height:170px;
+    }
 }
 
 @media(max-width:700px){
 
     .header{
         height:64px;
+    }
+
+    .menu-button{
+        top:12px;
     }
 
     .logo{
@@ -2460,25 +2803,33 @@ body::before{
         gap:9px;
     }
 
+    .search-results{
+        grid-template-columns:repeat(2,1fr);
+        gap:9px;
+    }
+
     .pokemon-card{
         padding:10px;
         min-height:205px;
         border-radius:15px;
     }
 
-    .pokemon-image-container{
+    .pokemon-image-container,
+    .pokemon-card-image{
         height:112px;
         min-height:112px;
     }
 
-    .pokemon-image{
+    .pokemon-image,
+    .pokemon-card-img{
         width:88px;
         height:88px;
         max-width:88px;
         max-height:88px;
     }
 
-    .pokemon-name{
+    .pokemon-name,
+    .pokemon-card-info h3{
         font-size:14px;
     }
 
@@ -2497,6 +2848,12 @@ body::before{
 
     .generation-content h3{
         font-size:26px;
+    }
+
+    #searchPageInput{
+        height:62px;
+        font-size:15px;
+        padding:0 18px;
     }
 
     /* =====================================================
@@ -2538,11 +2895,45 @@ body::before{
         font-size:18px;
     }
 
+    .pokemon-detail-header{
+        padding:18px 18px 0;
+    }
+
+    .pokemon-detail-header h1{
+        font-size:36px;
+    }
+
+    .pokemon-main-showcase{
+        grid-template-columns:1fr;
+        padding:18px;
+        gap:12px;
+    }
+
+    .pokemon-main-image{
+        min-height:220px;
+    }
+
+    .pokemon-main-image img{
+        width:160px;
+        height:160px;
+        max-width:160px;
+        max-height:160px;
+    }
+
+    .pokemon-description{
+        padding:5px 2px;
+    }
+
+    .basic-info-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
     /* =====================================================
        SHINY MOBILE
     ===================================================== */
 
-    .shiny-container{
+    .shiny-container,
+    .shiny-content{
         grid-template-columns:1fr;
         gap:10px;
     }
@@ -2557,6 +2948,17 @@ body::before{
         height:125px;
         max-width:125px;
         max-height:125px;
+    }
+
+    .shiny-card{
+        min-height:210px;
+    }
+
+    .shiny-card img{
+        width:130px;
+        height:130px;
+        max-width:130px;
+        max-height:130px;
     }
 
     /* =====================================================
@@ -2587,6 +2989,27 @@ body::before{
     .evolution-method{
         font-size:9px;
         max-width:90px;
+    }
+
+    .evolution-card{
+        width:90px;
+        min-width:90px;
+        padding:7px;
+    }
+
+    .evolution-card img{
+        width:64px;
+        height:64px;
+        max-width:64px;
+        max-height:64px;
+    }
+
+    .evolution-card strong{
+        font-size:11px;
+    }
+
+    .evolution-number{
+        font-size:9px;
     }
 
     .evolution-arrow{
@@ -2631,7 +3054,8 @@ body::before{
 
 @media(max-width:400px){
 
-    .pokemon-name{
+    .pokemon-name,
+    .pokemon-card-info h3{
         font-size:13px;
     }
 
@@ -2646,7 +3070,8 @@ body::before{
         font-size:33px;
     }
 
-    .pokemon-image{
+    .pokemon-image,
+    .pokemon-card-img{
         width:82px;
         height:82px;
         max-width:82px;
@@ -2665,6 +3090,21 @@ body::before{
         height:115px;
         max-width:115px;
         max-height:115px;
+    }
+
+    .pokemon-main-image img{
+        width:145px;
+        height:145px;
+        max-width:145px;
+        max-height:145px;
+    }
+
+    .pokemon-measures{
+        grid-template-columns:1fr;
+    }
+
+    .basic-info-grid{
+        grid-template-columns:1fr;
     }
 }
 
