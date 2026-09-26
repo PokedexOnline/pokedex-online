@@ -1,450 +1,824 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Pokédex Online</title>
+<title>Pokédex Online</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#080b10;
+    color:#fff;
+    min-height:100vh;
+}
+
+header{
+    background:#10151d;
+    border-bottom:1px solid #252d38;
+    padding:18px 20px;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.header{
+    max-width:1250px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#e63946;
+}
+
+nav{
+    display:flex;
+    gap:20px;
+}
+
+nav a{
+    color:#aeb7c3;
+    text-decoration:none;
+    font-size:14px;
+}
+
+nav a:hover{
+    color:#fff;
+}
+
+main{
+    max-width:1250px;
+    margin:auto;
+    padding:50px 20px;
+}
+
+.hero{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.hero h1{
+    font-size:48px;
+    margin-bottom:12px;
+}
+
+.hero h1 span{
+    color:#e63946;
+}
+
+.hero p{
+    color:#8994a2;
+    font-size:17px;
+}
+
+.search{
+    max-width:720px;
+    margin:28px auto 0;
+    display:flex;
+    gap:10px;
+}
+
+.search input{
+    flex:1;
+    background:#111720;
+    border:1px solid #303a48;
+    color:#fff;
+    padding:16px;
+    border-radius:10px;
+    outline:none;
+    font-size:16px;
+}
+
+.search input:focus{
+    border-color:#e63946;
+}
+
+.search button{
+    border:0;
+    background:#e63946;
+    color:white;
+    padding:0 25px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.filters{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:9px;
+    margin-bottom:35px;
+}
+
+.filter{
+    background:#111720;
+    border:1px solid #303a48;
+    color:#b8c1cc;
+    padding:9px 14px;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+.filter:hover,
+.filter.active{
+    background:#e63946;
+    color:white;
+    border-color:#e63946;
+}
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.section-header h2{
+    font-size:24px;
+}
+
+.counter{
+    color:#7f8a98;
+    font-size:14px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+    gap:18px;
+}
+
+.card{
+    background:#111720;
+    border:1px solid #252e3a;
+    border-radius:16px;
+    padding:18px;
+    text-align:center;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    border-color:#e63946;
+}
+
+.number{
+    text-align:left;
+    color:#667383;
+    font-size:13px;
+}
+
+.card img{
+    width:140px;
+    height:140px;
+    object-fit:contain;
+    display:block;
+    margin:5px auto;
+}
+
+.card h3{
+    font-size:20px;
+    margin-bottom:10px;
+}
+
+.types{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:6px;
+}
+
+.type{
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.normal{background:#8d99ae}
+.fogo{background:#f4511e}
+.agua{background:#2196f3}
+.eletrico{background:#f5c518;color:#111}
+.planta{background:#43a047}
+.gelo{background:#4dd0e1;color:#111}
+.lutador{background:#d84315}
+.veneno{background:#8e44ad}
+.terra{background:#a67c52}
+.voador{background:#78909c}
+.psiquico{background:#ec407a}
+.inseto{background:#7cb342}
+.pedra{background:#827717}
+.fantasma{background:#5e35b1}
+.dragao{background:#3949ab}
+.sombrio{background:#263238}
+.aco{background:#607d8b}
+.fada{background:#ec9bd3;color:#111}
+
+.loading{
+    text-align:center;
+    padding:50px;
+    color:#8b96a3;
+}
+
+.load-more{
+    display:block;
+    margin:35px auto 0;
+    background:#e63946;
+    color:#fff;
+    border:0;
+    padding:14px 30px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.load-more:hover{
+    background:#c92f3c;
+}
+
+footer{
+    border-top:1px solid #252d38;
+    margin-top:60px;
+    padding:30px;
+    text-align:center;
+    color:#667383;
+}
+
+@media(max-width:700px){
+
+    .header{
+        flex-direction:column;
     }
 
-    body {
-      background: #0b0f14;
-      color: #ffffff;
-      min-height: 100vh;
+    nav{
+        gap:14px;
     }
 
-    header {
-      background: #121923;
-      border-bottom: 1px solid #263241;
-      padding: 20px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    .hero h1{
+        font-size:36px;
     }
 
-    .header-content {
-      max-width: 1200px;
-      margin: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
+    .search{
+        flex-direction:column;
     }
 
-    .logo {
-      font-size: 25px;
-      font-weight: bold;
-      white-space: nowrap;
+    .search button{
+        padding:14px;
     }
 
-    .logo span {
-      color: #ff3b30;
+    .grid{
+        grid-template-columns:repeat(2,1fr);
     }
 
-    nav {
-      display: flex;
-      gap: 20px;
+    .card img{
+        width:110px;
+        height:110px;
     }
-
-    nav a {
-      color: #c9d1d9;
-      text-decoration: none;
-      font-size: 14px;
-      transition: 0.2s;
-    }
-
-    nav a:hover {
-      color: #ffffff;
-    }
-
-    main {
-      max-width: 1200px;
-      margin: auto;
-      padding: 50px 20px;
-    }
-
-    .hero {
-      text-align: center;
-      margin-bottom: 45px;
-    }
-
-    .hero h1 {
-      font-size: 48px;
-      margin-bottom: 12px;
-    }
-
-    .hero h1 span {
-      color: #ff3b30;
-    }
-
-    .hero p {
-      color: #9da9b5;
-      font-size: 17px;
-    }
-
-    .search-area {
-      max-width: 700px;
-      margin: 30px auto 0;
-      display: flex;
-      gap: 10px;
-    }
-
-    .search-area input {
-      flex: 1;
-      padding: 16px 18px;
-      border-radius: 10px;
-      border: 1px solid #303c4c;
-      background: #151d27;
-      color: white;
-      outline: none;
-      font-size: 16px;
-    }
-
-    .search-area input:focus {
-      border-color: #ff3b30;
-    }
-
-    .search-area button {
-      padding: 0 25px;
-      border: none;
-      border-radius: 10px;
-      background: #ff3b30;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .search-area button:hover {
-      background: #e52f26;
-    }
-
-    .filters {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 35px;
-    }
-
-    .filter {
-      background: #151d27;
-      color: #c9d1d9;
-      border: 1px solid #303c4c;
-      padding: 10px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .filter:hover,
-    .filter.active {
-      background: #ff3b30;
-      color: white;
-      border-color: #ff3b30;
-    }
-
-    .section-title {
-      margin-bottom: 20px;
-      font-size: 24px;
-    }
-
-    .pokemon-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 18px;
-    }
-
-    .pokemon-card {
-      background: #121923;
-      border: 1px solid #263241;
-      border-radius: 15px;
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.25s;
-    }
-
-    .pokemon-card:hover {
-      transform: translateY(-5px);
-      border-color: #ff3b30;
-    }
-
-    .pokemon-number {
-      color: #778493;
-      font-size: 13px;
-      text-align: left;
-    }
-
-    .pokemon-card img {
-      width: 130px;
-      height: 130px;
-      object-fit: contain;
-      margin: 5px auto;
-      display: block;
-    }
-
-    .pokemon-card h3 {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-
-    .types {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .type {
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .type.eletrico {
-      background: #f5c518;
-      color: #111;
-    }
-
-    .type.grama {
-      background: #4caf50;
-    }
-
-    .type.fogo {
-      background: #f4511e;
-    }
-
-    .type.agua {
-      background: #2196f3;
-    }
-
-    .type.normal {
-      background: #8d99ae;
-    }
-
-    footer {
-      margin-top: 60px;
-      padding: 30px 20px;
-      text-align: center;
-      border-top: 1px solid #263241;
-      color: #778493;
-      font-size: 14px;
-    }
-
-    @media (max-width: 700px) {
-      .header-content {
-        flex-direction: column;
-      }
-
-      nav {
-        gap: 15px;
-      }
-
-      .hero h1 {
-        font-size: 36px;
-      }
-
-      .search-area {
-        flex-direction: column;
-      }
-
-      .search-area button {
-        padding: 14px;
-      }
-
-      .pokemon-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-  </style>
+}
+</style>
 </head>
 
 <body>
 
-  <header>
-    <div class="header-content">
+<header>
+    <div class="header">
 
-      <div class="logo">
-        <span>Poké</span>dex Online
-      </div>
+        <div class="logo">
+            <span>Poké</span>dex Online
+        </div>
 
-      <nav>
-        <a href="#">Início</a>
-        <a href="#">Pokédex</a>
-        <a href="#">Tipos</a>
-        <a href="#">Gerações</a>
-      </nav>
+        <nav>
+            <a href="#">Início</a>
+            <a href="#pokedex">Pokédex</a>
+            <a href="#tipos">Tipos</a>
+            <a href="#geracoes">Gerações</a>
+        </nav>
 
     </div>
-  </header>
+</header>
 
-  <main>
+<main>
 
-    <section class="hero">
+<section class="hero">
 
-      <h1>
+    <h1>
         <span>Pokédex</span> Online
-      </h1>
+    </h1>
 
-      <p>
-        Explore todos os Pokémon, suas evoluções, ataques, tipos e muito mais.
-      </p>
+    <p>
+        Explore o mundo Pokémon.
+        Encontre informações sobre Pokémon, tipos e evoluções.
+    </p>
 
-      <div class="search-area">
+    <div class="search">
+
         <input
-          type="text"
-          placeholder="Pesquise por nome ou número..."
+            id="searchInput"
+            type="text"
+            placeholder="Pesquise por nome ou número..."
         >
 
-        <button>
-          Pesquisar
+        <button onclick="searchPokemon()">
+            Pesquisar
         </button>
-      </div>
-
-    </section>
-
-    <div class="filters">
-
-      <button class="filter active">
-        Todos
-      </button>
-
-      <button class="filter">
-        Geração I
-      </button>
-
-      <button class="filter">
-        Geração II
-      </button>
-
-      <button class="filter">
-        Geração III
-      </button>
-
-      <button class="filter">
-        Geração IV
-      </button>
-
-      <button class="filter">
-        Geração V
-      </button>
-
-      <button class="filter">
-        Geração VI
-      </button>
-
-      <button class="filter">
-        Geração VII
-      </button>
-
-      <button class="filter">
-        Geração VIII
-      </button>
-
-      <button class="filter">
-        Geração IX
-      </button>
 
     </div>
 
-    <h2 class="section-title">
-      Pokémon
-    </h2>
+</section>
 
-    <section class="pokemon-grid">
+<div class="filters" id="geracoes">
 
-      <div class="pokemon-card">
+    <button class="filter active" onclick="filterGeneration('all',this)">
+        Todos
+    </button>
 
-        <div class="pokemon-number">
-          #001
+    <button class="filter" onclick="filterGeneration(1,this)">
+        Geração I
+    </button>
+
+    <button class="filter" onclick="filterGeneration(2,this)">
+        Geração II
+    </button>
+
+    <button class="filter" onclick="filterGeneration(3,this)">
+        Geração III
+    </button>
+
+    <button class="filter" onclick="filterGeneration(4,this)">
+        Geração IV
+    </button>
+
+    <button class="filter" onclick="filterGeneration(5,this)">
+        Geração V
+    </button>
+
+    <button class="filter" onclick="filterGeneration(6,this)">
+        Geração VI
+    </button>
+
+    <button class="filter" onclick="filterGeneration(7,this)">
+        Geração VII
+    </button>
+
+    <button class="filter" onclick="filterGeneration(8,this)">
+        Geração VIII
+    </button>
+
+    <button class="filter" onclick="filterGeneration(9,this)">
+        Geração IX
+    </button>
+
+</div>
+
+<section id="pokedex">
+
+    <div class="section-header">
+
+        <h2>Pokémon</h2>
+
+        <div class="counter" id="counter">
+            Carregando...
         </div>
 
-        <img
-          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
-          alt="Bulbasaur"
-        >
+    </div>
 
-        <h3>Bulbasaur</h3>
+    <div id="pokemonGrid" class="grid">
 
-        <div class="types">
-          <span class="type grama">🌿 Planta</span>
-          <span class="type">☠️ Veneno</span>
+        <div class="loading">
+            Carregando Pokémon...
         </div>
 
-      </div>
+    </div>
 
-      <div class="pokemon-card">
+    <button
+        id="loadMore"
+        class="load-more"
+        onclick="loadMore()"
+        style="display:none;"
+    >
+        Carregar mais
+    </button>
 
-        <div class="pokemon-number">
-          #004
+</section>
+
+</main>
+
+<footer>
+    Pokédex Online © 2026
+</footer>
+
+<script>
+
+const API = "https://pokeapi.co/api/v2";
+
+const TOTAL = 1025;
+
+let allPokemon = [];
+let displayedPokemon = [];
+let currentGeneration = "all";
+let visibleAmount = 40;
+
+const typeNames = {
+
+    normal:"Normal",
+    fire:"Fogo",
+    water:"Água",
+    electric:"Elétrico",
+    grass:"Planta",
+    ice:"Gelo",
+    fighting:"Lutador",
+    poison:"Veneno",
+    ground:"Terra",
+    flying:"Voador",
+    psychic:"Psíquico",
+    bug:"Inseto",
+    rock:"Pedra",
+    ghost:"Fantasma",
+    dragon:"Dragão",
+    dark:"Sombrio",
+    steel:"Aço",
+    fairy:"Fada"
+
+};
+
+const typeClasses = {
+
+    normal:"normal",
+    fire:"fogo",
+    water:"agua",
+    electric:"eletrico",
+    grass:"planta",
+    ice:"gelo",
+    fighting:"lutador",
+    poison:"veneno",
+    ground:"terra",
+    flying:"voador",
+    psychic:"psiquico",
+    bug:"inseto",
+    rock:"pedra",
+    ghost:"fantasma",
+    dragon:"dragao",
+    dark:"sombrio",
+    steel:"aco",
+    fairy:"fada"
+
+};
+
+const typeIcons = {
+
+    normal:"⚪",
+    fire:"🔥",
+    water:"💧",
+    electric:"⚡",
+    grass:"🌿",
+    ice:"❄️",
+    fighting:"🥊",
+    poison:"☠️",
+    ground:"🌎",
+    flying:"🪽",
+    psychic:"🔮",
+    bug:"🐛",
+    rock:"🪨",
+    ghost:"👻",
+    dragon:"🐉",
+    dark:"🌑",
+    steel:"⚙️",
+    fairy:"✨"
+
+};
+
+function capitalize(text){
+
+    return text.charAt(0).toUpperCase() + text.slice(1);
+
+}
+
+async function getPokemon(id){
+
+    const response = await fetch(
+        `${API}/pokemon/${id}`
+    );
+
+    return await response.json();
+
+}
+
+async function getPortugueseName(id){
+
+    try{
+
+        const response = await fetch(
+            `${API}/pokemon-species/${id}`
+        );
+
+        const data = await response.json();
+
+        const portuguese = data.names.find(
+            item => item.language.name === "pt"
+        );
+
+        return portuguese
+            ? portuguese.name
+            : capitalize(data.name);
+
+    }catch{
+
+        return "Pokémon";
+
+    }
+
+}
+
+async function loadPokemon(){
+
+    const grid = document.getElementById("pokemonGrid");
+
+    grid.innerHTML = `
+        <div class="loading">
+            Carregando Pokémon...
         </div>
+    `;
 
-        <img
-          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png"
-          alt="Charmander"
-        >
+    try{
 
-        <h3>Charmander</h3>
+        const response = await fetch(
+            `${API}/pokemon?limit=${TOTAL}&offset=0`
+        );
 
-        <div class="types">
-          <span class="type fogo">🔥 Fogo</span>
-        </div>
+        const data = await response.json();
 
-      </div>
+        allPokemon = data.results.map((pokemon,index)=>({
 
-      <div class="pokemon-card">
+            id:index + 1,
+            name:pokemon.name,
+            generation:getGeneration(index + 1)
 
-        <div class="pokemon-number">
-          #007
-        </div>
+        }));
 
-        <img
-          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png"
-          alt="Squirtle"
-        >
+        displayedPokemon = allPokemon;
 
-        <h3>Squirtle</h3>
+        renderPokemon();
 
-        <div class="types">
-          <span class="type agua">💧 Água</span>
-        </div>
+    }catch(error){
 
-      </div>
+        grid.innerHTML = `
+            <div class="loading">
+                Não foi possível carregar os Pokémon.
+                <br><br>
+                Atualize a página e tente novamente.
+            </div>
+        `;
 
-      <div class="pokemon-card">
+        console.error(error);
 
-        <div class="pokemon-number">
-          #025
-        </div>
+    }
 
-        <img
-          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
-          alt="Pikachu"
-        >
+}
 
-        <h3>Pikachu</h3>
+function getGeneration(id){
 
-        <div class="types">
-          <span class="type eletrico">⚡ Elétrico</span>
-        </div>
+    if(id <= 151) return 1;
+    if(id <= 251) return 2;
+    if(id <= 386) return 3;
+    if(id <= 493) return 4;
+    if(id <= 649) return 5;
+    if(id <= 721) return 6;
+    if(id <= 809) return 7;
+    if(id <= 905) return 8;
 
-      </div>
+    return 9;
 
-    </section>
+}
 
-  </main>
+async function renderPokemon(){
 
-  <footer>
-    Pokédex Online © 2026 — Projeto em desenvolvimento
-  </footer>
+    const grid = document.getElementById("pokemonGrid");
+
+    const items = displayedPokemon.slice(
+        0,
+        visibleAmount
+    );
+
+    grid.innerHTML = "";
+
+    if(items.length === 0){
+
+        grid.innerHTML = `
+            <div class="loading">
+                Nenhum Pokémon encontrado.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    for(const pokemon of items){
+
+        const card = document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+
+            <div class="number">
+                #${String(pokemon.id).padStart(4,"0")}
+            </div>
+
+            <img
+                src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png"
+                alt="${capitalize(pokemon.name)}"
+                loading="lazy"
+            >
+
+            <h3>
+                ${capitalize(pokemon.name)}
+            </h3>
+
+            <div class="types">
+                <span class="type">
+                    Carregando...
+                </span>
+            </div>
+
+        `;
+
+        grid.appendChild(card);
+
+        loadCardData(card,pokemon.id);
+
+    }
+
+    document.getElementById("counter").textContent =
+        `${displayedPokemon.length} Pokémon encontrados`;
+
+    document.getElementById("loadMore").style.display =
+        visibleAmount < displayedPokemon.length
+        ? "block"
+        : "none";
+
+}
+
+async function loadCardData(card,id){
+
+    try{
+
+        const pokemon = await getPokemon(id);
+
+        const speciesResponse = await fetch(
+            `${API}/pokemon-species/${id}`
+        );
+
+        const species = await speciesResponse.json();
+
+        const portugueseName = species.names.find(
+            item => item.language.name === "pt"
+        );
+
+        const nameElement = card.querySelector("h3");
+
+        if(portugueseName){
+
+            nameElement.textContent =
+                portugueseName.name;
+
+        }
+
+        const typesElement =
+            card.querySelector(".types");
+
+        typesElement.innerHTML = pokemon.types
+            .map(item => {
+
+                const type = item.type.name;
+
+                return `
+                    <span class="type ${typeClasses[type]}">
+                        ${typeIcons[type]}
+                        ${typeNames[type]}
+                    </span>
+                `;
+
+            })
+            .join("");
+
+        card.onclick = () => {
+
+            alert(
+                `Abriremos a página completa do ${portugueseName ? portugueseName.name : capitalize(pokemon.name)} na próxima etapa!`
+            );
+
+        };
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+function loadMore(){
+
+    visibleAmount += 40;
+
+    renderPokemon();
+
+}
+
+function filterGeneration(generation,button){
+
+    document
+        .querySelectorAll(".filter")
+        .forEach(btn => btn.classList.remove("active"));
+
+    button.classList.add("active");
+
+    currentGeneration = generation;
+
+    if(generation === "all"){
+
+        displayedPokemon = allPokemon;
+
+    }else{
+
+        displayedPokemon =
+            allPokemon.filter(
+                pokemon =>
+                    pokemon.generation === generation
+            );
+
+    }
+
+    visibleAmount = 40;
+
+    renderPokemon();
+
+}
+
+async function searchPokemon(){
+
+    const input =
+        document.getElementById("searchInput")
+        .value
+        .trim()
+        .toLowerCase();
+
+    if(!input){
+
+        displayedPokemon = allPokemon;
+
+    }else{
+
+        displayedPokemon =
+            allPokemon.filter(pokemon =>
+
+                pokemon.name.includes(input) ||
+                String(pokemon.id) === input
+
+            );
+
+    }
+
+    visibleAmount = 40;
+
+    renderPokemon();
+
+}
+
+document
+    .getElementById("searchInput")
+    .addEventListener("keydown",event => {
+
+        if(event.key === "Enter"){
+
+            searchPokemon();
+
+        }
+
+    });
+
+loadPokemon();
+
+</script>
 
 </body>
 </html>
