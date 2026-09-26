@@ -198,33 +198,63 @@ async function apiFetch(url) {
 ========================================================= */
 
 async function getPokemon(idOrName) {
-    const key = String(idOrName).toLowerCase();
+
+    const key =
+        String(idOrName).toLowerCase();
 
     if (pokemonCache.has(key)) {
         return pokemonCache.get(key);
     }
 
-    const pokemon = await apiFetch(
-        `${API}/pokemon/${key}`
-    );
+    const pokemon =
+        await apiFetch(
+            `${API}/pokemon/${key}`
+        );
 
     pokemonCache.set(key, pokemon);
+
+    if (pokemon?.id) {
+        pokemonCache.set(
+            String(pokemon.id),
+            pokemon
+        );
+
+        pokemonCache.set(
+            pokemon.name.toLowerCase(),
+            pokemon
+        );
+    }
 
     return pokemon;
 }
 
 async function getSpecies(idOrName) {
-    const key = String(idOrName).toLowerCase();
+
+    const key =
+        String(idOrName).toLowerCase();
 
     if (speciesCache.has(key)) {
         return speciesCache.get(key);
     }
 
-    const species = await apiFetch(
-        `${API}/pokemon-species/${key}`
-    );
+    const species =
+        await apiFetch(
+            `${API}/pokemon-species/${key}`
+        );
 
     speciesCache.set(key, species);
+
+    if (species?.id) {
+        speciesCache.set(
+            String(species.id),
+            species
+        );
+
+        speciesCache.set(
+            species.name.toLowerCase(),
+            species
+        );
+    }
 
     return species;
 }
@@ -233,7 +263,10 @@ async function getSpecies(idOrName) {
    DADOS LOCALIZADOS
 ========================================================= */
 
-function getEnglishPokemonName(species, pokemon) {
+function getEnglishPokemonName(
+    species,
+    pokemon
+) {
     return formatPokemonName(
         pokemon?.name ||
         species?.name ||
@@ -241,12 +274,16 @@ function getEnglishPokemonName(species, pokemon) {
     );
 }
 
-function getPortugueseDescription(species) {
+function getPortugueseDescription(
+    species
+) {
+
     if (!species?.flavor_text_entries) {
         return "Descrição não disponível.";
     }
 
-    const entries = species.flavor_text_entries;
+    const entries =
+        species.flavor_text_entries;
 
     const preferredLanguages = [
         "pt-br",
@@ -254,13 +291,19 @@ function getPortugueseDescription(species) {
         "en"
     ];
 
-    for (const language of preferredLanguages) {
-        const entry = entries.find(
-            item =>
-                item.language?.name === language
-        );
+    for (
+        const language of preferredLanguages
+    ) {
+
+        const entry =
+            entries.find(
+                item =>
+                    item.language?.name ===
+                    language
+            );
 
         if (entry?.flavor_text) {
+
             return entry.flavor_text
                 .replace(/\n|\f/g, " ")
                 .replace(/\s+/g, " ")
@@ -271,7 +314,10 @@ function getPortugueseDescription(species) {
     return "Descrição não disponível.";
 }
 
-function getPortugueseGenus(species) {
+function getPortugueseGenus(
+    species
+) {
+
     if (!species?.genera) {
         return "";
     }
@@ -279,15 +325,18 @@ function getPortugueseGenus(species) {
     const entry =
         species.genera.find(
             item =>
-                item.language?.name === "pt-br"
+                item.language?.name ===
+                "pt-br"
         ) ||
         species.genera.find(
             item =>
-                item.language?.name === "pt"
+                item.language?.name ===
+                "pt"
         ) ||
         species.genera.find(
             item =>
-                item.language?.name === "en"
+                item.language?.name ===
+                "en"
         );
 
     return entry?.genus || "";
@@ -300,9 +349,12 @@ function getPortugueseGenus(species) {
 async function loadPokemon() {
 
     const grid =
-        document.getElementById("pokedex");
+        document.getElementById(
+            "pokedex"
+        );
 
     if (grid) {
+
         grid.innerHTML = `
             <div class="loading">
                 <div class="loading-spinner"></div>
@@ -313,22 +365,28 @@ async function loadPokemon() {
 
     try {
 
-        const data = await apiFetch(
-            `${API}/pokemon?limit=${MAX_POKEMON}&offset=0`
-        );
-
-        allPokemon = data.results
-            .map((pokemon, index) => ({
-                id: index + 1,
-                name: pokemon.name,
-                url: pokemon.url
-            }))
-            .filter(
-                pokemon =>
-                    pokemon.id <= MAX_POKEMON
+        const data =
+            await apiFetch(
+                `${API}/pokemon?limit=${MAX_POKEMON}&offset=0`
             );
 
-        filteredPokemon = [...allPokemon];
+        allPokemon =
+            data.results
+                .map(
+                    (pokemon, index) => ({
+                        id: index + 1,
+                        name: pokemon.name,
+                        url: pokemon.url
+                    })
+                )
+                .filter(
+                    pokemon =>
+                        pokemon.id <=
+                        MAX_POKEMON
+                );
+
+        filteredPokemon =
+            [...allPokemon];
 
         visibleCount = 50;
 
@@ -342,9 +400,13 @@ async function loadPokemon() {
         );
 
         if (grid) {
+
             grid.innerHTML = `
                 <div class="error-message">
-                    <div style="font-size:42px;">⚠️</div>
+
+                    <div style="font-size:42px;">
+                        ⚠️
+                    </div>
 
                     <h3>
                         Não foi possível carregar a Pokédex
@@ -357,6 +419,7 @@ async function loadPokemon() {
                     <button onclick="loadPokemon()">
                         Tentar novamente
                     </button>
+
                 </div>
             `;
         }
@@ -370,7 +433,9 @@ async function loadPokemon() {
 function renderPokemon() {
 
     const grid =
-        document.getElementById("pokedex");
+        document.getElementById(
+            "pokedex"
+        );
 
     if (!grid) return;
 
@@ -386,7 +451,10 @@ function renderPokemon() {
 
         grid.innerHTML = `
             <div class="error-message">
-                <div style="font-size:42px;">🔎</div>
+
+                <div style="font-size:42px;">
+                    🔎
+                </div>
 
                 <h3>
                     Nenhum Pokémon encontrado
@@ -395,6 +463,7 @@ function renderPokemon() {
                 <p>
                     Tente outro nome ou número.
                 </p>
+
             </div>
         `;
 
@@ -403,13 +472,17 @@ function renderPokemon() {
         return;
     }
 
-    visible.forEach(pokemon => {
+    visible.forEach(
+        pokemon => {
 
-        grid.appendChild(
-            createPokemonCard(pokemon)
-        );
+            grid.appendChild(
+                createPokemonCard(
+                    pokemon
+                )
+            );
 
-    });
+        }
+    );
 
     updateLoadMoreButton();
 }
@@ -418,14 +491,20 @@ function renderPokemon() {
    CARD
 ========================================================= */
 
-function createPokemonCard(pokemon) {
+function createPokemonCard(
+    pokemon
+) {
 
     const card =
-        document.createElement("article");
+        document.createElement(
+            "article"
+        );
 
-    card.className = "pokemon-card";
+    card.className =
+        "pokemon-card";
 
-    card.dataset.id = pokemon.id;
+    card.dataset.id =
+        pokemon.id;
 
     card.innerHTML = `
         <div class="pokemon-card-number">
@@ -443,7 +522,9 @@ function createPokemonCard(pokemon) {
         <div class="pokemon-card-info">
 
             <h3>
-                ${formatPokemonName(pokemon.name)}
+                ${formatPokemonName(
+                    pokemon.name
+                )}
             </h3>
 
             <div
@@ -460,10 +541,16 @@ function createPokemonCard(pokemon) {
 
     card.addEventListener(
         "click",
-        () => openPokemon(pokemon.id)
+        () =>
+            openPokemon(
+                pokemon.id
+            )
     );
 
-    loadCardData(card, pokemon);
+    loadCardData(
+        card,
+        pokemon
+    );
 
     return card;
 }
@@ -472,15 +559,22 @@ function createPokemonCard(pokemon) {
    DADOS DOS CARDS
 ========================================================= */
 
-async function loadCardData(card, pokemon) {
+async function loadCardData(
+    card,
+    pokemon
+) {
 
     try {
 
         const data =
-            await getPokemon(pokemon.id);
+            await getPokemon(
+                pokemon.id
+            );
 
         const image =
-            getPokemonImage(data);
+            getPokemonImage(
+                data
+            );
 
         const imageContainer =
             card.querySelector(
@@ -491,8 +585,11 @@ async function loadCardData(card, pokemon) {
 
             imageContainer.innerHTML = `
                 <img
+                    class="pokemon-card-img"
                     src="${image}"
-                    alt="${formatPokemonName(pokemon.name)}"
+                    alt="${formatPokemonName(
+                        pokemon.name
+                    )}"
                     loading="lazy"
                 >
             `;
@@ -507,23 +604,27 @@ async function loadCardData(card, pokemon) {
 
             typeContainer.innerHTML =
                 data.types
-                    .map(item => {
+                    .map(
+                        item => {
 
-                        const type =
-                            item.type.name;
+                            const type =
+                                item.type.name;
 
-                        const info =
-                            typeInfo[type];
+                            const info =
+                                typeInfo[type];
 
-                        return `
-                            <span
-                                class="type-badge type-${type}"
-                            >
-                                ${info?.name || capitalize(type)}
-                            </span>
-                        `;
-
-                    })
+                            return `
+                                <span
+                                    class="type-badge type-${type}"
+                                >
+                                    ${
+                                        info?.name ||
+                                        capitalize(type)
+                                    }
+                                </span>
+                            `;
+                        }
+                    )
                     .join("");
         }
 
@@ -569,11 +670,13 @@ function updateLoadMoreButton() {
         filteredPokemon.length
     ) {
 
-        button.style.display = "none";
+        button.style.display =
+            "none";
 
     } else {
 
-        button.style.display = "block";
+        button.style.display =
+            "block";
 
         button.textContent =
             "Carregar mais Pokémon";
@@ -593,10 +696,12 @@ function loadMore() {
 }
 
 /* =========================================================
-   PESQUISA
+   PESQUISA HOME
 ========================================================= */
 
-function searchPokemon(query) {
+function searchPokemon(
+    query
+) {
 
     const input =
         document.getElementById(
@@ -607,6 +712,7 @@ function searchPokemon(query) {
         query === undefined ||
         query === null
     ) {
+
         query =
             input?.value || "";
     }
@@ -629,24 +735,34 @@ function searchPokemon(query) {
     }
 
     filteredPokemon =
-        allPokemon.filter(pokemon => {
+        allPokemon.filter(
+            pokemon => {
 
-            const name =
-                pokemon.name.toLowerCase();
+                const name =
+                    pokemon.name
+                        .toLowerCase();
 
-            const id =
-                String(pokemon.id);
+                const id =
+                    String(
+                        pokemon.id
+                    );
 
-            return (
-                name.includes(query) ||
-                id.includes(query)
-            );
-        });
+                return (
+                    name.includes(query) ||
+                    id.includes(query)
+                );
+            }
+        );
 
     visibleCount = 50;
 
     renderPokemon();
 }
+
+/* =========================================================
+   PESQUISA DA PÁGINA
+   FUNCIONA ENQUANTO DIGITA
+========================================================= */
 
 function searchFromPage() {
 
@@ -660,7 +776,9 @@ function searchFromPage() {
             "searchResults"
         );
 
-    if (!input || !results) return;
+    if (!input || !results) {
+        return;
+    }
 
     const query =
         input.value
@@ -669,15 +787,26 @@ function searchFromPage() {
 
     if (!query) {
 
+        results.innerHTML = "";
+
+        return;
+    }
+
+    if (!allPokemon.length) {
+
         results.innerHTML = `
             <div class="search-empty">
 
                 <div style="font-size:42px;">
-                    🔎
+                    ⏳
                 </div>
 
+                <h3>
+                    Carregando Pokédex...
+                </h3>
+
                 <p>
-                    Digite o nome ou número de um Pokémon.
+                    Aguarde um instante.
                 </p>
 
             </div>
@@ -687,18 +816,24 @@ function searchFromPage() {
     }
 
     const matches =
-        allPokemon.filter(pokemon => {
+        allPokemon.filter(
+            pokemon => {
 
-            return (
-                pokemon.name
-                    .toLowerCase()
-                    .includes(query) ||
+                const name =
+                    pokemon.name
+                        .toLowerCase();
 
-                String(pokemon.id)
-                    .includes(query)
-            );
+                const id =
+                    String(
+                        pokemon.id
+                    );
 
-        });
+                return (
+                    name.includes(query) ||
+                    id.includes(query)
+                );
+            }
+        );
 
     if (!matches.length) {
 
@@ -727,33 +862,45 @@ function searchFromPage() {
 
     matches
         .slice(0, 100)
-        .forEach(pokemon => {
+        .forEach(
+            pokemon => {
 
-            results.appendChild(
-                createPokemonCard(pokemon)
-            );
+                results.appendChild(
+                    createPokemonCard(
+                        pokemon
+                    )
+                );
 
-        });
+            }
+        );
 }
 
 /* =========================================================
    FILTRO POR TIPO
 ========================================================= */
 
-async function filterType(type) {
+async function filterType(
+    type
+) {
 
     if (!type) return;
 
-    await filterByType(type);
+    await filterByType(
+        type
+    );
 }
 
-async function filterByType(type) {
+async function filterByType(
+    type
+) {
 
     if (!type) return;
 
     try {
 
-        showPage("homePage");
+        showPage(
+            "homePage"
+        );
 
         const grid =
             document.getElementById(
@@ -769,7 +916,10 @@ async function filterByType(type) {
 
                     <p>
                         Carregando Pokémon do tipo
-                        ${typeInfo[type]?.name || type}...
+                        ${
+                            typeInfo[type]?.name ||
+                            type
+                        }...
                     </p>
 
                 </div>
@@ -783,10 +933,11 @@ async function filterByType(type) {
 
         const ids =
             data.pokemon
-                .map(item =>
-                    getIdFromUrl(
-                        item.pokemon?.url
-                    )
+                .map(
+                    item =>
+                        getIdFromUrl(
+                            item.pokemon?.url
+                        )
                 )
                 .filter(
                     id =>
@@ -802,7 +953,9 @@ async function filterByType(type) {
             allPokemon.filter(
                 pokemon =>
                     idSet.has(
-                        Number(pokemon.id)
+                        Number(
+                            pokemon.id
+                        )
                     )
             );
 
@@ -814,26 +967,31 @@ async function filterByType(type) {
             typeof updateTypeFilterIndicator ===
             "function"
         ) {
-            updateTypeFilterIndicator(type);
+
+            updateTypeFilterIndicator(
+                type
+            );
         }
 
-        setTimeout(() => {
+        setTimeout(
+            () => {
 
-            const target =
-                document.getElementById(
-                    "pokedex"
-                );
+                const target =
+                    document.getElementById(
+                        "pokedex"
+                    );
 
-            if (target) {
+                if (target) {
 
-                target.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
+                    target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+                }
 
-            }
-
-        }, 100);
+            },
+            100
+        );
 
     } catch (error) {
 
@@ -880,31 +1038,28 @@ async function filterByType(type) {
    FILTRO POR GERAÇÃO
 ========================================================= */
 
-function getGenerationRange(generation) {
+function getGenerationRange(
+    generation
+) {
 
     const ranges = {
 
         1: [1, 151],
-
         2: [152, 251],
-
         3: [252, 386],
-
         4: [387, 493],
-
         5: [494, 649],
-
         6: [650, 721],
-
         7: [722, 809],
-
         8: [810, 905],
-
         9: [906, 1025]
 
     };
 
-    return ranges[generation] || null;
+    return (
+        ranges[generation] ||
+        null
+    );
 }
 
 function filterGeneration(
@@ -935,8 +1090,10 @@ function filterGeneration(
         filteredPokemon =
             allPokemon.filter(
                 pokemon =>
-                    pokemon.id >= range[0] &&
-                    pokemon.id <= range[1]
+                    pokemon.id >=
+                        range[0] &&
+                    pokemon.id <=
+                        range[1]
             );
     }
 
@@ -946,13 +1103,15 @@ function filterGeneration(
         .querySelectorAll(
             ".generation-pill"
         )
-        .forEach(item => {
+        .forEach(
+            item => {
 
-            item.classList.remove(
-                "active"
-            );
+                item.classList.remove(
+                    "active"
+                );
 
-        });
+            }
+        );
 
     if (button) {
 
@@ -967,18 +1126,23 @@ function filterGeneration(
                 ".generation-pill"
             );
 
-        const index =
-            generationNumber;
+        if (
+            buttons[
+                generationNumber
+            ]
+        ) {
 
-        if (buttons[index]) {
-
-            buttons[index]
-                .classList.add("active");
-
+            buttons[
+                generationNumber
+            ].classList.add(
+                "active"
+            );
         }
     }
 
-    showPage("homePage");
+    showPage(
+        "homePage"
+    );
 
     renderPokemon();
 }
@@ -998,56 +1162,80 @@ function buildGenerations() {
 
     grid.innerHTML = "";
 
-    generations.forEach(generation => {
+    generations.forEach(
+        generation => {
 
-        const card =
-            document.createElement(
-                "article"
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+            card.className =
+                `generation-card ${generation.css}`;
+
+            card.innerHTML = `
+                <div class="generation-card-glow"></div>
+
+                <div class="generation-content">
+
+                    <div class="generation-number">
+                        GERAÇÃO ${generation.roman}
+                    </div>
+
+                    <h2>
+                        ${generation.region}
+                    </h2>
+
+                    <p>
+                        ${generation.description}
+                    </p>
+
+                    <button
+                        class="generation-explore"
+                        onclick="filterGeneration(${generation.id})"
+                    >
+                        Explorar Pokémon
+                    </button>
+
+                </div>
+            `;
+
+            card.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target.closest(
+                            "button"
+                        )
+                    ) {
+                        return;
+                    }
+
+                    filterGeneration(
+                        generation.id
+                    );
+                }
             );
 
-        card.className =
-            `generation-card ${generation.css}`;
-
-        card.innerHTML = `
-            <div class="generation-card-glow"></div>
-
-            <div class="generation-card-content">
-
-                <div class="generation-number">
-                    GERAÇÃO ${generation.roman}
-                </div>
-
-                <h2>
-                    ${generation.region}
-                </h2>
-
-                <p>
-                    ${generation.description}
-                </p>
-
-                <button
-                    class="generation-card-button"
-                    onclick="filterGeneration(${generation.id})"
-                >
-                    Explorar Pokémon
-                </button>
-
-            </div>
-        `;
-
-        grid.appendChild(card);
-
-    });
+            grid.appendChild(
+                card
+            );
+        }
+    );
 }
 
 /* =========================================================
    ABRIR FICHA
 ========================================================= */
 
-async function openPokemon(idOrPokemon) {
+async function openPokemon(
+    idOrPokemon
+) {
 
     let id =
-        typeof idOrPokemon === "object"
+        typeof idOrPokemon ===
+        "object"
             ? idOrPokemon.id
             : idOrPokemon;
 
@@ -1073,17 +1261,23 @@ async function openPokemon(idOrPokemon) {
         return;
     }
 
-    detailPage.classList.add("active");
+    detailPage.classList.add(
+        "active"
+    );
 
     document
-        .querySelectorAll(".page")
-        .forEach(page => {
+        .querySelectorAll(
+            ".page"
+        )
+        .forEach(
+            page => {
 
-            page.classList.remove(
-                "active"
-            );
+                page.classList.remove(
+                    "active"
+                );
 
-        });
+            }
+        );
 
     detailContent.innerHTML = `
         <div class="loading detail-loading">
@@ -1105,7 +1299,9 @@ async function openPokemon(idOrPokemon) {
     try {
 
         const pokemon =
-            await getPokemon(id);
+            await getPokemon(
+                id
+            );
 
         currentPokemon =
             pokemon;
@@ -1167,7 +1363,9 @@ function closePokemon() {
 
     currentPokemon = null;
 
-    showPage("homePage");
+    showPage(
+        "homePage"
+    );
 }
 
 /* =========================================================
@@ -1258,32 +1456,29 @@ async function buildPokemonDetails(
             <div class="pokemon-detail-types">
 
                 ${types
-                    .map(item => {
+                    .map(
+                        item => {
 
-                        const type =
-                            item.type.name;
+                            const type =
+                                item.type.name;
 
-                        return `
-                            <span
-                                class="type-badge type-${type}"
-                            >
-                                ${
-                                    typeInfo[type]?.name ||
-                                    capitalize(type)
-                                }
-                            </span>
-                        `;
-
-                    })
+                            return `
+                                <span
+                                    class="type-badge type-${type}"
+                                >
+                                    ${
+                                        typeInfo[type]?.name ||
+                                        capitalize(type)
+                                    }
+                                </span>
+                            `;
+                        }
+                    )
                     .join("")}
 
             </div>
 
         </div>
-
-        <!-- =================================================
-             IMAGEM PRINCIPAL + DESCRIÇÃO
-        ================================================= -->
 
         <div class="pokemon-main-showcase">
 
@@ -1339,10 +1534,6 @@ async function buildPokemonDetails(
 
         </div>
 
-        <!-- =================================================
-             INFORMAÇÕES
-        ================================================= -->
-
         <div class="detail-section">
 
             <h2>
@@ -1361,10 +1552,6 @@ async function buildPokemonDetails(
 
         </div>
 
-        <!-- =================================================
-             HABILIDADES
-        ================================================= -->
-
         <div class="detail-section">
 
             <h2>
@@ -1381,10 +1568,6 @@ async function buildPokemonDetails(
             </div>
 
         </div>
-
-        <!-- =================================================
-             FRAQUEZAS
-        ================================================= -->
 
         <div class="detail-section">
 
@@ -1403,10 +1586,6 @@ async function buildPokemonDetails(
 
         </div>
 
-        <!-- =================================================
-             ESTATÍSTICAS
-        ================================================= -->
-
         <div class="detail-section">
 
             <h2>
@@ -1423,10 +1602,6 @@ async function buildPokemonDetails(
             </div>
 
         </div>
-
-        <!-- =================================================
-             SHINY
-        ================================================= -->
 
         <div class="detail-section shiny-section">
 
@@ -1476,10 +1651,6 @@ async function buildPokemonDetails(
 
         </div>
 
-        <!-- =================================================
-             EVOLUÇÕES
-        ================================================= -->
-
         <div class="detail-section">
 
             <h2>
@@ -1496,10 +1667,6 @@ async function buildPokemonDetails(
             </div>
 
         </div>
-
-        <!-- =================================================
-             MEGA EVOLUÇÕES
-        ================================================= -->
 
         <div class="detail-section mega-section">
 
@@ -1519,26 +1686,14 @@ async function buildPokemonDetails(
         </div>
     `;
 
-    /* =====================================================
-       EVOLUÇÕES
-    ===================================================== */
-
     buildEvolutionSection(
-        species
+        species,
+        pokemon.name
     );
-
-    /* =====================================================
-       FRAQUEZAS
-    ===================================================== */
 
     buildWeaknessesSection(
         pokemon
     );
-
-    /* =====================================================
-       MEGA EVOLUÇÕES
-       Responsabilidade do mega.js
-    ===================================================== */
 
     if (
         typeof loadMegaTab ===
@@ -1583,10 +1738,6 @@ async function buildPokemonDetails(
 
     } else {
 
-        console.warn(
-            "mega.js não carregou ou loadMegaTab não existe."
-        );
-
         const megaContainer =
             document.getElementById(
                 "megaContainer"
@@ -1626,13 +1777,16 @@ function buildBasicInfo(
     let genderText =
         "Desconhecido";
 
-    if (genderRate === -1) {
+    if (
+        genderRate === -1
+    ) {
 
         genderText =
             "Sem gênero";
 
     } else if (
-        typeof genderRate === "number"
+        typeof genderRate ===
+        "number"
     ) {
 
         const female =
@@ -1664,7 +1818,9 @@ function buildBasicInfo(
             </span>
 
             <strong>
-                #${formatNumber(pokemon.id)}
+                #${formatNumber(
+                    pokemon.id
+                )}
             </strong>
 
         </div>
@@ -1735,7 +1891,9 @@ function buildBasicInfo(
    HABILIDADES
 ========================================================= */
 
-function buildAbilities(abilities) {
+function buildAbilities(
+    abilities
+) {
 
     if (!abilities?.length) {
 
@@ -1747,35 +1905,36 @@ function buildAbilities(abilities) {
     }
 
     return abilities
-        .map(ability => {
+        .map(
+            ability => {
 
-            const name =
-                formatPokemonName(
-                    ability.ability?.name
-                );
+                const name =
+                    formatPokemonName(
+                        ability.ability?.name
+                    );
 
-            const hidden =
-                ability.is_hidden
-                    ? "Oculta"
-                    : "Normal";
+                const hidden =
+                    ability.is_hidden
+                        ? "Oculta"
+                        : "Normal";
 
-            return `
+                return `
 
-                <div class="ability-card">
+                    <div class="ability-card">
 
-                    <div class="ability-name">
-                        ${name}
+                        <div class="ability-name">
+                            ${name}
+                        </div>
+
+                        <div class="ability-status">
+                            ${hidden}
+                        </div>
+
                     </div>
 
-                    <div class="ability-status">
-                        ${hidden}
-                    </div>
-
-                </div>
-
-            `;
-
-        })
+                `;
+            }
+        )
         .join("");
 }
 
@@ -1789,12 +1948,15 @@ async function calculateWeaknesses(
 
     const multiplier = {};
 
-    Object.keys(typeInfo)
-        .forEach(type => {
+    Object.keys(
+        typeInfo
+    ).forEach(
+        type => {
 
             multiplier[type] = 1;
 
-        });
+        }
+    );
 
     for (
         const item of pokemon.types
@@ -1810,32 +1972,41 @@ async function calculateWeaknesses(
             const relations =
                 data.damage_relations;
 
-            relations.double_damage_from
-                .forEach(entry => {
+            relations
+                .double_damage_from
+                .forEach(
+                    entry => {
 
-                    multiplier[
-                        entry.name
-                    ] *= 2;
+                        multiplier[
+                            entry.name
+                        ] *= 2;
 
-                });
+                    }
+                );
 
-            relations.half_damage_from
-                .forEach(entry => {
+            relations
+                .half_damage_from
+                .forEach(
+                    entry => {
 
-                    multiplier[
-                        entry.name
-                    ] *= 0.5;
+                        multiplier[
+                            entry.name
+                        ] *= 0.5;
 
-                });
+                    }
+                );
 
-            relations.no_damage_from
-                .forEach(entry => {
+            relations
+                .no_damage_from
+                .forEach(
+                    entry => {
 
-                    multiplier[
-                        entry.name
-                    ] = 0;
+                        multiplier[
+                            entry.name
+                        ] = 0;
 
-                });
+                    }
+                );
 
         } catch (error) {
 
@@ -1858,7 +2029,9 @@ async function buildWeaknesses(
             pokemon
         );
 
-    return Object.keys(typeInfo)
+    return Object.keys(
+        typeInfo
+    )
         .filter(
             type =>
                 multiplier[type] !== 1
@@ -1868,50 +2041,51 @@ async function buildWeaknesses(
                 multiplier[b] -
                 multiplier[a]
         )
-        .map(type => {
+        .map(
+            type => {
 
-            const value =
-                multiplier[type];
+                const value =
+                    multiplier[type];
 
-            let label = "";
+                let label = "";
 
-            if (value === 4) {
-                label = "4×";
-            } else if (value === 2) {
-                label = "2×";
-            } else if (value === 0.5) {
-                label = "½×";
-            } else if (value === 0.25) {
-                label = "¼×";
-            } else if (value === 0) {
-                label = "0×";
-            } else {
-                label = `${value}×`;
+                if (value === 4) {
+                    label = "4×";
+                } else if (value === 2) {
+                    label = "2×";
+                } else if (value === 0.5) {
+                    label = "½×";
+                } else if (value === 0.25) {
+                    label = "¼×";
+                } else if (value === 0) {
+                    label = "0×";
+                } else {
+                    label = `${value}×`;
+                }
+
+                return `
+
+                    <div
+                        class="weakness-item type-${type}"
+                    >
+
+                        <span>
+                            ${typeInfo[type].icon}
+                        </span>
+
+                        <strong>
+                            ${typeInfo[type].name}
+                        </strong>
+
+                        <b>
+                            ${label}
+                        </b>
+
+                    </div>
+
+                `;
             }
-
-            return `
-
-                <div
-                    class="weakness-item type-${type}"
-                >
-
-                    <span>
-                        ${typeInfo[type].icon}
-                    </span>
-
-                    <strong>
-                        ${typeInfo[type].name}
-                    </strong>
-
-                    <b>
-                        ${label}
-                    </b>
-
-                </div>
-
-            `;
-
-        })
+        )
         .join("");
 }
 
@@ -1952,24 +2126,22 @@ async function buildWeaknessesSection(
    ESTATÍSTICAS
 ========================================================= */
 
-function translateStat(stat) {
+function translateStat(
+    stat
+) {
 
     const names = {
 
         hp: "HP",
-
         attack: "Ataque",
-
         defense: "Defesa",
-
         "special-attack":
             "Ataque Especial",
-
         "special-defense":
             "Defesa Especial",
-
         speed:
             "Velocidade"
+
     };
 
     return (
@@ -1978,7 +2150,9 @@ function translateStat(stat) {
     );
 }
 
-function buildStats(stats) {
+function buildStats(
+    stats
+) {
 
     if (!stats?.length) {
 
@@ -2002,46 +2176,49 @@ function buildStats(stats) {
         <div class="stats-list">
 
             ${stats
-                .map(item => {
+                .map(
+                    item => {
 
-                    const name =
-                        item.stat.name;
+                        const name =
+                            item.stat.name;
 
-                    const value =
-                        item.base_stat;
+                        const value =
+                            item.base_stat;
 
-                    const percentage =
-                        Math.min(
-                            100,
-                            (value / 255) * 100
-                        );
+                        const percentage =
+                            Math.min(
+                                100,
+                                (value / 255) * 100
+                            );
 
-                    return `
+                        return `
 
-                        <div class="stat-row">
+                            <div class="stat-row">
 
-                            <div class="stat-name">
-                                ${translateStat(name)}
+                                <div class="stat-name">
+                                    ${translateStat(
+                                        name
+                                    )}
+                                </div>
+
+                                <div class="stat-value">
+                                    ${value}
+                                </div>
+
+                                <div class="stat-bar">
+
+                                    <div
+                                        class="stat-bar-fill"
+                                        style="width:${percentage}%"
+                                    ></div>
+
+                                </div>
+
                             </div>
 
-                            <div class="stat-value">
-                                ${value}
-                            </div>
-
-                            <div class="stat-bar">
-
-                                <div
-                                    class="stat-bar-fill"
-                                    style="width:${percentage}%"
-                                ></div>
-
-                            </div>
-
-                        </div>
-
-                    `;
-
-                })
+                        `;
+                    }
+                )
                 .join("")}
 
             <div class="stat-total">
@@ -2062,6 +2239,11 @@ function buildStats(stats) {
 
 /* =========================================================
    EVOLUÇÕES
+   AGORA MOSTRA:
+   - evoluções anteriores
+   - evoluções posteriores
+   - NÃO mostra o Pokémon atual
+   - cada card é clicável
 ========================================================= */
 
 async function getEvolutionChain(
@@ -2075,9 +2257,13 @@ async function getEvolutionChain(
         return null;
     }
 
-    if (evolutionCache.has(url)) {
+    if (
+        evolutionCache.has(url)
+    ) {
 
-        return evolutionCache.get(url);
+        return evolutionCache.get(
+            url
+        );
     }
 
     const data =
@@ -2091,6 +2277,388 @@ async function getEvolutionChain(
     return data;
 }
 
+/* ---------------------------------------------------------
+   Encontra o Pokémon atual dentro da cadeia
+   e guarda todos os ancestrais dele.
+--------------------------------------------------------- */
+
+function findEvolutionNode(
+    chain,
+    targetName,
+    ancestors = []
+) {
+
+    if (!chain) {
+        return null;
+    }
+
+    const currentName =
+        chain.species?.name
+            ?.toLowerCase();
+
+    if (
+        currentName ===
+        String(targetName).toLowerCase()
+    ) {
+
+        return {
+            node: chain,
+            ancestors: ancestors
+        };
+    }
+
+    if (
+        Array.isArray(
+            chain.evolves_to
+        )
+    ) {
+
+        for (
+            const next of chain.evolves_to
+        ) {
+
+            const found =
+                findEvolutionNode(
+                    next,
+                    targetName,
+                    [
+                        ...ancestors,
+                        chain
+                    ]
+                );
+
+            if (found) {
+                return found;
+            }
+        }
+    }
+
+    return null;
+}
+
+/* ---------------------------------------------------------
+   Pega TODAS as evoluções que vêm depois
+   do Pokémon atual, inclusive ramificações.
+--------------------------------------------------------- */
+
+function collectDescendants(
+    node,
+    result = []
+) {
+
+    if (!node?.evolves_to) {
+        return result;
+    }
+
+    node.evolves_to.forEach(
+        next => {
+
+            if (
+                next?.species?.name
+            ) {
+
+                result.push(next);
+
+                collectDescendants(
+                    next,
+                    result
+                );
+            }
+
+        }
+    );
+
+    return result;
+}
+
+/* ---------------------------------------------------------
+   Cria uma lista sem duplicações.
+--------------------------------------------------------- */
+
+function uniqueEvolutionNodes(
+    nodes
+) {
+
+    const seen =
+        new Set();
+
+    return nodes.filter(
+        node => {
+
+            const name =
+                node?.species?.name
+                    ?.toLowerCase();
+
+            if (!name) {
+                return false;
+            }
+
+            if (
+                seen.has(name)
+            ) {
+                return false;
+            }
+
+            seen.add(name);
+
+            return true;
+        }
+    );
+}
+
+/* ---------------------------------------------------------
+   Monta os cards de evolução.
+--------------------------------------------------------- */
+
+function buildEvolutionCards(
+    nodes,
+    currentName
+) {
+
+    const current =
+        String(
+            currentName
+        ).toLowerCase();
+
+    const filtered =
+        uniqueEvolutionNodes(
+            nodes
+        ).filter(
+            node =>
+                node.species?.name
+                    ?.toLowerCase() !==
+                current
+        );
+
+    if (!filtered.length) {
+
+        return `
+            <div class="evolution-empty">
+                <div style="font-size:38px;">
+                    ✨
+                </div>
+
+                <p>
+                    Este Pokémon não possui outras evoluções na cadeia.
+                </p>
+            </div>
+        `;
+    }
+
+    return `
+        <div class="evolution-chain">
+
+            ${filtered
+                .map(
+                    (evolution, index) => {
+
+                        const name =
+                            evolution.species?.name;
+
+                        const displayName =
+                            formatPokemonName(
+                                name
+                            );
+
+                        const id =
+                            getIdFromUrl(
+                                evolution.species?.url
+                            );
+
+                        return `
+
+                            ${
+                                index > 0
+                                    ? `
+                                        <div class="evolution-arrow">
+                                            →
+                                        </div>
+                                    `
+                                    : ""
+                            }
+
+                            <div
+                                class="evolution-card"
+                                onclick="openPokemon(${id})"
+                                role="button"
+                                tabindex="0"
+                                title="Abrir ficha de ${displayName}"
+                            >
+
+                                <div class="evolution-number">
+                                    #${formatNumber(id)}
+                                </div>
+
+                                <img
+                                    src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png"
+                                    alt="${displayName}"
+                                    loading="lazy"
+                                >
+
+                                <strong>
+                                    ${displayName}
+                                </strong>
+
+                            </div>
+
+                        `;
+                    }
+                )
+                .join("")}
+
+        </div>
+    `;
+}
+
+/* =========================================================
+   CONSTRUIR EVOLUÇÕES RELATIVAS AO POKÉMON ATUAL
+========================================================= */
+
+async function buildEvolutionSection(
+    species,
+    currentName
+) {
+
+    const container =
+        document.getElementById(
+            "evolutionContainer"
+        );
+
+    if (!container) return;
+
+    try {
+
+        const chain =
+            await getEvolutionChain(
+                species
+            );
+
+        if (!chain) {
+
+            container.innerHTML = `
+                <div class="evolution-empty">
+
+                    <div style="font-size:38px;">
+                        ✨
+                    </div>
+
+                    <p>
+                        Este Pokémon não possui uma cadeia de evolução.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+        /*
+           Localiza exatamente o Pokémon aberto.
+        */
+
+        const found =
+            findEvolutionNode(
+                chain.chain,
+                currentName
+            );
+
+        /*
+           Caso o nome não seja encontrado,
+           usamos a cadeia inteira como fallback.
+        */
+
+        if (!found) {
+
+            const allNodes = [];
+
+            flattenEvolutionChain(
+                chain.chain,
+                allNodes
+            );
+
+            container.innerHTML =
+                buildEvolutionCards(
+                    allNodes,
+                    currentName
+                );
+
+            return;
+        }
+
+        /*
+           ANTES:
+           todos os ancestrais.
+
+           Exemplo Venusaur:
+           Bulbasaur → Ivysaur
+
+           Exemplo Ivysaur:
+           Bulbasaur
+        */
+
+        const previous =
+            found.ancestors || [];
+
+        /*
+           DEPOIS:
+           todas as evoluções que saem
+           do Pokémon atual.
+
+           Exemplo Bulbasaur:
+           Ivysaur → Venusaur
+
+           Exemplo Ivysaur:
+           Venusaur
+
+           Exemplo Venusaur:
+           nenhuma.
+        */
+
+        const next =
+            collectDescendants(
+                found.node
+            );
+
+        /*
+           Junta anteriores + posteriores.
+           O atual nunca entra.
+        */
+
+        const evolutionNodes =
+            uniqueEvolutionNodes([
+                ...previous,
+                ...next
+            ]);
+
+        container.innerHTML =
+            buildEvolutionCards(
+                evolutionNodes,
+                currentName
+            );
+
+    } catch (error) {
+
+        console.error(
+            "Erro nas evoluções:",
+            error
+        );
+
+        container.innerHTML = `
+            <div class="evolution-empty">
+
+                <p>
+                    Não foi possível carregar as evoluções.
+                </p>
+
+            </div>
+        `;
+    }
+}
+
+/* =========================================================
+   FUNÇÃO AUXILIAR PARA CADEIA COMPLETA
+========================================================= */
+
 function flattenEvolutionChain(
     chain,
     result = []
@@ -2101,7 +2669,6 @@ function flattenEvolutionChain(
     }
 
     result.push({
-
         name:
             chain.species?.name,
 
@@ -2109,8 +2676,11 @@ function flattenEvolutionChain(
             chain.species?.url,
 
         details:
-            chain.evolution_details || []
+            chain.evolution_details ||
+            [],
 
+        species:
+            chain.species
     });
 
     if (
@@ -2134,134 +2704,13 @@ function flattenEvolutionChain(
     return result;
 }
 
-async function buildEvolutionSection(
-    species
-) {
-
-    const container =
-        document.getElementById(
-            "evolutionContainer"
-        );
-
-    if (!container) return;
-
-    try {
-
-        const chain =
-            await getEvolutionChain(
-                species
-            );
-
-        if (!chain) {
-
-            container.innerHTML = `
-                <p>
-                    Este Pokémon não possui uma cadeia de evolução.
-                </p>
-            `;
-
-            return;
-        }
-
-        const evolutionList =
-            flattenEvolutionChain(
-                chain.chain
-            );
-
-        if (!evolutionList.length) {
-
-            container.innerHTML = `
-                <p>
-                    Nenhuma evolução encontrada.
-                </p>
-            `;
-
-            return;
-        }
-
-        container.innerHTML = `
-
-            <div class="evolution-chain">
-
-                ${evolutionList
-                    .map(
-                        (
-                            evolution,
-                            index
-                        ) => {
-
-                            const name =
-                                formatPokemonName(
-                                    evolution.name
-                                );
-
-                            const id =
-                                getIdFromUrl(
-                                    evolution.url
-                                );
-
-                            return `
-
-                                ${
-                                    index > 0
-                                        ? `
-                                            <div class="evolution-arrow">
-                                                →
-                                            </div>
-                                        `
-                                        : ""
-                                }
-
-                                <div
-                                    class="evolution-card"
-                                    onclick="openPokemon(${id})"
-                                >
-
-                                    <div class="evolution-number">
-                                        #${formatNumber(id)}
-                                    </div>
-
-                                    <img
-                                        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png"
-                                        alt="${name}"
-                                        loading="lazy"
-                                    >
-
-                                    <strong>
-                                        ${name}
-                                    </strong>
-
-                                </div>
-
-                            `;
-
-                        }
-                    )
-                    .join("")}
-
-            </div>
-        `;
-
-    } catch (error) {
-
-        console.error(
-            "Erro nas evoluções:",
-            error
-        );
-
-        container.innerHTML = `
-            <p>
-                Não foi possível carregar as evoluções.
-            </p>
-        `;
-    }
-}
-
 /* =========================================================
    PÁGINAS
 ========================================================= */
 
-function showPage(pageId) {
+function showPage(
+    pageId
+) {
 
     const detailPage =
         document.getElementById(
@@ -2276,14 +2725,18 @@ function showPage(pageId) {
     }
 
     document
-        .querySelectorAll(".page")
-        .forEach(page => {
+        .querySelectorAll(
+            ".page"
+        )
+        .forEach(
+            page => {
 
-            page.classList.remove(
-                "active"
-            );
+                page.classList.remove(
+                    "active"
+                );
 
-        });
+            }
+        );
 
     const page =
         document.getElementById(
@@ -2310,7 +2763,8 @@ function showPage(pageId) {
     }
 
     if (
-        pageId === "generationsPage"
+        pageId ===
+        "generationsPage"
     ) {
 
         buildGenerations();
@@ -2343,7 +2797,9 @@ function openSideMenu() {
     }
 }
 
-function closeSideMenu(event) {
+function closeSideMenu(
+    event
+) {
 
     const overlay =
         document.getElementById(
@@ -2369,9 +2825,13 @@ function openMenu() {
     openSideMenu();
 }
 
-function closeMenu(event) {
+function closeMenu(
+    event
+) {
 
-    closeSideMenu(event);
+    closeSideMenu(
+        event
+    );
 }
 
 /* =========================================================
@@ -2391,12 +2851,6 @@ function goHome() {
 
 function setupSearch() {
 
-    /*
-       O index.html já possui oninput.
-       Portanto não adicionamos outro listener
-       para evitar executar a pesquisa duas vezes.
-    */
-
     const homeInput =
         document.getElementById(
             "homeSearchInput"
@@ -2409,29 +2863,35 @@ function setupSearch() {
             event => {
 
                 if (
-                    event.key === "Enter"
+                    event.key !==
+                    "Enter"
                 ) {
+                    return;
+                }
 
-                    const query =
-                        homeInput.value
-                            .trim();
+                const query =
+                    homeInput.value
+                        .trim()
+                        .toLowerCase();
 
-                    if (!query) return;
+                if (!query) return;
 
-                    const result =
-                        allPokemon.find(
-                            pokemon =>
-                                pokemon.name
-                                    .toLowerCase() ===
-                                query.toLowerCase()
-                        );
+                const result =
+                    allPokemon.find(
+                        pokemon =>
+                            pokemon.name
+                                .toLowerCase() ===
+                                query ||
+                            String(
+                                pokemon.id
+                            ) === query
+                    );
 
-                    if (result) {
+                if (result) {
 
-                        openPokemon(
-                            result.id
-                        );
-                    }
+                    openPokemon(
+                        result.id
+                    );
                 }
             }
         );
@@ -2449,28 +2909,35 @@ function setupSearch() {
             event => {
 
                 if (
-                    event.key === "Enter"
+                    event.key !==
+                    "Enter"
                 ) {
+                    return;
+                }
 
-                    const query =
-                        pageInput.value
-                            .trim()
-                            .toLowerCase();
+                const query =
+                    pageInput.value
+                        .trim()
+                        .toLowerCase();
 
-                    const result =
-                        allPokemon.find(
-                            pokemon =>
-                                pokemon.name
-                                    .toLowerCase() ===
-                                query
-                        );
+                if (!query) return;
 
-                    if (result) {
+                const result =
+                    allPokemon.find(
+                        pokemon =>
+                            pokemon.name
+                                .toLowerCase() ===
+                                query ||
+                            String(
+                                pokemon.id
+                            ) === query
+                    );
 
-                        openPokemon(
-                            result.id
-                        );
-                    }
+                if (result) {
+
+                    openPokemon(
+                        result.id
+                    );
                 }
             }
         );
@@ -2548,7 +3015,8 @@ document.addEventListener(
     event => {
 
         if (
-            event.key === "Escape"
+            event.key ===
+            "Escape"
         ) {
 
             closeMenu();
