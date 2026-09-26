@@ -4,20 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#070a10">
-
     <title>Pokédex Online — Comunidade Pokémon</title>
-
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
-
 <body>
-
     <!-- =========================
          HEADER
     ========================== -->
-
     <header class="header">
-
         <button
             class="menu-button"
             onclick="openMenu()"
@@ -27,7 +21,6 @@
             <span></span>
             <span></span>
         </button>
-
         <div
             class="logo"
             onclick="showPage('homePage')"
@@ -35,22 +28,16 @@
         >
             Pokédex Online
         </div>
-
     </header>
-
-
     <!-- =========================
          MENU LATERAL
     ========================== -->
-
     <div
         class="menu-overlay"
         id="menuOverlay"
         onclick="closeMenu(event)"
     >
-
         <aside class="side-menu">
-
             <button
                 class="close-menu"
                 onclick="closeMenu()"
@@ -58,88 +45,60 @@
             >
                 ×
             </button>
-
             <div class="menu-title">
                 Pokédex Online
             </div>
-
             <nav>
-
                 <button onclick="showPage('homePage')">
                     🏠 Início
                 </button>
-
                 <button onclick="showPage('searchPage')">
                     🔎 Pesquisar Pokémon
                 </button>
-
                 <button onclick="showPage('generationsPage')">
                     🌎 Gerações
                 </button>
-
                 <button onclick="showPage('typesPage')">
                     ⚡ Tipos
                 </button>
-
             </nav>
-
         </aside>
-
     </div>
-
-
     <!-- =========================
          HOME
     ========================== -->
-
     <main>
-
         <section
             id="homePage"
             class="page active"
         >
-
             <!-- HERO -->
-
             <section class="hero">
-
                 <div class="hero-animation">
-
                     <div class="energy energy-1"></div>
                     <div class="energy energy-2"></div>
                     <div class="energy energy-3"></div>
                     <div class="energy energy-4"></div>
                     <div class="energy energy-5"></div>
-
                 </div>
-
                 <div class="hero-content">
-
                     <h1>
                         Pokédex Online
                     </h1>
-
                     <p>
                         Explore o mundo Pokémon
                     </p>
-
                     <p>
                         Descubra informações, tipos,
                         evoluções, estatísticas e muito mais.
                     </p>
-
                 </div>
-
             </section>
-
-
             <!-- BOAS-VINDAS -->
-
             <section
                 class="welcome-box"
                 id="welcomeBox"
             >
-
                 <button
                     class="welcome-close"
                     onclick="document.getElementById('welcomeBox').style.display='none'"
@@ -147,24 +106,17 @@
                 >
                     ×
                 </button>
-
                 <h2>
                     Bem-vindo à Pokédex Online!
                 </h2>
-
                 <p>
                     Pesquise seus Pokémon favoritos,
                     descubra suas informações e explore
                     todas as gerações e tipos.
                 </p>
-
             </section>
-
-
             <!-- PESQUISA -->
-
             <section class="home-search">
-
                 <input
                     type="text"
                     id="homeSearchInput"
@@ -172,76 +124,53 @@
                     autocomplete="off"
                     oninput="searchPokemon()"
                 >
-
             </section>
-
-
             <!-- GERAÇÕES -->
-
             <section class="generation-section">
-
                 <h2>
                     Gerações
                 </h2>
-
                 <div class="generation-pills">
-
                     <button onclick="filterGeneration(0, this)">
                         Todos
                     </button>
-
                     <button onclick="filterGeneration(1, this)">
                         I
                     </button>
-
                     <button onclick="filterGeneration(2, this)">
                         II
                     </button>
-
                     <button onclick="filterGeneration(3, this)">
                         III
                     </button>
-
                     <button onclick="filterGeneration(4, this)">
                         IV
                     </button>
-
                     <button onclick="filterGeneration(5, this)">
                         V
                     </button>
-
                     <button onclick="filterGeneration(6, this)">
                         VI
                     </button>
-
                     <button onclick="filterGeneration(7, this)">
                         VII
                     </button>
-
                     <button onclick="filterGeneration(8, this)">
                         VIII
                     </button>
-
                     <button onclick="filterGeneration(9, this)">
                         IX
                     </button>
-
                 </div>
-
             </section>
-
-
             <!-- POKÉDEX -->
-
             <section class="pokedex-section">
-
                 <div
                     id="pokedex"
                     class="pokedex"
                 >
                     <!-- Pokémon carregados pelo JavaScript -->
                 </div>
-
                 <button
                     id="loadMoreButton"
                     class="load-more"
@@ -249,39 +178,26 @@
                 >
                     Carregar mais Pokémon
                 </button>
-
             </section>
-
         </section>
-
-
         <!-- =========================
              PESQUISA
         ========================== -->
-
         <section
             id="searchPage"
             class="page"
         >
-
             <div class="page-container">
-
                 <div class="page-header">
-
                     <h1>
                         Pesquisar Pokémon
                     </h1>
-
                     <p>
                         Encontre qualquer Pokémon
                         pelo nome ou número.
                     </p>
-
                 </div>
-
-
                 <div class="search-page-box">
-
                     <input
                         type="text"
                         id="searchPageInput"
@@ -289,134 +205,91 @@
                         autocomplete="off"
                         oninput="searchFromPage()"
                     >
-
                 </div>
-
-
                 <div
                     id="searchResults"
                     class="search-results"
                 >
                     <!-- Resultados da pesquisa -->
                 </div>
-
             </div>
-
         </section>
-
-
         <!-- =========================
              TIPOS
         ========================== -->
-
         <section
             id="typesPage"
             class="page"
         >
-
             <div class="page-container">
-
                 <div class="page-header">
-
                     <h1>
                         Tipos Pokémon
                     </h1>
-
                     <p>
                         Explore os 18 tipos existentes
                         no universo Pokémon.
                     </p>
-
                 </div>
-
-
                 <div
                     id="typesGrid"
                     class="types-grid"
                 >
                     <!-- Tipos carregados pelo JavaScript -->
                 </div>
-
             </div>
-
         </section>
-
-
         <!-- =========================
              GERAÇÕES
         ========================== -->
-
         <section
             id="generationsPage"
             class="page"
         >
-
             <div class="page-container">
-
                 <div class="page-header">
-
                     <h1>
                         Gerações Pokémon
                     </h1>
-
                     <p>
                         Conheça as regiões e gerações
                         do mundo Pokémon.
                     </p>
-
                 </div>
-
-
                 <div
                     id="generationsGrid"
                     class="generations-grid"
                 >
                     <!-- Gerações carregadas pelo JavaScript -->
                 </div>
-
             </div>
-
         </section>
-
-
         <!-- =========================
              DETALHES DO POKÉMON
         ========================== -->
-
         <section
             id="pokemonDetails"
             class="pokemon-details"
         >
-
             <button
                 class="back-button"
                 onclick="closePokemon()"
             >
                 ← Voltar
             </button>
-
-
             <div
                 id="detailContent"
                 class="detail-content"
             >
                 <!-- Informações completas do Pokémon -->
             </div>
-
         </section>
-
     </main>
-
-
     <!-- =========================
          SCRIPTS
     ========================== -->
-
-    <script src="types.js"></script>
-
-    <script src="mega.js"></script>
-
-    <script src="script.js"></script>
-
+    <script src="types.js?v=2"></script>
+    <script src="mega.js?v=2"></script>
+    <script src="script.js?v=2"></script>
 </body>
 </html>
