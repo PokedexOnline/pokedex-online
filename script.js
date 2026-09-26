@@ -1,253 +1,535 @@
+/* =========================================================
+   POKÉDEX ONLINE — SCRIPT PRINCIPAL
+   Pokémon Community
+========================================================= */
+
 const API = "https://pokeapi.co/api/v2";
 
 let allPokemon = [];
 let filteredPokemon = [];
+
 let visibleCount = 50;
 let currentPokemon = null;
+let currentPage = "homePage";
 
-let megaFormsCache = null;
-let pokemonCache = new Map();
-let speciesCache = new Map();
-let typeCache = new Map();
-
-const generations = [
-    {
-        id: 1,
-        roman: "I",
-        region: "KANTO",
-        description: "A região onde tudo começou.",
-        css: "region-kanto"
-    },
-    {
-        id: 2,
-        roman: "II",
-        region: "JOHTO",
-        description: "Uma região repleta de tradição.",
-        css: "region-johto"
-    },
-    {
-        id: 3,
-        roman: "III",
-        region: "HOENN",
-        description: "Uma região cercada por água e natureza.",
-        css: "region-hoenn"
-    },
-    {
-        id: 4,
-        roman: "IV",
-        region: "SINNOH",
-        description: "Uma terra fria e cheia de montanhas.",
-        css: "region-sinnoh"
-    },
-    {
-        id: 5,
-        roman: "V",
-        region: "UNOVA",
-        description: "Uma região marcada por grandes cidades.",
-        css: "region-unova"
-    },
-    {
-        id: 6,
-        roman: "VI",
-        region: "KALOS",
-        description: "Elegância, beleza e grandes aventuras.",
-        css: "region-kalos"
-    },
-    {
-        id: 7,
-        roman: "VII",
-        region: "ALOLA",
-        description: "Ilhas tropicais e cultura única.",
-        css: "region-alola"
-    },
-    {
-        id: 8,
-        roman: "VIII",
-        region: "GALAR",
-        description: "Grandes estádios e fenômenos gigantes.",
-        css: "region-galar"
-    },
-    {
-        id: 9,
-        roman: "IX",
-        region: "PALDEA",
-        description: "Uma região aberta para explorar.",
-        css: "region-paldea"
-    }
-];
 
 /* =========================================================
-   TIPOS
+   TRADUÇÃO DOS NOMES
 ========================================================= */
 
-const typeInfo = {
-    normal: {
-        name: "Normal",
-        icon: "◉",
-        description: "Equilíbrio, simplicidade e versatilidade."
-    },
+const pokemonNames = {
 
-    fire: {
-        name: "Fogo",
-        icon: "🔥",
-        description: "Chamas, calor e poder destrutivo."
-    },
+    bulbasaur:"Bulbassauro",
+    ivysaur:"Ivysaur",
+    venusaur:"Venusaur",
 
-    water: {
-        name: "Água",
-        icon: "💧",
-        description: "Água, oceanos, rios e força adaptável."
-    },
+    charmander:"Charmander",
+    charmeleon:"Charmeleon",
+    charizard:"Charizard",
 
-    electric: {
-        name: "Elétrico",
-        icon: "⚡",
-        description: "Energia, eletricidade e velocidade."
-    },
+    squirtle:"Squirtle",
+    wartortle:"Wartortle",
+    blastoise:"Blastoise",
 
-    grass: {
-        name: "Planta",
-        icon: "🌿",
-        description: "Natureza, plantas, florestas e crescimento."
-    },
+    caterpie:"Caterpie",
+    metapod:"Metapod",
+    butterfree:"Butterfree",
 
-    ice: {
-        name: "Gelo",
-        icon: "❄️",
-        description: "Frio extremo, neve e cristais de gelo."
-    },
+    weedle:"Weedle",
+    kakuna:"Kakuna",
+    beedrill:"Beedrill",
 
-    fighting: {
-        name: "Lutador",
-        icon: "🥊",
-        description: "Força física, combate e determinação."
-    },
+    pidgey:"Pidgey",
+    pidgeotto:"Pidgeotto",
+    pidgeot:"Pidgeot",
 
-    poison: {
-        name: "Veneno",
-        icon: "☠️",
-        description: "Toxinas, veneno e energia corrosiva."
-    },
+    rattata:"Rattata",
+    raticate:"Raticate",
 
-    ground: {
-        name: "Terrestre",
-        icon: "🏜️",
-        description: "Terra, areia, solo e terremotos."
-    },
+    spearow:"Spearow",
+    fearow:"Fearow",
 
-    flying: {
-        name: "Voador",
-        icon: "🪽",
-        description: "Vento, céu, liberdade e velocidade."
-    },
+    ekans:"Ekans",
+    arbok:"Arbok",
 
-    psychic: {
-        name: "Psíquico",
-        icon: "🔮",
-        description: "Mente, poderes psíquicos e energia mental."
-    },
+    pikachu:"Pikachu",
+    raichu:"Raichu",
 
-    bug: {
-        name: "Inseto",
-        icon: "🐛",
-        description: "Insetos, natureza selvagem e pequenos seres."
-    },
+    sandshrew:"Sandshrew",
+    sandslash:"Sandslash",
 
-    rock: {
-        name: "Pedra",
-        icon: "🪨",
-        description: "Rochas, minerais e resistência."
-    },
+    nidoran:"Nidoran",
+    nidorina:"Nidorina",
+    nidorino:"Nidorino",
+    nidoqueen:"Nidoqueen",
+    nidoking:"Nidoking",
 
-    ghost: {
-        name: "Fantasma",
-        icon: "👻",
-        description: "Mistério, espíritos e sombras."
-    },
+    clefairy:"Clefairy",
+    clefable:"Clefable",
 
-    dragon: {
-        name: "Dragão",
-        icon: "🐉",
-        description: "Dragões e poder ancestral."
-    },
+    vulpix:"Vulpix",
+    ninetales:"Ninetales",
 
-    dark: {
-        name: "Sombrio",
-        icon: "🌑",
-        description: "Trevas, astúcia e mistério."
-    },
+    jigglypuff:"Jigglypuff",
+    wigglytuff:"Wigglytuff",
 
-    steel: {
-        name: "Aço",
-        icon: "⚙️",
-        description: "Metal, armadura e resistência."
-    },
+    zubat:"Zubat",
+    golbat:"Golbat",
+    crobat:"Crobat",
 
-    fairy: {
-        name: "Fada",
-        icon: "✨",
-        description: "Magia, encanto e energia feérica."
-    }
+    oddish:"Oddish",
+    gloom:"Gloom",
+    vileplume:"Vileplume",
+
+    paras:"Paras",
+    parasect:"Parasect",
+
+    venonat:"Venonat",
+    venomoth:"Venomoth",
+
+    diglett:"Diglett",
+    dugtrio:"Dugtrio",
+
+    meowth:"Meowth",
+    persian:"Persian",
+
+    psyduck:"Psyduck",
+    golduck:"Golduck",
+
+    mankey:"Mankey",
+    primeape:"Primeape",
+
+    growlithe:"Growlithe",
+    arcanine:"Arcanine",
+
+    poliwag:"Poliwag",
+    poliwhirl:"Poliwhirl",
+    poliwrath:"Poliwrath",
+
+    abra:"Abra",
+    kadabra:"Kadabra",
+    alakazam:"Alakazam",
+
+    machop:"Machop",
+    machoke:"Machoke",
+    machamp:"Machamp",
+
+    bellsprout:"Bellsprout",
+    weepinbell:"Weepinbell",
+    victreebel:"Victreebel",
+
+    tentacool:"Tentacool",
+    tentacruel:"Tentacruel",
+
+    geodude:"Geodude",
+    graveler:"Graveler",
+    golem:"Golem",
+
+    ponyta:"Ponyta",
+    rapidash:"Rapidash",
+
+    slowpoke:"Slowpoke",
+    slowbro:"Slowbro",
+
+    magnemite:"Magnemite",
+    magneton:"Magneton",
+    magnezone:"Magnezone",
+
+    farfetchd:"Farfetch'd",
+
+    doduo:"Doduo",
+    dodrio:"Dodrio",
+
+    dewgong:"Dewgong",
+
+    grimer:"Grimer",
+    muk:"Muk",
+
+    shellder:"Shellder",
+    cloyster:"Cloyster",
+
+    gastly:"Gastly",
+    haunter:"Haunter",
+    gengar:"Gengar",
+
+    onix:"Onix",
+
+    drowzee:"Drowzee",
+    hypno:"Hypno",
+
+    krabby:"Krabby",
+    kingler:"Kingler",
+
+    voltorb:"Voltorb",
+    electrode:"Electrode",
+
+    exeggcute:"Exeggcute",
+    exeggutor:"Exeggutor",
+
+    cubone:"Cubone",
+    marowak:"Marowak",
+
+    hitmonlee:"Hitmonlee",
+    hitmonchan:"Hitmonchan",
+
+    lickitung:"Lickitung",
+
+    koffing:"Koffing",
+    weezing:"Weezing",
+
+    rhyhorn:"Rhyhorn",
+    rhydon:"Rhydon",
+    rhyperior:"Rhyperior",
+
+    chansey:"Chansey",
+    blissey:"Blissey",
+
+    tangela:"Tangela",
+    tangrowth:"Tangrowth",
+
+    kangaskhan:"Kangaskhan",
+
+    horsea:"Horsea",
+    seadra:"Seadra",
+    kingdra:"Kingdra",
+
+    goldeen:"Goldeen",
+    seaking:"Seaking",
+
+    staryu:"Staryu",
+    starmie:"Starmie",
+
+    mr_mime:"Mr. Mime",
+    mrmime:"Mr. Mime",
+
+    scyther:"Scyther",
+    scizor:"Scizor",
+
+    jynx:"Jynx",
+
+    electabuzz:"Electabuzz",
+    electivire:"Electivire",
+
+    magmar:"Magmar",
+    magmortar:"Magmortar",
+
+    pinsir:"Pinsir",
+
+    tauros:"Tauros",
+
+    magikarp:"Magikarp",
+    gyarados:"Gyarados",
+
+    lapras:"Lapras",
+
+    ditto:"Ditto",
+
+    eevee:"Eevee",
+    vaporeon:"Vaporeon",
+    jolteon:"Jolteon",
+    flareon:"Flareon",
+    espeon:"Espeon",
+    umbreon:"Umbreon",
+    leafeon:"Leafeon",
+    glaceon:"Glaceon",
+    sylveon:"Sylveon",
+
+    porygon:"Porygon",
+    porygon2:"Porygon2",
+    porygon_z:"Porygon-Z",
+    porygonz:"Porygon-Z",
+
+    omanyte:"Omanyte",
+    omastar:"Omastar",
+
+    kabuto:"Kabuto",
+    kabutops:"Kabutops",
+
+    aerodactyl:"Aerodactyl",
+
+    snorlax:"Snorlax",
+
+    articuno:"Articuno",
+    zapdos:"Zapdos",
+    moltres:"Moltres",
+
+    dratini:"Dratini",
+    dragonair:"Dragonair",
+    dragonite:"Dragonite",
+
+    mewtwo:"Mewtwo",
+    mew:"Mew"
+
 };
 
 
 /* =========================================================
-   MENU / NAVEGAÇÃO
+   INFORMAÇÕES DOS TIPOS
 ========================================================= */
 
-function openMenu() {
-    const menu = document.getElementById("sideMenu");
-    const overlay = document.getElementById("menuOverlay");
+const typeInfo = {
 
-    if (menu) menu.classList.add("open");
-    if (overlay) overlay.classList.add("active");
-}
+    normal:{
+        name:"Normal",
+        icon:"⚪",
+        description:"Pokémon equilibrados e versáteis."
+    },
 
-function closeMenu() {
-    const menu = document.getElementById("sideMenu");
-    const overlay = document.getElementById("menuOverlay");
+    fire:{
+        name:"Fogo",
+        icon:"🔥",
+        description:"Chamas, calor e ataques incendiários."
+    },
 
-    if (menu) menu.classList.remove("open");
-    if (overlay) overlay.classList.remove("active");
-}
+    water:{
+        name:"Água",
+        icon:"💧",
+        description:"Força dos oceanos, rios e mares."
+    },
 
-function showPage(pageId) {
-    document.querySelectorAll(".page").forEach(page => {
-        page.classList.remove("active");
-    });
+    electric:{
+        name:"Elétrico",
+        icon:"⚡",
+        description:"Energia elétrica e descargas poderosas."
+    },
 
-    const page = document.getElementById(pageId);
+    grass:{
+        name:"Planta",
+        icon:"🌿",
+        description:"Natureza, plantas e energia vital."
+    },
 
-    if (page) {
-        page.classList.add("active");
+    ice:{
+        name:"Gelo",
+        icon:"❄️",
+        description:"Frio extremo, neve e gelo."
+    },
+
+    fighting:{
+        name:"Lutador",
+        icon:"🥊",
+        description:"Força física e técnicas de combate."
+    },
+
+    poison:{
+        name:"Veneno",
+        icon:"☠️",
+        description:"Toxinas, venenos e efeitos nocivos."
+    },
+
+    ground:{
+        name:"Terra",
+        icon:"🌍",
+        description:"Terra, areia e movimentos sísmicos."
+    },
+
+    flying:{
+        name:"Voador",
+        icon:"🪽",
+        description:"Vento, velocidade e liberdade aérea."
+    },
+
+    psychic:{
+        name:"Psíquico",
+        icon:"🔮",
+        description:"Poderes mentais e energia psíquica."
+    },
+
+    bug:{
+        name:"Inseto",
+        icon:"🦋",
+        description:"Insetos e criaturas da natureza."
+    },
+
+    rock:{
+        name:"Pedra",
+        icon:"🪨",
+        description:"Pedras, minerais e resistência."
+    },
+
+    ghost:{
+        name:"Fantasma",
+        icon:"👻",
+        description:"Espíritos e energia sobrenatural."
+    },
+
+    dragon:{
+        name:"Dragão",
+        icon:"🐉",
+        description:"Poder ancestral e energia dracônica."
+    },
+
+    dark:{
+        name:"Sombrio",
+        icon:"🌑",
+        description:"Sombras, astúcia e mistério."
+    },
+
+    steel:{
+        name:"Aço",
+        icon:"⚙️",
+        description:"Metal, armadura e resistência."
+    },
+
+    fairy:{
+        name:"Fada",
+        icon:"✨",
+        description:"Magia, encanto e energia feérica."
     }
 
-    closeMenu();
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
+};
 
 
 /* =========================================================
    GERAÇÕES
 ========================================================= */
 
-function getGeneration(id) {
-    id = Number(id);
+const generations = [
 
-    if (id <= 151) return 1;
-    if (id <= 251) return 2;
-    if (id <= 386) return 3;
-    if (id <= 493) return 4;
-    if (id <= 649) return 5;
-    if (id <= 721) return 6;
-    if (id <= 809) return 7;
-    if (id <= 905) return 8;
+    {
+        id:1,
+        roman:"I",
+        region:"KANTO",
+        description:"A região onde tudo começou.",
+        css:"region-kanto"
+    },
 
-    return 9;
+    {
+        id:2,
+        roman:"II",
+        region:"JOHTO",
+        description:"Tradição, história e novos Pokémon.",
+        css:"region-johto"
+    },
+
+    {
+        id:3,
+        roman:"III",
+        region:"HOENN",
+        description:"Natureza, oceanos e clima tropical.",
+        css:"region-hoenn"
+    },
+
+    {
+        id:4,
+        roman:"IV",
+        region:"SINNOH",
+        description:"Uma região de montanhas e lendas antigas.",
+        css:"region-sinnoh"
+    },
+
+    {
+        id:5,
+        roman:"V",
+        region:"UNOVA",
+        description:"Uma nova jornada em uma região moderna.",
+        css:"region-unova"
+    },
+
+    {
+        id:6,
+        roman:"VI",
+        region:"KALOS",
+        description:"Elegância, beleza e Mega Evolução.",
+        css:"region-kalos"
+    },
+
+    {
+        id:7,
+        roman:"VII",
+        region:"ALOLA",
+        description:"Ilhas tropicais e formas regionais.",
+        css:"region-alola"
+    },
+
+    {
+        id:8,
+        roman:"VIII",
+        region:"GALAR",
+        description:"Estádios, batalhas gigantes e Dynamax.",
+        css:"region-galar"
+    },
+
+    {
+        id:9,
+        roman:"IX",
+        region:"PALDEA",
+        description:"Uma região aberta e repleta de mistérios.",
+        css:"region-paldea"
+    }
+
+];
+
+
+/* =========================================================
+   FUNÇÕES AUXILIARES
+========================================================= */
+
+function capitalize(text){
+
+    if(!text){
+        return "";
+    }
+
+    return text
+        .charAt(0)
+        .toUpperCase() +
+        text.slice(1);
+
+}
+
+
+function formatPokemonName(name){
+
+    if(!name){
+        return "Desconhecido";
+    }
+
+    const clean =
+        name
+            .toLowerCase()
+            .replace(/-f$/,"")
+            .replace(/-m$/,"");
+
+    if(pokemonNames[clean]){
+        return pokemonNames[clean];
+    }
+
+    return clean
+        .split("-")
+        .map(capitalize)
+        .join(" ");
+
+}
+
+
+function formatNumber(number){
+
+    return String(number)
+        .padStart(4,"0");
+
+}
+
+
+function getPokemonImage(pokemon){
+
+    return (
+        pokemon?.sprites?.other?.["official-artwork"]?.front_default ||
+        pokemon?.sprites?.front_default ||
+        ""
+    );
+
+}
+
+
+function getPokemonShiny(pokemon){
+
+    return (
+        pokemon?.sprites?.other?.["official-artwork"]?.front_shiny ||
+        pokemon?.sprites?.front_shiny ||
+        ""
+    );
+
 }
 
 
@@ -255,20 +537,34 @@ function getGeneration(id) {
    API
 ========================================================= */
 
-async function apiFetch(url) {
-    try {
-        const response = await fetch(url);
+async function apiFetch(url){
 
-        if (!response.ok) {
-            throw new Error(`Erro HTTP ${response.status}`);
+    try{
+
+        const response =
+            await fetch(url);
+
+        if(!response.ok){
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
         }
 
         return await response.json();
 
-    } catch (error) {
-        console.error("Erro na API:", url, error);
+    }catch(error){
+
+        console.error(
+            "Erro na API:",
+            error
+        );
+
         return null;
+
     }
+
 }
 
 
@@ -276,106 +572,241 @@ async function apiFetch(url) {
    CARREGAR POKÉMON
 ========================================================= */
 
-async function loadPokemon() {
-    const grid = document.getElementById("pokemonGrid");
+async function loadPokemon(){
 
-    if (grid) {
+    const grid =
+        document.getElementById("pokedex") ||
+        document.getElementById("pokemonGrid");
+
+    if(grid){
+
         grid.innerHTML = `
+
             <div class="loading">
+
                 <div class="loading-spinner"></div>
-                <p>Carregando Pokédex...</p>
+
+                <p>
+                    Carregando Pokédex...
+                </p>
+
             </div>
+
         `;
+
     }
 
-    const data = await apiFetch(`${API}/pokemon?limit=1025`);
+    try{
 
-    if (!data || !data.results) {
-        if (grid) {
-            grid.innerHTML = `
-                <div class="error-message">
-                    <h3>Não foi possível carregar a Pokédex.</h3>
-                    <p>Verifique sua conexão e tente novamente.</p>
-                    <button onclick="loadPokemon()">Tentar novamente</button>
-                </div>
-            `;
+        const data =
+            await apiFetch(
+                `${API}/pokemon?limit=1025`
+            );
+
+        if(!data || !Array.isArray(data.results)){
+
+            throw new Error(
+                "Resposta inválida da PokéAPI."
+            );
+
         }
 
-        return;
+        /*
+         * Carrega os Pokémon básicos primeiro.
+         */
+        allPokemon =
+            data.results.map(
+                (pokemon,index) => ({
+
+                    id:index + 1,
+
+                    name:pokemon.name,
+
+                    url:pokemon.url,
+
+                    image:
+                        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png`
+
+                })
+            );
+
+        filteredPokemon = [...allPokemon];
+
+        visibleCount = 50;
+
+        renderPokemon();
+
+    }catch(error){
+
+        console.error(
+            "Erro carregando Pokédex:",
+            error
+        );
+
+        if(grid){
+
+            grid.innerHTML = `
+
+                <div class="error-message">
+
+                    <div style="font-size:50px;">
+                        ⚠️
+                    </div>
+
+                    <h2>
+                        Não foi possível carregar a Pokédex
+                    </h2>
+
+                    <p>
+                        Verifique sua conexão e tente novamente.
+                    </p>
+
+                    <button onclick="loadPokemon()">
+                        Tentar novamente
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+
     }
 
-    allPokemon = data.results.map((pokemon, index) => ({
-        name: pokemon.name,
-        url: pokemon.url,
-        id: index + 1
-    }));
-
-    filteredPokemon = [...allPokemon];
-
-    renderPokemon();
 }
 
 
 /* =========================================================
-   RENDERIZAR GRID
+   RENDERIZAÇÃO DOS CARDS
 ========================================================= */
 
-async function renderPokemon() {
-    const grid = document.getElementById("pokemonGrid");
+function renderPokemon(){
 
-    if (!grid) return;
+    const grid =
+        document.getElementById("pokedex") ||
+        document.getElementById("pokemonGrid");
 
-    if (filteredPokemon.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-message">
-                <h3>Nenhum Pokémon encontrado.</h3>
-                <p>Tente outro nome, número ou filtro.</p>
-            </div>
-        `;
-
+    if(!grid){
         return;
     }
 
-    const visible = filteredPokemon.slice(0, visibleCount);
+    const list =
+        Array.isArray(filteredPokemon)
+            ? filteredPokemon
+            : [];
 
-    grid.innerHTML = "";
+    const visible =
+        list.slice(
+            0,
+            visibleCount
+        );
 
-    for (const pokemon of visible) {
-        const card = document.createElement("div");
+    if(!visible.length){
 
-        card.className = "pokemon-card";
+        grid.innerHTML = `
 
-        card.innerHTML = `
+            <div class="empty-message">
+
+                <div style="font-size:50px;">
+                    🔎
+                </div>
+
+                <h3>
+                    Nenhum Pokémon encontrado
+                </h3>
+
+                <p>
+                    Tente pesquisar outro nome ou número.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    grid.innerHTML =
+        visible
+            .map(pokemon => createPokemonCard(pokemon))
+            .join("");
+
+    updateLoadMoreButton();
+
+    /*
+     * Carrega os tipos reais dos cards.
+     */
+    visible.forEach(
+        pokemon =>
+            loadCardTypes(pokemon)
+    );
+
+}
+
+
+/* =========================================================
+   CRIA CARD
+========================================================= */
+
+function createPokemonCard(pokemon){
+
+    const id =
+        Number(pokemon.id);
+
+    const name =
+        formatPokemonName(pokemon.name);
+
+    const image =
+        pokemon.image ||
+        `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+
+    return `
+
+        <article
+            class="pokemon-card"
+            data-id="${id}"
+            onclick="openPokemon(${id})"
+        >
+
             <div class="pokemon-image-container">
+
                 <span class="pokemon-number">
-                    #${String(pokemon.id).padStart(4, "0")}
+                    #${formatNumber(id)}
                 </span>
 
                 <img
-                    src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png"
-                    alt="${escapeHtml(pokemon.name)}"
+                    class="pokemon-image"
+                    src="${image}"
+                    alt="${name}"
                     loading="lazy"
                 >
+
             </div>
 
             <div class="pokemon-card-info">
-                <h3>${capitalize(pokemon.name)}</h3>
-                <div class="card-types" id="types-${pokemon.id}">
-                    <span class="type-loading">...</span>
+
+                <h3 class="pokemon-name">
+                    ${name}
+                </h3>
+
+                <div
+                    class="card-types"
+                    id="card-types-${id}"
+                >
+
+                    <span class="type-badge">
+                        ...
+                    </span>
+
                 </div>
+
             </div>
-        `;
 
-        card.addEventListener("click", () => {
-            openPokemon(pokemon.id);
-        });
+        </article>
 
-        grid.appendChild(card);
-    }
+    `;
 
-    await loadCardTypes(visible);
-
-    updateLoadMoreButton();
 }
 
 
@@ -383,44 +814,61 @@ async function renderPokemon() {
    TIPOS DOS CARDS
 ========================================================= */
 
-async function loadCardTypes(pokemonList) {
-    await Promise.all(
-        pokemonList.map(async pokemon => {
+async function loadCardTypes(pokemon){
 
-            try {
-                let data = pokemonCache.get(pokemon.id);
+    const container =
+        document.getElementById(
+            `card-types-${pokemon.id}`
+        );
 
-                if (!data) {
-                    data = await apiFetch(`${API}/pokemon/${pokemon.id}`);
+    if(!container){
+        return;
+    }
 
-                    if (data) {
-                        pokemonCache.set(pokemon.id, data);
-                    }
-                }
+    const data =
+        await apiFetch(
+            `${API}/pokemon/${pokemon.id}`
+        );
 
-                if (!data) return;
+    if(!data){
 
-                const container = document.getElementById(`types-${pokemon.id}`);
+        container.innerHTML = "";
 
-                if (!container) return;
+        return;
 
-                container.innerHTML = data.types
-                    .map(typeData => {
-                        const type = typeData.type.name;
+    }
 
-                        return `
-                            <span class="type-badge type-${type}">
-                                ${typeInfo[type]?.name || capitalize(type)}
-                            </span>
-                        `;
-                    })
-                    .join("");
+    container.innerHTML =
+        data.types
+            .sort(
+                (a,b) =>
+                    a.slot - b.slot
+            )
+            .map(typeData => {
 
-            } catch (error) {
-                console.error(error);
-            }
-        })
-    );
+                const type =
+                    typeData.type.name;
+
+                const info =
+                    typeInfo[type] || {};
+
+                return `
+
+                    <span
+                        class="type-badge type-${type}"
+                        title="${info.name || type}"
+                    >
+
+                        ${info.icon || "●"}
+                        ${info.name || capitalize(type)}
+
+                    </span>
+
+                `;
+
+            })
+            .join("");
+
 }
 
 
@@ -428,21 +876,74 @@ async function loadCardTypes(pokemonList) {
    CARREGAR MAIS
 ========================================================= */
 
-function loadMore() {
-    visibleCount += 50;
-    renderPokemon();
+function updateLoadMoreButton(){
+
+    let button =
+        document.getElementById(
+            "loadMoreButton"
+        );
+
+    if(!button){
+
+        const grid =
+            document.getElementById("pokedex") ||
+            document.getElementById("pokemonGrid");
+
+        if(!grid){
+            return;
+        }
+
+        button =
+            document.createElement("button");
+
+        button.id =
+            "loadMoreButton";
+
+        button.className =
+            "load-more";
+
+        button.textContent =
+            "CARREGAR MAIS";
+
+        button.onclick =
+            loadMorePokemon;
+
+        grid.parentElement.appendChild(
+            button
+        );
+
+    }
+
+    if(
+        visibleCount >=
+        filteredPokemon.length
+    ){
+
+        button.style.display =
+            "none";
+
+    }else{
+
+        button.style.display =
+            "block";
+
+        button.textContent =
+            `CARREGAR MAIS — ${Math.min(
+                visibleCount,
+                filteredPokemon.length
+            )}/${filteredPokemon.length}`;
+
+    }
+
 }
 
-function updateLoadMoreButton() {
-    const button = document.getElementById("loadMoreButton");
 
-    if (!button) return;
+function loadMorePokemon(){
 
-    if (visibleCount >= filteredPokemon.length) {
-        button.style.display = "none";
-    } else {
-        button.style.display = "block";
-    }
+    visibleCount += 50;
+
+    renderPokemon();
+
 }
 
 
@@ -450,672 +951,621 @@ function updateLoadMoreButton() {
    PESQUISA
 ========================================================= */
 
-function searchPokemon(value) {
-    const search = String(value || "").trim().toLowerCase();
+function searchPokemon(query){
 
-    visibleCount = 50;
+    const value =
+        String(query || "")
+            .trim()
+            .toLowerCase();
 
-    if (!search) {
-        filteredPokemon = [...allPokemon];
+    if(!value){
+
+        filteredPokemon =
+            [...allPokemon];
+
+        visibleCount = 50;
+
         renderPokemon();
-        return;
-    }
-
-    filteredPokemon = allPokemon.filter(pokemon => {
-        const nameMatch = pokemon.name.toLowerCase().includes(search);
-
-        const numberMatch =
-            String(pokemon.id) === search ||
-            String(pokemon.id).padStart(3, "0") === search ||
-            String(pokemon.id).padStart(4, "0") === search;
-
-        return nameMatch || numberMatch;
-    });
-
-    renderPokemon();
-}
-
-
-/* =========================================================
-   PESQUISA DA PÁGINA DE BUSCA
-========================================================= */
-
-function searchPagePokemon(value) {
-    const search = String(value || "").trim().toLowerCase();
-
-    const results = document.getElementById("searchResults");
-
-    if (!results) return;
-
-    if (!search) {
-        results.innerHTML = `
-            <div class="search-empty">
-                <p>Digite o nome ou número de um Pokémon.</p>
-            </div>
-        `;
 
         return;
+
     }
 
-    const matches = allPokemon.filter(pokemon => {
-        return (
-            pokemon.name.toLowerCase().includes(search) ||
-            String(pokemon.id) === search
-        );
-    });
+    filteredPokemon =
+        allPokemon.filter(
+            pokemon => {
 
-    if (matches.length === 0) {
-        results.innerHTML = `
-            <div class="search-empty">
-                <h3>Nenhum Pokémon encontrado.</h3>
-                <p>Verifique o nome ou número digitado.</p>
-            </div>
-        `;
+                const id =
+                    String(pokemon.id);
 
-        return;
-    }
+                const name =
+                    pokemon.name.toLowerCase();
 
-    results.innerHTML = "";
+                const translated =
+                    formatPokemonName(
+                        pokemon.name
+                    ).toLowerCase();
 
-    matches.slice(0, 50).forEach(pokemon => {
+                return (
+                    name.includes(value) ||
+                    translated.includes(value) ||
+                    id === value ||
+                    id.padStart(4,"0") === value
+                );
 
-        const card = document.createElement("div");
-
-        card.className = "pokemon-card";
-
-        card.innerHTML = `
-            <div class="pokemon-image-container">
-                <span class="pokemon-number">
-                    #${String(pokemon.id).padStart(4, "0")}
-                </span>
-
-                <img
-                    src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png"
-                    alt="${escapeHtml(pokemon.name)}"
-                    loading="lazy"
-                >
-            </div>
-
-            <div class="pokemon-card-info">
-                <h3>${capitalize(pokemon.name)}</h3>
-                <div class="card-types" id="search-types-${pokemon.id}">
-                    <span class="type-loading">...</span>
-                </div>
-            </div>
-        `;
-
-        card.addEventListener("click", () => {
-            openPokemon(pokemon.id);
-        });
-
-        results.appendChild(card);
-    });
-
-    matches.slice(0, 50).forEach(async pokemon => {
-
-        let data = pokemonCache.get(pokemon.id);
-
-        if (!data) {
-            data = await apiFetch(`${API}/pokemon/${pokemon.id}`);
-
-            if (data) {
-                pokemonCache.set(pokemon.id, data);
             }
-        }
+        );
 
-        if (!data) return;
+    visibleCount = 50;
 
-        const container = document.getElementById(`search-types-${pokemon.id}`);
+    renderPokemon();
 
-        if (!container) return;
-
-        container.innerHTML = data.types.map(typeData => {
-            const type = typeData.type.name;
-
-            return `
-                <span class="type-badge type-${type}">
-                    ${typeInfo[type]?.name || capitalize(type)}
-                </span>
-            `;
-        }).join("");
-    });
 }
 
 
 /* =========================================================
-   FILTRO POR GERAÇÃO
+   FILTRO DE TIPO
 ========================================================= */
 
-function filterGeneration(generation) {
-    generation = Number(generation);
+async function filterType(type){
+
+    if(!type){
+        return;
+    }
+
+    if(typeof filterByType === "function"){
+
+        await filterByType(type);
+
+        return;
+
+    }
+
+}
+
+
+/* =========================================================
+   FILTRO DE GERAÇÃO
+========================================================= */
+
+function filterGeneration(generation){
+
+    const gen =
+        Number(generation);
+
+    if(!gen){
+
+        filteredPokemon =
+            [...allPokemon];
+
+    }else{
+
+        const ranges = {
+
+            1:[1,151],
+            2:[152,251],
+            3:[252,386],
+            4:[387,493],
+            5:[494,649],
+            6:[650,721],
+            7:[722,809],
+            8:[810,905],
+            9:[906,1025]
+
+        };
+
+        const range =
+            ranges[gen];
+
+        if(!range){
+            return;
+        }
+
+        filteredPokemon =
+            allPokemon.filter(
+                pokemon =>
+                    pokemon.id >= range[0] &&
+                    pokemon.id <= range[1]
+            );
+
+    }
 
     visibleCount = 50;
 
-    if (!generation || generation === 0) {
-        filteredPokemon = [...allPokemon];
-    } else {
-        filteredPokemon = allPokemon.filter(pokemon => {
-            return getGeneration(pokemon.id) === generation;
+    document
+        .querySelectorAll(
+            ".generation-pill"
+        )
+        .forEach(button => {
+
+            button.classList.toggle(
+                "active",
+                Number(
+                    button.dataset.generation
+                ) === gen
+            );
+
         });
-    }
 
     renderPokemon();
 
-    document.querySelectorAll(".generation-pill").forEach(button => {
-        button.classList.remove("active");
-    });
-
-    const activeButton = document.querySelector(
-        `.generation-pill[data-generation="${generation}"]`
-    );
-
-    if (activeButton) {
-        activeButton.classList.add("active");
-    }
 }
 
 
 /* =========================================================
-   PÁGINA DE TIPOS
+   GERAÇÕES
 ========================================================= */
 
-function buildTypesPage() {
-    const container = document.getElementById("typesGrid");
+function buildGenerations(){
 
-    if (!container) return;
+    const grid =
+        document.getElementById(
+            "generationsGrid"
+        );
 
-    container.innerHTML = "";
-
-    Object.entries(typeInfo).forEach(([type, info]) => {
-
-        const card = document.createElement("div");
-
-        card.className = `type-card type-${type}`;
-
-        card.innerHTML = `
-            <div class="type-card-background"></div>
-
-            <div class="type-icon">
-                ${info.icon}
-            </div>
-
-            <div class="type-card-content">
-                <h3>${info.name}</h3>
-
-                <p>${info.description}</p>
-
-                <button
-                    class="type-button"
-                    onclick="filterType('${type}')"
-                >
-                    Ver Pokémon
-                </button>
-            </div>
-        `;
-
-        container.appendChild(card);
-    });
-}
-
-
-/* =========================================================
-   FILTRO POR TIPO
-========================================================= */
-
-async function filterType(type) {
-    const grid = document.getElementById("pokemonGrid");
-
-    if (grid) {
-        grid.innerHTML = `
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <p>Buscando Pokémon do tipo ${typeInfo[type]?.name || type}...</p>
-            </div>
-        `;
-    }
-
-    const data = await apiFetch(`${API}/type/${type}`);
-
-    if (!data || !data.pokemon) {
-        if (grid) {
-            grid.innerHTML = `
-                <div class="error-message">
-                    <p>Não foi possível carregar este tipo.</p>
-                </div>
-            `;
-        }
-
+    if(!grid){
         return;
     }
 
-    const ids = data.pokemon
-        .map(item => {
-            const match = item.pokemon.url.match(/\/pokemon\/(\d+)\/$/);
+    grid.innerHTML =
+        generations
+            .map(gen => `
 
-            return match ? Number(match[1]) : null;
-        })
-        .filter(id => id && id <= 1025);
-
-    filteredPokemon = allPokemon.filter(pokemon =>
-        ids.includes(pokemon.id)
-    );
-
-    visibleCount = 50;
-
-    showPage("homePage");
-
-    renderPokemon();
-}
-
-
-/* =========================================================
-   PÁGINA DE GERAÇÕES
-========================================================= */
-
-function buildGenerations() {
-    const container = document.getElementById("generationsGrid");
-
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    generations.forEach(generation => {
-
-        const card = document.createElement("div");
-
-        card.className = `generation-card ${generation.css}`;
-
-        card.innerHTML = `
-            <div class="generation-number">
-                ${generation.roman}
-            </div>
-
-            <div class="generation-content">
-                <span>GERAÇÃO ${generation.roman}</span>
-
-                <h3>${generation.region}</h3>
-
-                <p>${generation.description}</p>
-
-                <button
-                    onclick="filterGeneration(${generation.id}); showPage('homePage')"
+                <article
+                    class="
+                        generation-card
+                        ${gen.css}
+                    "
+                    onclick="filterGeneration(${gen.id})"
                 >
-                    Explorar geração
-                </button>
-            </div>
-        `;
 
-        container.appendChild(card);
-    });
+                    <div class="region-animation"></div>
+
+                    <div class="generation-number">
+                        ${gen.roman}
+                    </div>
+
+                    <div class="generation-content">
+
+                        <span>
+                            GERAÇÃO ${gen.id}
+                        </span>
+
+                        <h3>
+                            ${gen.region}
+                        </h3>
+
+                        <p>
+                            ${gen.description}
+                        </p>
+
+                        <button
+                            onclick="
+                                event.stopPropagation();
+                                filterGeneration(${gen.id});
+                            "
+                        >
+                            VER POKÉMON
+                        </button>
+
+                    </div>
+
+                </article>
+
+            `)
+            .join("");
+
 }
 
 
 /* =========================================================
-   ABRIR FICHA DO POKÉMON
+   ABRIR POKÉMON
 ========================================================= */
 
-async function openPokemon(identifier) {
+async function openPokemon(id){
 
-    const detailsPage = document.getElementById("pokemonDetails");
-    const detailContent = document.getElementById("detailContent");
+    const pokemon =
+        await apiFetch(
+            `${API}/pokemon/${id}`
+        );
 
-    if (!detailsPage || !detailContent) {
-        console.error("Elementos da ficha do Pokémon não encontrados.");
+    if(!pokemon){
+
+        alert(
+            "Não foi possível carregar este Pokémon."
+        );
+
         return;
+
     }
+
+    currentPokemon =
+        pokemon;
 
     showPage("pokemonDetails");
 
-    detailContent.innerHTML = `
-        <div class="loading detail-loading">
-            <div class="loading-spinner"></div>
-            <p>Carregando informações...</p>
-        </div>
-    `;
+    await buildPokemonDetails(
+        pokemon
+    );
 
-    const pokemon = await apiFetch(`${API}/pokemon/${identifier}`);
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
 
-    if (!pokemon) {
-        detailContent.innerHTML = `
-            <div class="error-message">
-                <h3>Não foi possível carregar este Pokémon.</h3>
-                <button onclick="closePokemon()">Voltar</button>
-            </div>
-        `;
+}
 
+
+/* =========================================================
+   FICHA COMPLETA
+========================================================= */
+
+async function buildPokemonDetails(pokemon){
+
+    const container =
+        document.getElementById(
+            "detailContent"
+        );
+
+    if(!container){
         return;
     }
 
-    currentPokemon = pokemon;
+    container.innerHTML = `
 
-    pokemonCache.set(pokemon.id, pokemon);
+        <div class="detail-loading">
 
-    const species = await apiFetch(pokemon.species.url);
+            <div class="loading-spinner"></div>
 
-    if (species) {
-        speciesCache.set(pokemon.id, species);
-    }
+            <p>
+                Carregando informações de
+                ${formatPokemonName(pokemon.name)}...
+            </p>
 
-    const portugueseName = getPortugueseName(species, pokemon.name);
-    const description = getDescription(species);
+        </div>
 
-    const types = pokemon.types.map(typeData => typeData.type.name);
+    `;
 
-    const weaknesses = species
-        ? await getWeaknesses(types)
-        : [];
+    /*
+     * Carrega dados adicionais em paralelo.
+     */
+    const speciesPromise =
+        apiFetch(
+            `${API}/pokemon-species/${pokemon.id}`
+        );
 
-    const generation = getGeneration(pokemon.id);
+    const evolutionPromise =
+        speciesPromise.then(
+            species =>
+                species?.evolution_chain?.url
+                    ? apiFetch(
+                        species.evolution_chain.url
+                    )
+                    : null
+        );
 
-    const artwork =
-        pokemon.sprites?.other?.["official-artwork"]?.front_default ||
-        pokemon.sprites?.other?.home?.front_default ||
-        pokemon.sprites?.front_default ||
-        "";
+    const [
+        species,
+        evolutionChain
+    ] =
+        await Promise.all([
+            speciesPromise,
+            evolutionPromise
+        ]);
 
-    const shinyArtwork =
-        pokemon.sprites?.other?.["official-artwork"]?.front_shiny ||
-        pokemon.sprites?.other?.home?.front_shiny ||
-        pokemon.sprites?.front_shiny ||
-        artwork;
+    const types =
+        pokemon.types
+            .sort(
+                (a,b) =>
+                    a.slot - b.slot
+            )
+            .map(
+                item =>
+                    item.type.name
+            );
 
-    const abilities = pokemon.abilities || [];
+    const abilities =
+        pokemon.abilities || [];
 
-    detailContent.innerHTML = `
-        <button class="back-button" onclick="closePokemon()">
-            ← Voltar para Pokédex
-        </button>
+    const image =
+        getPokemonImage(pokemon);
 
-        <div class="detail-top">
+    const shiny =
+        getPokemonShiny(pokemon);
 
-            <div class="detail-art">
+    const weaknesses =
+        calculateWeaknesses(types);
 
-                <div class="detail-number">
-                    #${String(pokemon.id).padStart(4, "0")}
+    container.innerHTML = `
+
+        <div class="pokemon-detail">
+
+            <button
+                class="back-button"
+                onclick="showPage('homePage')"
+            >
+                ← VOLTAR PARA A POKÉDEX
+            </button>
+
+            <div class="detail-header">
+
+                <div class="detail-main-image">
+
+                    <span class="detail-number">
+                        #${formatNumber(pokemon.id)}
+                    </span>
+
+                    <img
+                        src="${image}"
+                        alt="${formatPokemonName(pokemon.name)}"
+                    >
+
                 </div>
 
-                <img
-                    src="${artwork}"
-                    alt="${escapeHtml(portugueseName)}"
-                >
+                <div class="detail-title">
 
-                <div class="shiny-mini-label">
-                    ✨ Shiny disponível
+                    <div class="detail-original-name">
+                        ${pokemon.name.toUpperCase()}
+                    </div>
+
+                    <h1>
+                        ${formatPokemonName(pokemon.name)}
+                    </h1>
+
+                    <div class="detail-types">
+
+                        ${types
+                            .map(type => {
+
+                                const info =
+                                    typeInfo[type] || {};
+
+                                return `
+
+                                    <span
+                                        class="
+                                            detail-type
+                                            type-${type}
+                                        "
+                                    >
+                                        ${info.icon || ""}
+                                        ${info.name || capitalize(type)}
+                                    </span>
+
+                                `;
+
+                            })
+                            .join("")}
+
+                    </div>
+
+                    <div class="detail-description">
+
+                        ${
+                            getSpeciesDescription(
+                                species
+                            )
+                        }
+
+                    </div>
+
                 </div>
 
             </div>
 
+            <div class="detail-sections">
 
-            <div class="detail-info">
+                ${buildBasicInfo(pokemon)}
 
-                <div class="detail-title">
+                ${buildAbilities(abilities)}
 
-                    <span class="detail-original-name">
-                        ${capitalize(pokemon.name)}
-                    </span>
+                ${buildWeaknesses(weaknesses)}
 
-                    <h1>${escapeHtml(portugueseName)}</h1>
+                ${buildStats(pokemon)}
 
-                </div>
+                ${buildShinySection(
+                    image,
+                    shiny,
+                    pokemon.name
+                )}
 
+                ${buildEvolutionSection(
+                    evolutionChain
+                )}
 
-                <div class="detail-types">
+                <section class="detail-section mega-section">
 
-                    ${types.map(type => `
-                        <span class="detail-type type-${type}">
-                            ${typeInfo[type]?.name || capitalize(type)}
+                    <div class="section-title">
+
+                        <span>
+                            ✨
                         </span>
-                    `).join("")}
 
-                </div>
+                        <h2>
+                            Mega Evoluções
+                        </h2>
 
-
-                <div class="info-grid">
-
-                    <div class="info-box">
-                        <span>Altura</span>
-                        <strong>${(pokemon.height / 10).toFixed(1)} m</strong>
                     </div>
 
-                    <div class="info-box">
-                        <span>Peso</span>
-                        <strong>${(pokemon.weight / 10).toFixed(1)} kg</strong>
+                    <div id="megaContainer">
+
+                        <div class="loading">
+                            Carregando Mega Evoluções...
+                        </div>
+
                     </div>
 
-                    <div class="info-box">
-                        <span>Experiência Base</span>
-                        <strong>${pokemon.base_experience || "—"}</strong>
-                    </div>
-
-                    <div class="info-box">
-                        <span>Geração</span>
-                        <strong>${generations[generation - 1]?.roman || generation}</strong>
-                    </div>
-
-                </div>
+                </section>
 
             </div>
 
         </div>
 
+    `;
+
+    /*
+     * Mega.js é responsável exclusivamente
+     * por esta parte.
+     */
+    if(
+        typeof loadMegaTab ===
+        "function"
+    ){
+
+        await loadMegaTab(
+            pokemon.name
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   INFORMAÇÕES BÁSICAS
+========================================================= */
+
+function buildBasicInfo(pokemon){
+
+    const height =
+        (pokemon.height / 10)
+            .toFixed(1);
+
+    const weight =
+        (pokemon.weight / 10)
+            .toFixed(1);
+
+    return `
 
         <section class="detail-section">
 
-            <h2>📖 Descrição</h2>
+            <div class="section-title">
 
-            <p class="description">
-                ${escapeHtml(description)}
-            </p>
+                <span>
+                    📋
+                </span>
 
-        </section>
+                <h2>
+                    Informações
+                </h2>
 
+            </div>
 
-        <section class="detail-section">
+            <div class="info-grid">
 
-            <h2>⚡ Habilidades</h2>
+                <div class="info-box">
 
-            <div class="abilities-list">
+                    <span>
+                        Altura
+                    </span>
 
-                ${abilities.map(ability => `
-                    <div class="ability">
-                        ${capitalize(ability.ability.name.replace(/-/g, " "))}
-                        ${ability.is_hidden ? '<span>Oculta</span>' : ""}
-                    </div>
-                `).join("")}
+                    <strong>
+                        ${height} m
+                    </strong>
+
+                </div>
+
+                <div class="info-box">
+
+                    <span>
+                        Peso
+                    </span>
+
+                    <strong>
+                        ${weight} kg
+                    </strong>
+
+                </div>
+
+                <div class="info-box">
+
+                    <span>
+                        Experiência base
+                    </span>
+
+                    <strong>
+                        ${pokemon.base_experience || "—"}
+                    </strong>
+
+                </div>
+
+                <div class="info-box">
+
+                    <span>
+                        ID
+                    </span>
+
+                    <strong>
+                        #${formatNumber(pokemon.id)}
+                    </strong>
+
+                </div>
 
             </div>
 
         </section>
 
+    `;
+
+}
+
+
+/* =========================================================
+   HABILIDADES
+========================================================= */
+
+function buildAbilities(abilities){
+
+    return `
 
         <section class="detail-section">
 
-            <h2>⚔️ Fraquezas</h2>
+            <div class="section-title">
 
-            <div class="weaknesses-list">
+                <span>
+                    ⚡
+                </span>
+
+                <h2>
+                    Habilidades
+                </h2>
+
+            </div>
+
+            <div class="abilities-list">
 
                 ${
-                    weaknesses.length
-                    ? weaknesses.map(type => `
-                        <span class="detail-type type-${type}">
-                            ${typeInfo[type]?.name || capitalize(type)}
-                        </span>
-                    `).join("")
-                    : "<p>Não foi possível determinar.</p>"
+                    abilities.length
+                        ? abilities.map(
+                            ability => `
+
+                                <div class="ability">
+
+                                    <strong>
+                                        ${formatPokemonName(
+                                            ability.ability.name
+                                        )}
+                                    </strong>
+
+                                    ${
+                                        ability.is_hidden
+                                            ? `<small>Habilidade oculta</small>`
+                                            : ""
+                                    }
+
+                                </div>
+
+                            `
+                        ).join("")
+                        : `<div class="no-data">Nenhuma informação.</div>`
                 }
 
             </div>
 
         </section>
 
-
-        <section class="detail-section">
-
-            <h2>📊 Estatísticas Base</h2>
-
-            <div class="stats-list">
-
-                ${pokemon.stats.map(stat => {
-
-                    const statName = translateStat(stat.stat.name);
-                    const value = stat.base_stat;
-
-                    const percentage = Math.min((value / 255) * 100, 100);
-
-                    return `
-                        <div class="stat-row">
-
-                            <div class="stat-name">
-                                ${statName}
-                            </div>
-
-                            <div class="stat-value">
-                                ${value}
-                            </div>
-
-                            <div class="stat-bar">
-                                <div
-                                    class="stat-fill"
-                                    style="width:${percentage}%"
-                                ></div>
-                            </div>
-
-                        </div>
-                    `;
-
-                }).join("")}
-
-            </div>
-
-        </section>
-
-
-        <section class="detail-section">
-
-            <h2>✨ Pokémon Shiny</h2>
-
-            <div class="shiny-container">
-
-                <div class="shiny-art">
-
-                    <img
-                        src="${shinyArtwork}"
-                        alt="${escapeHtml(portugueseName)} Shiny"
-                    >
-
-                </div>
-
-                <div class="shiny-info">
-
-                    <h3>${escapeHtml(portugueseName)} Shiny</h3>
-
-                    <p>
-                        Esta é a versão Shiny deste Pokémon.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <section class="detail-section">
-
-            <h2>🔄 Evoluções</h2>
-
-            <div id="evolutionContainer">
-                <div class="loading-small">
-                    Carregando evoluções...
-                </div>
-            </div>
-
-        </section>
-
-
-        <section class="detail-section mega-section">
-
-            <h2>💥 Mega Evoluções</h2>
-
-            <div id="megaContainer">
-
-                <div class="loading-small">
-                    Procurando Mega Evoluções...
-                </div>
-
-            </div>
-
-        </section>
     `;
 
-    await loadEvolutionChain(species);
-
-    await loadMegaTab(pokemon.name);
-}
-
-
-/* =========================================================
-   NOME EM PORTUGUÊS
-========================================================= */
-
-function getPortugueseName(species, fallback) {
-
-    if (!species || !species.names) {
-        return capitalize(fallback);
-    }
-
-    const portuguese =
-        species.names.find(
-            item => item.language.name === "pt-br"
-        ) ||
-        species.names.find(
-            item => item.language.name === "pt"
-        );
-
-    return portuguese
-        ? portuguese.name
-        : capitalize(fallback);
-}
-
-
-/* =========================================================
-   DESCRIÇÃO
-========================================================= */
-
-function getDescription(species) {
-
-    if (!species || !species.flavor_text_entries) {
-        return "Descrição não disponível.";
-    }
-
-    const portuguese =
-        species.flavor_text_entries.find(
-            item => item.language.name === "pt-br"
-        );
-
-    const portuguesePortugal =
-        species.flavor_text_entries.find(
-            item => item.language.name === "pt"
-        );
-
-    const english =
-        species.flavor_text_entries.find(
-            item => item.language.name === "en"
-        );
-
-    const entry =
-        portuguese ||
-        portuguesePortugal ||
-        english;
-
-    if (!entry) {
-        return "Descrição não disponível.";
-    }
-
-    return entry.flavor_text
-        .replace(/\n|\f/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
 }
 
 
@@ -1123,70 +1573,794 @@ function getDescription(species) {
    FRAQUEZAS
 ========================================================= */
 
-async function getWeaknesses(types) {
+function calculateWeaknesses(types){
 
     const multipliers = {};
 
-    types.forEach(type => {
-        multipliers[type] = 1;
-    });
+    Object.keys(typeInfo)
+        .forEach(type => {
 
-    for (const type of types) {
+            multipliers[type] = 1;
 
-        let data = typeCache.get(type);
+        });
 
-        if (!data) {
-            data = await apiFetch(`${API}/type/${type}`);
+    const chart = {
 
-            if (data) {
-                typeCache.set(type, data);
-            }
+        normal:{
+            rock:0.5,
+            ghost:0,
+            steel:0.5
+        },
+
+        fire:{
+            fire:0.5,
+            water:0.5,
+            rock:0.5,
+            ground:0.5,
+            dragon:0.5
+        },
+
+        water:{
+            water:0.5,
+            grass:0.5,
+            dragon:0.5
+        },
+
+        electric:{
+            electric:0.5,
+            grass:0.5,
+            dragon:0.5,
+            ground:0
+        },
+
+        grass:{
+            fire:0.5,
+            grass:0.5,
+            poison:0.5,
+            flying:0.5,
+            bug:0.5,
+            dragon:0.5,
+            steel:0.5
+        },
+
+        ice:{
+            fire:0.5,
+            water:0.5,
+            ice:0.5,
+            steel:0.5
+        },
+
+        fighting:{
+            poison:0.5,
+            flying:0.5,
+            psychic:0.5,
+            bug:0.5,
+            fairy:0.5,
+            ghost:0
+        },
+
+        poison:{
+            poison:0.5,
+            ground:0.5,
+            rock:0.5,
+            ghost:0.5,
+            steel:0
+        },
+
+        ground:{
+            grass:0.5,
+            bug:0.5,
+            flying:0
+        },
+
+        flying:{
+            electric:0.5,
+            rock:0.5,
+            steel:0.5
+        },
+
+        psychic:{
+            psychic:0.5,
+            steel:0.5,
+            dark:0
+        },
+
+        bug:{
+            fire:0.5,
+            fighting:0.5,
+            poison:0.5,
+            flying:0.5,
+            ghost:0.5,
+            steel:0.5,
+            fairy:0.5
+        },
+
+        rock:{
+            fighting:0.5,
+            ground:0.5,
+            steel:0.5
+        },
+
+        ghost:{
+            dark:0.5,
+            normal:0
+        },
+
+        dragon:{
+            steel:0.5,
+            fairy:0
+        },
+
+        dark:{
+            fighting:0.5,
+            dark:0.5,
+            fairy:0.5
+        },
+
+        steel:{
+            fire:0.5,
+            water:0.5,
+            electric:0.5,
+            steel:0.5
+        },
+
+        fairy:{
+            fire:0.5,
+            poison:0.5,
+            steel:0.5
         }
 
-        if (!data) continue;
+    };
 
-        const relations = data.damage_relations;
+    types.forEach(defendingType => {
 
-        relations.double_damage_from.forEach(item => {
-            multipliers[item.name] =
-                (multipliers[item.name] || 1) * 2;
+        const weaknesses =
+            chart[defendingType] || {};
+
+        Object.entries(
+            weaknesses
+        ).forEach(
+            ([attackingType,multiplier]) => {
+
+                /*
+                 * O chart acima representa resistência
+                 * do defensor ao ataque.
+                 *
+                 * Para fraquezas usamos o inverso:
+                 * 0.5 = resistente
+                 * 0 = imune
+                 * ausência = 1
+                 */
+
+                if(multiplier === 0.5){
+
+                    multipliers[attackingType] *= 2;
+
+                }else if(multiplier === 0){
+
+                    multipliers[attackingType] = 0;
+
+                }
+
+            }
+        );
+
+    });
+
+    /*
+     * Correções para fraquezas reais.
+     */
+    const weaknessChart = {
+
+        normal:["fighting"],
+
+        fire:["water","ground","rock"],
+
+        water:["electric","grass"],
+
+        electric:["ground"],
+
+        grass:[
+            "fire",
+            "ice",
+            "poison",
+            "flying",
+            "bug"
+        ],
+
+        ice:[
+            "fire",
+            "fighting",
+            "rock",
+            "steel"
+        ],
+
+        fighting:[
+            "flying",
+            "psychic",
+            "fairy"
+        ],
+
+        poison:[
+            "ground",
+            "psychic"
+        ],
+
+        ground:[
+            "water",
+            "grass",
+            "ice"
+        ],
+
+        flying:[
+            "electric",
+            "ice",
+            "rock"
+        ],
+
+        psychic:[
+            "bug",
+            "ghost",
+            "dark"
+        ],
+
+        bug:[
+            "fire",
+            "flying",
+            "rock"
+        ],
+
+        rock:[
+            "water",
+            "grass",
+            "fighting",
+            "ground",
+            "steel"
+        ],
+
+        ghost:[
+            "ghost",
+            "dark"
+        ],
+
+        dragon:[
+            "ice",
+            "dragon",
+            "fairy"
+        ],
+
+        dark:[
+            "fighting",
+            "bug",
+            "fairy"
+        ],
+
+        steel:[
+            "fire",
+            "fighting",
+            "ground"
+        ],
+
+        fairy:[
+            "poison",
+            "steel"
+        ]
+
+    };
+
+    const finalMultipliers = {};
+
+    Object.keys(typeInfo)
+        .forEach(type => {
+
+            finalMultipliers[type] = 1;
+
         });
 
-        relations.half_damage_from.forEach(item => {
-            multipliers[item.name] =
-                (multipliers[item.name] || 1) * 0.5;
+    types.forEach(defendingType => {
+
+        const weaknesses =
+            weaknessChart[defendingType] || [];
+
+        weaknesses.forEach(
+            attackingType => {
+
+                finalMultipliers[
+                    attackingType
+                ] *= 2;
+
+            }
+        );
+
+    });
+
+    /*
+     * Calcula resistências e imunidades
+     * também através da tabela oficial.
+     */
+    const defensive = {
+
+        normal:{
+            ghost:0,
+            fighting:2
+        },
+
+        fire:{
+            fire:0.5,
+            water:2,
+            grass:0.5,
+            ice:0.5,
+            bug:0.5,
+            rock:2,
+            steel:0.5,
+            fairy:0.5
+        },
+
+        water:{
+            fire:0.5,
+            water:0.5,
+            electric:2,
+            grass:2,
+            ice:0.5,
+            steel:0.5
+        },
+
+        electric:{
+            electric:0.5,
+            ground:2,
+            flying:0.5,
+            steel:0.5
+        },
+
+        grass:{
+            fire:2,
+            water:0.5,
+            electric:0.5,
+            grass:0.5,
+            ice:2,
+            poison:2,
+            ground:0.5,
+            flying:2,
+            bug:2
+        },
+
+        ice:{
+            fire:2,
+            ice:0.5,
+            fighting:2,
+            rock:2,
+            steel:2
+        },
+
+        fighting:{
+            flying:2,
+            psychic:2,
+            bug:0.5,
+            rock:0.5,
+            dark:0.5,
+            fairy:2
+        },
+
+        poison:{
+            grass:0.5,
+            poison:0.5,
+            ground:2,
+            psychic:2,
+            bug:0.5,
+            fairy:0.5
+        },
+
+        ground:{
+            water:2,
+            electric:0,
+            grass:2,
+            ice:2,
+            poison:0.5,
+            rock:0.5
+        },
+
+        flying:{
+            electric:2,
+            grass:0.5,
+            ice:2,
+            fighting:0.5,
+            ground:0,
+            bug:0.5,
+            rock:2
+        },
+
+        psychic:{
+            fighting:0.5,
+            psychic:0.5,
+            bug:2,
+            ghost:2,
+            dark:2,
+            fairy:0.5
+        },
+
+        bug:{
+            fire:2,
+            grass:0.5,
+            fighting:0.5,
+            ground:0.5,
+            flying:2,
+            rock:2
+        },
+
+        rock:{
+            normal:0.5,
+            fire:0.5,
+            water:2,
+            grass:2,
+            fighting:2,
+            poison:0.5,
+            ground:2,
+            flying:0.5,
+            steel:2
+        },
+
+        ghost:{
+            normal:0,
+            fighting:0,
+            poison:0.5,
+            bug:0.5,
+            ghost:2,
+            dark:2
+        },
+
+        dragon:{
+            fire:0.5,
+            water:0.5,
+            electric:0.5,
+            grass:0.5,
+            ice:2,
+            dragon:2,
+            fairy:2
+        },
+
+        dark:{
+            psychic:0,
+            ghost:0.5,
+            dark:0.5,
+            fighting:2,
+            bug:2,
+            fairy:2
+        },
+
+        steel:{
+            normal:0.5,
+            fire:2,
+            water:1,
+            electric:1,
+            grass:0.5,
+            ice:0.5,
+            fighting:2,
+            poison:0,
+            ground:2,
+            flying:0.5,
+            psychic:0.5,
+            bug:0.5,
+            rock:0.5,
+            dragon:0.5,
+            steel:0.5,
+            fairy:0.5
+        },
+
+        fairy:{
+            fire:2,
+            fighting:0.5,
+            poison:2,
+            bug:0.5,
+            dragon:0,
+            dark:0.5,
+            steel:2
+        }
+
+    };
+
+    /*
+     * Calcula multiplicadores corretamente.
+     */
+    const result = {};
+
+    Object.keys(typeInfo)
+        .forEach(type => {
+
+            let multiplier = 1;
+
+            types.forEach(defendingType => {
+
+                const chart =
+                    defensive[defendingType];
+
+                if(
+                    chart &&
+                    chart[type] !== undefined
+                ){
+
+                    multiplier *=
+                        chart[type];
+
+                }
+
+            });
+
+            result[type] =
+                multiplier;
+
         });
 
-        relations.no_damage_from.forEach(item => {
-            multipliers[item.name] = 0;
-        });
-    }
+    return result;
 
-    return Object.entries(multipliers)
-        .filter(([type, multiplier]) => {
-            return multiplier >= 2;
-        })
-        .sort((a, b) => b[1] - a[1])
-        .map(([type]) => type);
+}
+
+
+function buildWeaknesses(multipliers){
+
+    const entries =
+        Object.entries(
+            multipliers
+        )
+        .filter(
+            ([type,multiplier]) =>
+                multiplier > 1
+        )
+        .sort(
+            (a,b) =>
+                b[1] - a[1]
+        );
+
+    return `
+
+        <section class="detail-section">
+
+            <div class="section-title">
+
+                <span>
+                    🛡️
+                </span>
+
+                <h2>
+                    Fraquezas
+                </h2>
+
+            </div>
+
+            <div class="weaknesses-list">
+
+                ${
+                    entries.length
+                        ? entries.map(
+                            ([type,multiplier]) => {
+
+                                const info =
+                                    typeInfo[type];
+
+                                return `
+
+                                    <div
+                                        class="
+                                            weakness
+                                            type-${type}
+                                        "
+                                    >
+
+                                        <span>
+                                            ${info.icon}
+                                            ${info.name}
+                                        </span>
+
+                                        <strong>
+                                            ×${multiplier}
+                                        </strong>
+
+                                    </div>
+
+                                `;
+
+                            }
+                        ).join("")
+                        : `
+                            <div class="no-data">
+                                Nenhuma fraqueza encontrada.
+                            </div>
+                        `
+                }
+
+            </div>
+
+        </section>
+
+    `;
+
 }
 
 
 /* =========================================================
-   TRADUÇÃO DOS STATUS
+   ESTATÍSTICAS
 ========================================================= */
 
-function translateStat(stat) {
+function buildStats(pokemon){
+
+    const stats =
+        pokemon.stats || [];
+
+    return `
+
+        <section class="detail-section">
+
+            <div class="section-title">
+
+                <span>
+                    📊
+                </span>
+
+                <h2>
+                    Estatísticas Base
+                </h2>
+
+            </div>
+
+            <div class="stats-list">
+
+                ${
+                    stats.map(stat => {
+
+                        const name =
+                            translateStat(
+                                stat.stat.name
+                            );
+
+                        const value =
+                            stat.base_stat;
+
+                        const percentage =
+                            Math.min(
+                                100,
+                                (value / 255) * 100
+                            );
+
+                        return `
+
+                            <div class="stat-row">
+
+                                <div class="stat-name">
+                                    ${name}
+                                </div>
+
+                                <div class="stat-value">
+                                    ${value}
+                                </div>
+
+                                <div class="stat-bar">
+
+                                    <span
+                                        style="
+                                            width:${percentage}%;
+                                        "
+                                    ></span>
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }).join("")
+                }
+
+            </div>
+
+        </section>
+
+    `;
+
+}
+
+
+function translateStat(stat){
 
     const translations = {
-        hp: "HP",
-        attack: "Ataque",
-        defense: "Defesa",
-        "special-attack": "Ataque Especial",
-        "special-defense": "Defesa Especial",
-        speed: "Velocidade"
+
+        hp:"HP",
+        attack:"Ataque",
+        defense:"Defesa",
+        "special-attack":
+            "Ataque Especial",
+        "special-defense":
+            "Defesa Especial",
+        speed:"Velocidade"
+
     };
 
-    return translations[stat] || capitalize(stat);
+    return (
+        translations[stat] ||
+        capitalize(stat)
+    );
+
+}
+
+
+/* =========================================================
+   SHINY
+========================================================= */
+
+function buildShinySection(
+    normalImage,
+    shinyImage,
+    name
+){
+
+    return `
+
+        <section class="detail-section shiny-section">
+
+            <div class="section-title">
+
+                <span>
+                    ✨
+                </span>
+
+                <h2>
+                    Forma Shiny
+                </h2>
+
+            </div>
+
+            <div class="shiny-container">
+
+                <div class="shiny-card">
+
+                    <img
+                        class="shiny-art"
+                        src="${normalImage}"
+                        alt="${name}"
+                        loading="lazy"
+                    >
+
+                    <div class="shiny-info">
+
+                        <strong>
+                            Normal
+                        </strong>
+
+                        <span>
+                            Forma original
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="shiny-card shiny-special">
+
+                    <img
+                        class="shiny-art"
+                        src="${shinyImage || normalImage}"
+                        alt="${name} Shiny"
+                        loading="lazy"
+                    >
+
+                    <div class="shiny-info">
+
+                        <strong>
+                            ✨ Shiny
+                        </strong>
+
+                        <span>
+                            Coloração alternativa
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    `;
+
 }
 
 
@@ -1194,523 +2368,580 @@ function translateStat(stat) {
    EVOLUÇÕES
 ========================================================= */
 
-async function loadEvolutionChain(species) {
+async function loadEvolutionChain(chain){
 
-    const container = document.getElementById("evolutionContainer");
-
-    if (!container) return;
-
-    if (!species?.evolution_chain?.url) {
-
-        container.innerHTML = `
-            <p class="no-data">
-                Este Pokémon não possui uma cadeia de evolução disponível.
-            </p>
-        `;
-
-        return;
-    }
-
-    const data = await apiFetch(species.evolution_chain.url);
-
-    if (!data?.chain) {
-
-        container.innerHTML = `
-            <p class="no-data">
-                Não foi possível carregar as evoluções.
-            </p>
-        `;
-
-        return;
-    }
-
-    const evolutionList = [];
-
-    function walkChain(chain, depth = 0) {
-
-        if (!chain) return;
-
-        const match = chain.species.url.match(/\/pokemon-species\/(\d+)\/$/);
-
-        const id = match ? Number(match[1]) : null;
-
-        evolutionList.push({
-            name: chain.species.name,
-            id,
-            depth,
-            details: chain.evolution_details?.[0] || null
-        });
-
-        if (chain.evolves_to && chain.evolves_to.length) {
-
-            chain.evolves_to.forEach(next => {
-                walkChain(next, depth + 1);
-            });
-
-        }
-    }
-
-    walkChain(data.chain);
-
-    if (!evolutionList.length) {
-
-        container.innerHTML = `
-            <p class="no-data">
-                Nenhuma evolução encontrada.
-            </p>
-        `;
-
-        return;
-    }
-
-    container.innerHTML = `
-        <div class="evolution-chain">
-
-            ${evolutionList.map((evolution, index) => {
-
-                const image = evolution.id
-                    ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${evolution.id}.png`
-                    : "";
-
-                const detail =
-                    index > 0
-                        ? formatEvolutionDetails(evolution.details)
-                        : "Inicial";
-
-                return `
-                    <div class="evolution-item">
-
-                        ${
-                            index > 0
-                            ? `<div class="evolution-arrow">→</div>`
-                            : ""
-                        }
-
-                        <div
-                            class="evolution-card"
-                            onclick="openPokemon(${evolution.id || `'${evolution.name}'`})"
-                        >
-
-                            <img
-                                src="${image}"
-                                alt="${capitalize(evolution.name)}"
-                                loading="lazy"
-                            >
-
-                            <span class="evolution-number">
-                                #${evolution.id || "?"}
-                            </span>
-
-                            <h3>
-                                ${capitalize(evolution.name)}
-                            </h3>
-
-                            <p>
-                                ${detail}
-                            </p>
-
-                        </div>
-
-                    </div>
-                `;
-
-            }).join("")}
-
-        </div>
-    `;
-}
-
-
-/* =========================================================
-   DETALHES DA EVOLUÇÃO
-========================================================= */
-
-function formatEvolutionDetails(details) {
-
-    if (!details) {
-        return "Evolução";
-    }
-
-    if (details.min_level) {
-        return `Nível ${details.min_level}`;
-    }
-
-    if (details.item) {
-        return `Usando ${capitalize(
-            details.item.name.replace(/-/g, " ")
-        )}`;
-    }
-
-    if (details.trigger?.name === "trade") {
-        return "Troca";
-    }
-
-    if (details.min_happiness) {
-        return `Felicidade ${details.min_happiness}+`;
-    }
-
-    if (details.min_affection) {
-        return `Afeição ${details.min_affection}+`;
-    }
-
-    if (details.known_move) {
-        return `Com ${capitalize(
-            details.known_move.name.replace(/-/g, " ")
-        )}`;
-    }
-
-    if (details.time_of_day) {
-        return `Durante ${details.time_of_day}`;
-    }
-
-    return "Evolução";
-}
-
-
-/* =========================================================
-   MEGA EVOLUÇÕES
-========================================================= */
-
-/*
-    Aqui está a parte que foi refeita.
-
-    Primeiro procuramos os nomes mais comuns:
-    pokemon-mega
-    pokemon-mega-x
-    pokemon-mega-y
-
-    Depois, caso não encontremos nada, fazemos uma busca
-    na lista de Pokémon Forms da PokéAPI.
-*/
-
-async function loadMegaTab(pokemonName) {
-
-    const container = document.getElementById("megaContainer");
-
-    if (!container) return;
-
-    container.innerHTML = `
-        <div class="loading-small">
-            Procurando Mega Evoluções...
-        </div>
-    `;
-
-    const megaForms = [];
-
-    const candidates = [
-        `${pokemonName}-mega`,
-        `${pokemonName}-mega-x`,
-        `${pokemonName}-mega-y`
-    ];
-
-    for (const name of candidates) {
-
-        const form = await apiFetch(
-            `${API}/pokemon-form/${name}`
-        );
-
-        if (form) {
-
-            if (
-                !megaForms.some(
-                    item => item.name === form.name
-                )
-            ) {
-                megaForms.push(form);
-            }
-        }
-    }
-
-    /*
-        Se os nomes diretos não funcionarem,
-        procuramos pela lista completa de forms.
-    */
-
-    if (megaForms.length === 0) {
-
-        try {
-
-            if (!megaFormsCache) {
-
-                const formList = await apiFetch(
-                    `${API}/pokemon-form?limit=2000`
-                );
-
-                if (formList?.results) {
-
-                    megaFormsCache = formList.results
-                        .map(item => item.name)
-                        .filter(name => name.includes("-mega"));
-                }
-            }
-
-            if (megaFormsCache) {
-
-                const possibleNames = megaFormsCache.filter(name => {
-                    return name.startsWith(`${pokemonName}-mega`);
-                });
-
-                for (const name of possibleNames) {
-
-                    const form = await apiFetch(
-                        `${API}/pokemon-form/${name}`
-                    );
-
-                    if (form) {
-                        megaForms.push(form);
-                    }
-                }
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Erro procurando Mega Evoluções:",
-                error
-            );
-        }
-    }
-
-    /*
-        Remove duplicados.
-    */
-
-    const uniqueForms = [];
-
-    megaForms.forEach(form => {
-
-        if (
-            !uniqueForms.some(
-                item => item.name === form.name
-            )
-        ) {
-            uniqueForms.push(form);
-        }
-
-    });
-
-    if (uniqueForms.length === 0) {
-
-        container.innerHTML = `
-            <div class="no-mega">
-
-                <div class="no-mega-icon">
-                    ◈
-                </div>
-
-                <h3>Sem Mega Evolução</h3>
-
-                <p>
-                    Este Pokémon não possui uma Mega Evolução conhecida.
-                </p>
-
-            </div>
-        `;
-
-        return;
-    }
-
-    container.innerHTML = `
-        <div class="mega-grid">
-
-            ${uniqueForms.map(form => {
-
-                const artwork =
-                    form.sprites?.other?.["official-artwork"]?.front_default ||
-                    form.sprites?.other?.home?.front_default ||
-                    form.sprites?.front_default ||
-                    "";
-
-                const shiny =
-                    form.sprites?.other?.["official-artwork"]?.front_shiny ||
-                    form.sprites?.other?.home?.front_shiny ||
-                    form.sprites?.front_shiny ||
-                    "";
-
-                const title = formatMegaName(
-                    form.name,
-                    pokemonName
-                );
-
-                return `
-                    <div class="mega-form-card">
-
-                        <div class="mega-form-label">
-                            💥 MEGA EVOLUÇÃO
-                        </div>
-
-                        <div class="mega-image">
-
-                            <img
-                                src="${artwork}"
-                                alt="${escapeHtml(title)}"
-                                loading="lazy"
-                            >
-
-                        </div>
-
-                        <h3>
-                            ${escapeHtml(title)}
-                        </h3>
-
-                        <p>
-                            ${capitalize(pokemonName)}
-                            em sua forma Mega.
-                        </p>
-
-                        ${
-                            shiny
-                            ? `
-                                <div class="mega-shiny">
-
-                                    <span>✨ Shiny</span>
-
-                                    <img
-                                        src="${shiny}"
-                                        alt="${escapeHtml(title)} Shiny"
-                                        loading="lazy"
-                                    >
-
-                                </div>
-                            `
-                            : ""
-                        }
-
-                    </div>
-                `;
-
-            }).join("")}
-
-        </div>
-    `;
-}
-
-
-/* =========================================================
-   NOME DA MEGA
-========================================================= */
-
-function formatMegaName(formName, pokemonName) {
-
-    const baseName = capitalize(
-        pokemonName.replace(/-/g, " ")
-    );
-
-    const lower = formName.toLowerCase();
-
-    if (lower.endsWith("-mega-x")) {
-        return `Mega ${baseName} X`;
-    }
-
-    if (lower.endsWith("-mega-y")) {
-        return `Mega ${baseName} Y`;
-    }
-
-    if (lower.includes("-mega-")) {
-
-        const parts = formName.split("-");
-
-        const megaIndex = parts.indexOf("mega");
-
-        if (megaIndex !== -1 && parts.length > megaIndex + 1) {
-
-            const suffix = parts
-                .slice(megaIndex + 1)
-                .join(" ");
-
-            return `Mega ${baseName} ${suffix.toUpperCase()}`;
-        }
-    }
-
-    return `Mega ${baseName}`;
-}
-
-
-/* =========================================================
-   FECHAR FICHA
-========================================================= */
-
-function closePokemon() {
-
-    currentPokemon = null;
-
-    showPage("homePage");
-}
-
-
-/* =========================================================
-   UTILITÁRIOS
-========================================================= */
-
-function capitalize(text) {
-
-    if (!text) return "";
-
-    return String(text)
-        .split("-")
-        .map(word => {
-            return word.charAt(0).toUpperCase() + word.slice(1);
-        })
-        .join(" ");
-}
-
-
-function escapeHtml(text) {
-
-    if (text === undefined || text === null) {
+    if(!chain){
         return "";
     }
 
-    return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    const stages = [];
+
+    function collect(node){
+
+        if(!node){
+            return;
+        }
+
+        stages.push({
+            name:node.species.name,
+            id:getIdFromUrl(
+                node.species.url
+            )
+        });
+
+        if(
+            node.evolves_to &&
+            node.evolves_to.length
+        ){
+
+            node.evolves_to.forEach(
+                child =>
+                    collect(child)
+            );
+
+        }
+
+    }
+
+    collect(chain);
+
+    return stages;
+
+}
+
+
+function getIdFromUrl(url){
+
+    if(!url){
+        return 0;
+    }
+
+    const parts =
+        url
+            .split("/")
+            .filter(Boolean);
+
+    return Number(
+        parts[parts.length - 1]
+    );
+
+}
+
+
+function buildEvolutionSection(chain){
+
+    if(!chain){
+
+        return `
+
+            <section class="detail-section">
+
+                <div class="section-title">
+
+                    <span>
+                        🔄
+                    </span>
+
+                    <h2>
+                        Evoluções
+                    </h2>
+
+                </div>
+
+                <div class="no-data">
+                    Nenhuma cadeia de evolução encontrada.
+                </div>
+
+            </section>
+
+        `;
+
+    }
+
+    const stages = [];
+
+    function collect(node){
+
+        if(!node){
+            return;
+        }
+
+        stages.push({
+            name:node.species.name,
+            id:getIdFromUrl(
+                node.species.url
+            )
+        });
+
+        if(node.evolves_to){
+
+            node.evolves_to.forEach(
+                child =>
+                    collect(child)
+            );
+
+        }
+
+    }
+
+    collect(chain);
+
+    /*
+     * Remove duplicados.
+     */
+    const unique =
+        stages.filter(
+            (item,index,self) =>
+                index ===
+                self.findIndex(
+                    other =>
+                        other.id === item.id
+                )
+        );
+
+    return `
+
+        <section class="detail-section">
+
+            <div class="section-title">
+
+                <span>
+                    🔄
+                </span>
+
+                <h2>
+                    Linha Evolutiva
+                </h2>
+
+            </div>
+
+            <div class="evolution-chain">
+
+                ${
+                    unique.map(
+                        (stage,index) => `
+
+                            <div class="evolution-item">
+
+                                <img
+                                    src="
+                                        https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${stage.id}.png
+                                    "
+                                    alt="${formatPokemonName(stage.name)}"
+                                    loading="lazy"
+                                >
+
+                                <strong>
+                                    ${formatPokemonName(stage.name)}
+                                </strong>
+
+                                <span>
+                                    #${formatNumber(stage.id)}
+                                </span>
+
+                            </div>
+
+                            ${
+                                index <
+                                unique.length - 1
+                                    ? `
+                                        <div class="evolution-arrow">
+                                            →
+                                        </div>
+                                    `
+                                    : ""
+                            }
+
+                        `
+                    ).join("")
+                }
+
+            </div>
+
+        </section>
+
+    `;
+
 }
 
 
 /* =========================================================
-   BOTÃO ENTER NAS PESQUISAS
+   DESCRIÇÃO DA ESPÉCIE
 ========================================================= */
 
-document.addEventListener("keydown", event => {
+function getSpeciesDescription(species){
 
-    if (event.key !== "Enter") return;
-
-    const active = document.activeElement;
-
-    if (!active) return;
-
-    if (
-        active.matches(
-            "#homeSearch, #searchInput, .pokemon-search"
-        )
-    ) {
-
-        const value = active.value;
-
-        if (active.id === "searchInput") {
-            searchPagePokemon(value);
-        } else {
-            searchPokemon(value);
-        }
+    if(!species){
+        return "Informações sobre este Pokémon.";
     }
-});
+
+    const entry =
+        species.flavor_text_entries
+            ?.find(
+                item =>
+                    item.language?.name === "pt-br"
+            ) ||
+        species.flavor_text_entries
+            ?.find(
+                item =>
+                    item.language?.name === "en"
+            );
+
+    if(!entry){
+
+        return "Informações sobre este Pokémon.";
+
+    }
+
+    return entry.flavor_text
+        .replace(/\n|\f/g," ");
+
+}
+
+
+/* =========================================================
+   NAVEGAÇÃO ENTRE PÁGINAS
+========================================================= */
+
+function showPage(pageId){
+
+    const pages =
+        document.querySelectorAll(
+            ".page"
+        );
+
+    /*
+     * Se o HTML antigo não usa .page,
+     * esconde manualmente as páginas conhecidas.
+     */
+    if(!pages.length){
+
+        const knownPages = [
+            "homePage",
+            "searchPage",
+            "typesPage",
+            "generationsPage",
+            "pokemonDetails"
+        ];
+
+        knownPages.forEach(id => {
+
+            const element =
+                document.getElementById(id);
+
+            if(element){
+
+                element.style.display =
+                    id === pageId
+                        ? ""
+                        : "none";
+
+            }
+
+        });
+
+    }else{
+
+        pages.forEach(page => {
+
+            page.classList.toggle(
+                "active",
+                page.id === pageId
+            );
+
+        });
+
+    }
+
+    currentPage =
+        pageId;
+
+    /*
+     * Fecha menu lateral.
+     */
+    closeSideMenu();
+
+    /*
+     * Algumas páginas precisam
+     * ser construídas ao abrir.
+     */
+    if(pageId === "typesPage"){
+
+        if(typeof buildTypesPage === "function"){
+            buildTypesPage();
+        }
+
+    }
+
+    if(pageId === "generationsPage"){
+
+        buildGenerations();
+
+    }
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =========================================================
+   MENU LATERAL
+========================================================= */
+
+function openSideMenu(){
+
+    const menu =
+        document.getElementById(
+            "sideMenu"
+        ) ||
+        document.querySelector(
+            ".side-menu"
+        );
+
+    const overlay =
+        document.getElementById(
+            "menuOverlay"
+        );
+
+    if(menu){
+
+        menu.classList.add(
+            "active"
+        );
+
+    }
+
+    if(overlay){
+
+        overlay.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+
+function closeSideMenu(){
+
+    const menu =
+        document.getElementById(
+            "sideMenu"
+        ) ||
+        document.querySelector(
+            ".side-menu"
+        );
+
+    const overlay =
+        document.getElementById(
+            "menuOverlay"
+        );
+
+    if(menu){
+
+        menu.classList.remove(
+            "active"
+        );
+
+    }
+
+    if(overlay){
+
+        overlay.classList.remove(
+            "active"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   BOTÃO VOLTAR
+========================================================= */
+
+function goHome(){
+
+    filteredPokemon =
+        [...allPokemon];
+
+    visibleCount = 50;
+
+    showPage(
+        "homePage"
+    );
+
+    renderPokemon();
+
+}
+
+
+/* =========================================================
+   EVENTOS DE PESQUISA
+========================================================= */
+
+function setupSearch(){
+
+    const inputs = [
+
+        document.getElementById(
+            "homeSearchInput"
+        ),
+
+        document.getElementById(
+            "searchPageInput"
+        ),
+
+        document.getElementById(
+            "homeSearch"
+        ),
+
+        document.getElementById(
+            "searchInput"
+        )
+
+    ].filter(Boolean);
+
+    inputs.forEach(input => {
+
+        input.addEventListener(
+            "input",
+            event => {
+
+                searchPokemon(
+                    event.target.value
+                );
+
+            }
+        );
+
+        input.addEventListener(
+            "keydown",
+            event => {
+
+                if(
+                    event.key ===
+                    "Enter"
+                ){
+
+                    searchPokemon(
+                        event.target.value
+                    );
+
+                    showPage(
+                        "homePage"
+                    );
+
+                }
+
+            }
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   BOTÕES DE GERAÇÃO
+========================================================= */
+
+function setupGenerationButtons(){
+
+    document
+        .querySelectorAll(
+            ".generation-pill"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    filterGeneration(
+                        button.dataset.generation
+                    );
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   MENU / OVERLAY
+========================================================= */
+
+function setupMenu(){
+
+    const overlay =
+        document.getElementById(
+            "menuOverlay"
+        );
+
+    if(overlay){
+
+        overlay.addEventListener(
+            "click",
+            closeSideMenu
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TECLADO
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key ===
+            "Escape"
+        ){
+
+            closeSideMenu();
+
+        }
+
+    }
+);
 
 
 /* =========================================================
    INICIALIZAÇÃO
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-    console.log("Pokédex iniciando...");
+        console.log(
+            "Pokédex Online iniciando..."
+        );
 
-    buildTypesPage();
+        setupSearch();
 
-    buildGenerations();
+        setupGenerationButtons();
 
-    loadPokemon();
+        setupMenu();
 
-});
+        buildGenerations();
+
+        await loadPokemon();
+
+        console.log(
+            `Pokédex carregada: ${allPokemon.length} Pokémon`
+        );
+
+    }
+);
